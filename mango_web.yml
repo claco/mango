@@ -1,0 +1,11 @@
+---
+name: Mango::Web
+site:
+  id: web
+session:
+  storage:  __path_to(sessions)__
+View::TT:
+  INCLUDE_PATH:
+    - __path_to(root/templates/tt)__
+  TEMPLATE_EXTENSION:
+  WRAPPER: wrapper

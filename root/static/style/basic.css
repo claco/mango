@@ -1,0 +1,25 @@
+body {
+	font: 76% "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+	color: #333333;
+}
+h1 {
+	font: bold 1.6em Georgia, 'Times New Roman', serif;
+}
+h2 {
+	font: bold 1.3em Georgia, 'Times New Roman', serif;
+}
+h3 {
+	font: bold 1.0em Georgia, 'Times New Roman', serif;
+}
+h4 {
+	font: normal 1.0em Georgia, 'Times New Roman', serif;
+}
+h5 {
+	font: normal 1.0em Georgia, 'Times New Roman', serif;
+}
+p, li, td {
+	font-size: 1.0em;
+}
+p, li {
+	line-height: 155%;
+};

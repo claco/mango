@@ -1,0 +1,24 @@
+---
+name: Mango Setup Wizard
+site:
+  id: setup
+requirements:
+  Handel: 0.99_16
+  Catalyst::Plugin::Authentication: 0
+  Catalyst::Plugin::Authorization::Roles: 0
+  Catalyst::Plugin::Authentication::Store::DBIC: 0
+drivers:
+  - SQLite
+  - mysql
+  - Oracle
+  - Pg
+  - DB2
+  - MSSQL
+  - Sybase
+session:
+  storage:  __path_to(sessions)__
+View::TT:
+  INCLUDE_PATH:
+    - __path_to(root/templates/tt)__
+  TEMPLATE_EXTENSION:
+  WRAPPER: wrapper

@@ -1,0 +1,28 @@
+[% page.subtitle = 'Verifying Requirements' %]
+
+[% FOREACH requirement IN requirements %]
+	<h3>[% requirement.name %]</h3>
+	[% IF requirement.installed AND requirement.upgrade %]
+		<p class="failure">
+			<strong>Upgrade Required!</strong> Version [% requirement.version %]
+			is installed, but we need version [% requirement.requires %].
+		</p>
+	[% END %]
+	[% IF requirement.installed AND NOT requirement.upgrade %]
+		<p class="success">
+			<strong>Success!</strong> Version [% requirement.version %] is installed.
+		</p>	
+	[% END %]
+	[% IF NOT requirement.installed %]
+		<p class="failure">
+			<strong>Not installed!</strong> Version [% requirement.requires %]
+			or greater is required.
+		</p>
+	[% END %]
+[% END %]
+
+[% IF c.session.has_requirements %]
+	<p>
+		<a href="[% c.uri_for('/setup/database/') %]">Continue</a>
+	</p>
+[% END %]

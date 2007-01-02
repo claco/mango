@@ -1,0 +1,5 @@
+msgid "RESOURCE_NOT_FOUND"
+msgstr "Resource Not Found"
+
+msgid "RESOURCE_NOT_FOUND_MESSAGE"
+msgstr "The requested resource was not found on this server."
