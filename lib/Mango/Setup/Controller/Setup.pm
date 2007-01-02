@@ -81,9 +81,9 @@ sub database : Local {
             $dsn, $c->req->param('user'), $c->req->param('pass')
         );
 
-        eval {
+        #eval {
             $schema->deploy;
-        };
+        #};
 
         if ($@) {
             print $@;

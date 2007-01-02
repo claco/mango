@@ -6,6 +6,7 @@ BEGIN {
     use Catalyst::Runtime '5.7001';
 };
 
+$ENV{DBIC_TRACE} = 1;
 
 use Catalyst qw/
     -Debug
@@ -13,6 +14,10 @@ use Catalyst qw/
     Session
     Session::Store::File
     Session::State::Cookie
+    Authentication
+    Authentication::Store::DBIC
+    Authentication::Credential::Password
+    Authorization::Roles
     Static::Simple
     Unicode
     Mango::I18N
