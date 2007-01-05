@@ -15,7 +15,7 @@ use Catalyst qw/
     Session::Store::File
     Session::State::Cookie
     Authentication
-    Authentication::Store::DBIC
+    Authentication::Store::Mango
     Authentication::Credential::Password
     Authorization::Roles
     Static::Simple
