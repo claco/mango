@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Provider::User;
 use strict;
 use warnings;
@@ -15,7 +16,9 @@ sub search {
     $filter  ||= {};
     $options ||= {};
 
-    return map {bless {result => $_}, $self->result_class} $self->resultset->search($filter, $options)->all;
+    return map {
+        bless {result => $_}, $self->result_class
+    } $self->resultset->search($filter, $options)->all;
 };
 
 1;

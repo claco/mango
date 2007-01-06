@@ -1,3 +1,4 @@
+# $Id$
 package Mango::User;
 use strict;
 use warnings;
@@ -7,16 +8,13 @@ BEGIN {
 };
 __PACKAGE__->mk_group_accessors('simple', qw/result/);
 
-sub id {
-    return shift->result->id(@_);
-};
+sub AUTOLOAD {
+    my $self = shift;
+    return if (our $AUTOLOAD) =~ /::DESTROY$/;
 
-sub username {
-    return shift->result->username(@_);
-};
+    $AUTOLOAD =~ s/^.*:://;
 
-sub password {
-    return shift->result->password(@_);
+    return $self->result->$AUTOLOAD(@_);
 };
 
 1;

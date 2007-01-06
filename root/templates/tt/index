@@ -1,1 +1,3 @@
 Foo
+
+[% c.login('claco', 'fofo') %]
