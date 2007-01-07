@@ -4,30 +4,55 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Plugin::I18N/;
-    use NEXT;
-    require Locale::Maketext::Simple;
+    use Mango::I18N ();
+    use I18N::LangTags ();
+    use I18N::LangTags::Detect ();
 };
 
-sub setup {
-    my $self = shift;
-    my $calldir = $self;
-    $calldir =~ s#::#/#g;
-    my $file = "$calldir.pm";
-    my $path = $INC{$file};
-    $path =~ s#(Setup|Web)\.pm$#/I18N#;
+sub language {
+    my ($c, $language) = @_;
 
-    eval <<"";
-      package $self;
-      import Locale::Maketext::Simple Path => '$path', Export => '_loc', Decode => 1;
-
-
-    if ($@) {
-        $self->log->error(qq/Couldn't initialize i18n "Mango\::I18N", "$@"/);
-    } else {
-        $self->log->debug(qq/Initialized i18n "Mango\::I18N"/) if $self->debug;
+    if ($language) {
+        $c->languages($language);
     };
+
+    my $lang = ref Mango::I18N->get_handle(@{$c->languages});
+    $lang =~ s/.*:://;
+
+    return $lang;
 };
+
+sub languages {
+    my ($c, $languages) = @_;
+
+    if ($languages) {
+        $c->{'languages'} = ref($languages) eq 'ARRAY' ? $languages : [ split(/,/, $languages) ];
+        delete $c->{'__mango_i18n_handle'};
+    } else {
+        $c->{languages} ||= [
+            I18N::LangTags::implicate_supers(
+                I18N::LangTags::Detect->http_accept_langs(
+                    $c->request->header('Accept-Language')
+                )
+            ),
+            'i-default'
+        ];
+    };
+
+    return $c->{languages};
+}
+
+*loc = \&localize;
+
+sub localize {
+    my $c = shift;
+
+    if (!$c->{'__mango_i18n_handle'}) {
+        $c->{'__mango_i18n_handle'} = Mango::I18N->get_handle(@{$c->languages});
+    };
+
+    return $c->{'__mango_i18n_handle'}->maketext(@_);
+}
 
 1;
 __END__

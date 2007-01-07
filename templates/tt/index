@@ -1,5 +1,11 @@
 Foo
 
+[% c.language %]
 
-[% c.user.password %]
-[% c.check_user_roles('edit') %]
+[% FOREACH l = c.languages %]
+[% l %]
+[% END %]
+
+
+[% c.loc('RESOURCE_NOT_FOUND') %]
+[% c.loc('RESOURCE_NOT_FOUND_MESSAGE') %]
