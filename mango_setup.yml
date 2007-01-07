@@ -19,6 +19,6 @@ session:
   storage:  __path_to(sessions)__
 View::TT:
   INCLUDE_PATH:
-    - __path_to(root/templates/tt)__
+    - __path_to(templates/tt)__
   TEMPLATE_EXTENSION:
   WRAPPER: wrapper
