@@ -4,22 +4,6 @@ site:
   id: web
 session:
   storage:  __path_to(sessions)__
-authentication:
-  dbic:
-    user_class: DB::Users
-    user_field: username
-    password_field: password
-    password_type: clear
-authorization:
-  dbic:
-    role_class: DB::Roles
-    role_field: name
-    role_rel: map_users_roles
-    user_role_user_field: user_id
-Model::DB:
-  schema_class: Mango::Schema
-  connect_info:
-    - dbi:SQLite:dbname=__path_to(data/mango.db)__
 View::TT:
   INCLUDE_PATH:
     - __path_to(root/templates/tt)__
