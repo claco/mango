@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Web::Controller::Root;
 use strict;
 use warnings;

@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Setup;
 use strict;
 use warnings;

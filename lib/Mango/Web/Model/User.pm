@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Web::Model::User;
 use strict;
 use warnings;

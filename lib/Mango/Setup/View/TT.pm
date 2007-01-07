@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Setup::View::TT;
 use strict;
 use warnings;

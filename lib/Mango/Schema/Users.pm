@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Schema::Users;
 use strict;
 use warnings;

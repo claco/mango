@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Schema::UsersRoles;
 use strict;
 use warnings;

@@ -10,10 +10,19 @@ BEGIN {
 
 sub setup {
     my $c = shift;
+
     $c->config->{authentication}{mango}{model} ||= 'User';
+    $c->config->{authentication}{mango}{user_field} ||= 'username';
+    $c->config->{authentication}{mango}{password_field} ||= 'password';
+    $c->config->{authentication}{mango}{password_type} ||= 'clear';
+    $c->config->{authorization}{mango}{roles_field} ||= 'roles';
+    $c->config->{authorization}{mango}{role_name_field} ||= 'name';
 
     $c->default_auth_store(
-        Catalyst::Plugin::Authentication::Store::Mango::Backend->new
+        Catalyst::Plugin::Authentication::Store::Mango::Backend->new({
+            auth  => $c->config->{authentication}{mango},
+            authz => $c->config->{authorization}{mango}
+        })
     );
 
 	$c->NEXT::setup(@_);
@@ -24,7 +33,9 @@ sub prepare {
 
     $c->default_auth_store->model(
         $c->model($c->config->{authentication}{mango}{model})
-    );
+    ) unless $c->default_auth_store->model;
+
+    $c->default_auth_store->context($c);
 
     return $c;
 };

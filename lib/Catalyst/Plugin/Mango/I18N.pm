@@ -1,3 +1,4 @@
+# $Id$
 package Catalyst::Plugin::Mango::I18N;
 use strict;
 use warnings;

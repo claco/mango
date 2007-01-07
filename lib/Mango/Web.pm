@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Web;
 use strict;
 use warnings;

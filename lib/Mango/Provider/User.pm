@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Provider::Schema/;
+    use base qw/Mango::Provider::DBIC/;
     use Mango::User;
 };
 __PACKAGE__->result_class('Mango::User');

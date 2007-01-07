@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Provider;
 use strict;
 use warnings;

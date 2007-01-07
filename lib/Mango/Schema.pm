@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Schema;
 use strict;
 use warnings;

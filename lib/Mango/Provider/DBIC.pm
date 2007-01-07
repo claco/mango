@@ -1,4 +1,5 @@
-package Mango::Provider::Schema;
+# $Id$
+package Mango::Provider::DBIC;
 use strict;
 use warnings;
 

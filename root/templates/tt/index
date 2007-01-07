@@ -1,3 +1,5 @@
 Foo
 
-[% c.login('claco', 'fofo') %]
+
+[% c.user.password %]
+[% c.check_user_roles('edit') %]
