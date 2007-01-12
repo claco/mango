@@ -9,6 +9,6 @@ View::TT:
     - __path_to(templates/tt)__
   TEMPLATE_EXTENSION:
   WRAPPER: wrapper
-Model::User:
+Model::Users:
   connection_info:
     - dbi:SQLite:data/mango.db

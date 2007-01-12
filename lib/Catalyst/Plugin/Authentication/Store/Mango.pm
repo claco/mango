@@ -11,7 +11,7 @@ BEGIN {
 sub setup {
     my $c = shift;
 
-    $c->config->{authentication}{mango}{model} ||= 'User';
+    $c->config->{authentication}{mango}{model} ||= 'Users';
     $c->config->{authentication}{mango}{user_field} ||= 'username';
     $c->config->{authentication}{mango}{password_field} ||= 'password';
     $c->config->{authentication}{mango}{password_type} ||= 'clear';

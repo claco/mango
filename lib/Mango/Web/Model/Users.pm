@@ -1,10 +1,10 @@
 # $Id$
-package Mango::Web::Model::User;
+package Mango::Web::Model::Users;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Model::Mango::User/;
+    use base qw/Catalyst::Model::Mango::Users/;
 };
 
 =head1 NAME

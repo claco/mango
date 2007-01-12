@@ -15,10 +15,11 @@ BEGIN {
 
     "RESOURCE_NOT_FOUND" =>
         "Resource Not Found",
-
     "RESOURCE_NOT_FOUND_MESSAGE" =>
         "The requested resource was not found on this server.",
 
+    "VIRTUAL_METHOD" =>
+        "This method must be overriden!",
 );
 
 1;

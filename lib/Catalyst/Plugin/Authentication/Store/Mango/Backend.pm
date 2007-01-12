@@ -19,8 +19,7 @@ sub new {
 
 sub get_user {
     my ($self, $id) = @_;
-    my @users = $self->model->search({$self->{'auth'}{'user_field'} => $id});
-    my $user = shift @users;
+    my $user = $self->model->search({$self->{'auth'}{'user_field'} => $id})->first;
 
     return Catalyst::Plugin::Authentication::Store::Mango::User->new(
         $self,
