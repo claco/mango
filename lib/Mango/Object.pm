@@ -30,9 +30,7 @@ sub set_column {
 sub delete {
     my $self = shift;
 
-    return $self->provider->delete({
-        id => $self->id
-    });
+    return $self->provider->delete($self);
 };
 
 sub update {
