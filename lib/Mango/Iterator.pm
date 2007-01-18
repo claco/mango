@@ -11,9 +11,7 @@ sub new {
     my $args  = shift || {};
     my $data = $args->{'data'};
 
-    if (blessed $data && $data->isa('DBIx::Class::ResultSet')) {
-        $class = 'Mango::Iterator::DBIC';
-    } elsif (ref $data eq 'ARRAY') {
+    if (ref $data eq 'ARRAY') {
         $class = 'Mango::Iterator::List';
     };
 
@@ -23,7 +21,7 @@ sub new {
 sub create_result {
     my ($self, $result) = @_;
 
-    return bless {result => $result}, $self->result_class;
+    return $result;
 };
 
 package Mango::Iterator::List;
@@ -32,14 +30,6 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Iterator Handel::Iterator::List/;
-};
-
-package Mango::Iterator::DBIC;
-use strict;
-use warnings;
-
-BEGIN {
-    use base qw/Mango::Iterator Handel::Iterator::DBIC/;
 };
 
 1;

@@ -4,17 +4,8 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Class::Accessor::Grouped/;
+    use base qw/Mango::Object/;
 };
-__PACKAGE__->mk_group_accessors('simple', qw/result/);
-
-sub AUTOLOAD {
-    my $self = shift;
-    return if (our $AUTOLOAD) =~ /::DESTROY$/;
-
-    $AUTOLOAD =~ s/^.*:://;
-
-    return $self->result->$AUTOLOAD(@_);
-};
+__PACKAGE__->mk_group_accessors('column', qw/username password/);
 
 1;

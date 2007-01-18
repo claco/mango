@@ -5,31 +5,75 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
+    use Class::Inspector ();
     use Mango::I18N qw/translate/;
 
-    __PACKAGE__->mk_group_accessors('inherited', qw/result_class/);
+    __PACKAGE__->mk_group_accessors('component_class', qw/result_class/);
 };
 
 sub new {
     my ($class, $args) = @_;
+    my $self = bless {}, $class;
 
-    return bless $args || {}, $class;
+    $self->setup($args);
+
+    return $self;
+};
+
+sub setup {
+    my ($self, $args) = @_;
+
+    if (ref $args eq 'HASH') {
+        map {$self->$_($args->{$_})} keys %{$args};
+    };
+
+    return;
 };
 
 sub create {
+    my ($self, $data) = @_;
+
     die translate('VIRTUAL_METHOD');
 };
 
 sub search {
+    my ($self, $filter, $options) = @_;
+
     die translate('VIRTUAL_METHOD');
 };
 
 sub update {
+    my ($self, $object) = @_;
+
     die translate('VIRTUAL_METHOD');
 };
 
 sub delete {
+    my ($self, $filter) = @_;
+
     die translate('VIRTUAL_METHOD');
+};
+
+sub get_component_class {
+    my ($self, $field) = @_;
+
+    return $self->get_inherited($field);
+};
+
+sub set_component_class {
+    my ($self, $field, $value) = @_;
+
+    if ($value) {
+        if (!Class::Inspector->loaded($value)) {
+            eval "use $value"; ## no critic
+
+            die translate('COMPCLASS_NOT_LOADED', $field, $value) if $@;
+        };
+    };
+
+    $self->set_inherited($field, $value);
+
+    return;
 };
 
 1;

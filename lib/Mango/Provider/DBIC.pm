@@ -5,18 +5,17 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider/;
-    use Mango::Schema;
+    use Scalar::Util ();
     use Mango::Iterator;
 
+    __PACKAGE__->mk_group_accessors('component_class', qw/schema_class/);
     __PACKAGE__->mk_group_accessors('inherited', qw/
-        schema_class
         source_name
         connection_info
         _resultset
         _schema
     /);
 };
-
 __PACKAGE__->schema_class('Mango::Schema');
 
 sub resultset {
@@ -43,10 +42,12 @@ sub schema {
 
 sub create {
     my ($self, $data) = @_;
+    my $result = $self->resultset->create($data);
 
-    return bless {
-        result => $self->resultset->create($data)
-    }, $self->result_class;
+    return self->result_class->new({
+        provider => $self,
+        data => {$result->get_columns}
+    });
 };
 
 sub search {
@@ -55,25 +56,39 @@ sub search {
     $filter  ||= {};
     $options ||= {};
 
-    my $results = $self->resultset->search($filter, $options);
+    my @results = map {
+        $self->result_class->new({
+            provider => $self,
+            data => {$_->get_columns}
+        })
+    } $self->resultset->search($filter, $options)->all;
+
     if (wantarray) {
-        return map {bless {result => $_}, $self->result_class} $results->all;
+        return @results;
     } else {
         return Mango::Iterator->new({
-            data => $results,
-            result_class => $self->result_class
+            data => \@results
         });
     };
 };
 
 sub update {
     my ($self, $object) = @_;
+    my $result = $self->resultset->single({
+        id => $object->id
+    });
 
-    return $object->update;
+    return $result->update($object->data);
 };
 
 sub delete {
     my ($self, $filter) = @_;
+
+    if (ref $filter ne 'HASH') {
+        $filter = {id => $filter};
+    } elsif (Scalar::Util::blessed $filter) {
+        $filter = {id => $filter->id};
+    };
 
     return $self->resultset->search($filter)->delete_all;
 };
