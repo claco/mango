@@ -1,15 +1,15 @@
 # $Id$
-package Mango::Web::Model::Users;
+package Mango::Web::Model::Roles;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Model::Mango::Users/;
+    use base qw/Catalyst::Model::Mango::Roles/;
 };
 
 =head1 NAME
 
-Mango::Web::Model::Users - Catalyst Model
+Mango::Web::Model::Roles - Catalyst Model
 
 =head1 DESCRIPTION
 

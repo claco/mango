@@ -19,7 +19,6 @@ sub default : Private {
 sub index : Private {
     my ($self, $c) = @_;
 
-
 };
 
 sub end : ActionClass('RenderView') {}

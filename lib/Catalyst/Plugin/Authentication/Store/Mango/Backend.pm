@@ -7,9 +7,8 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Catalyst::Plugin::Authentication::Store::Mango::User;
     use Catalyst::Plugin::Authentication::Store::Mango::CachedUser;
-    use Mango::User;
 };
-__PACKAGE__->mk_group_accessors('inherited', qw/model context/);
+__PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model context/);
 
 sub new {
     my ($class, $config) = @_;
@@ -19,7 +18,7 @@ sub new {
 
 sub get_user {
     my ($self, $id) = @_;
-    my $user = $self->model->search({$self->{'auth'}{'user_field'} => $id})->first;
+    my $user = $self->user_model->search({$self->{'auth'}{'user_field'} => $id})->first;
 
     return Catalyst::Plugin::Authentication::Store::Mango::User->new(
         $self,

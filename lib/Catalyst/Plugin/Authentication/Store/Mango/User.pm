@@ -81,29 +81,29 @@ sub for_session {
 sub roles {
     my $self = shift;
 
-    unless ($self->config->{'authz'}) {
+    unless ($self->store->{'authz'}) {
         Catalyst::Exception->throw(
             message => 'No authorization configuration defined'
         );
     };
 
-    my $roles_field = $self->store->{'authz'}{'roles_field'};
     my $role_name_field = $self->store->{'authz'}{'role_name_field'};
     my @roles;
 
-    foreach my $role ($self->user->$roles_field) {
+    foreach my $role ($self->store->role_model->user_roles($self->user->id)) {
         push @roles, $role->$role_name_field;
     };
 
     return @roles;
 };
 
-sub AUTOLOAD {
-    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
-    return if $method =~ /(DESTROY|ACCEPT_CONTEXT)/;
+#sub AUTOLOAD {
+#    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
+#    return if $method =~ /(DESTROY|ACCEPT_CONTEXT)/;
 
-    return shift->user->$method(@_);
-};
+#warn $method;
+#    return shift->user->$method(@_);
+#};
 
 1;
 __END__

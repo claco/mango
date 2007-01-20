@@ -15,7 +15,7 @@ sub setup {
     $c->config->{authentication}{mango}{user_field} ||= 'username';
     $c->config->{authentication}{mango}{password_field} ||= 'password';
     $c->config->{authentication}{mango}{password_type} ||= 'clear';
-    $c->config->{authorization}{mango}{roles_field} ||= 'roles';
+    $c->config->{authorization}{mango}{model} ||= 'Roles';
     $c->config->{authorization}{mango}{role_name_field} ||= 'name';
 
     $c->default_auth_store(
@@ -31,9 +31,13 @@ sub setup {
 sub prepare {
     my $c = shift->NEXT::prepare(@_);
 
-    $c->default_auth_store->model(
+    $c->default_auth_store->user_model(
         $c->model($c->config->{authentication}{mango}{model})
-    ) unless $c->default_auth_store->model;
+    ) unless $c->default_auth_store->user_model;
+
+    $c->default_auth_store->role_model(
+        $c->model($c->config->{authorization}{mango}{model})
+    ) unless $c->default_auth_store->role_model;
 
     $c->default_auth_store->context($c);
 

@@ -1,5 +1,5 @@
 # $Id$
-package Catalyst::Model::Mango::Users;
+package Catalyst::Model::Mango::Roles;
 use strict;
 use warnings;
 
@@ -12,7 +12,7 @@ __PACKAGE__->mk_group_accessors('inherited', qw/provider/);
 
 sub COMPONENT {
     my $self = shift->new(@_);
-    my $provider_class = delete $self->{'provider'} || 'Mango::Provider::Users';
+    my $provider_class = delete $self->{'provider'} || 'Mango::Provider::Roles';
 
     if (!Class::Inspector->loaded($provider_class)) {
         eval "use $provider_class"; ## no critic;
