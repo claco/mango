@@ -1,5 +1,5 @@
 # $Id$
-package Catalyst::Model::Mango::Roles;
+package Catalyst::Model::Mango::Provider;
 use strict;
 use warnings;
 
@@ -7,12 +7,17 @@ BEGIN {
     use base qw/Catalyst::Model Class::Accessor::Grouped/;
     use Class::Inspector;
     use Catalyst::Exception;
+    use Mango::I18N qw/translate/;
 };
 __PACKAGE__->mk_group_accessors('inherited', qw/provider/);
 
 sub COMPONENT {
     my $self = shift->new(@_);
-    my $provider_class = delete $self->{'provider'} || 'Mango::Provider::Roles';
+    my $provider_class = delete $self->{'provider'};
+
+    Catalyst::Exception->throw(
+        message => translate('No provider class specified')
+    ) unless $provider_class;
 
     if (!Class::Inspector->loaded($provider_class)) {
         eval "use $provider_class"; ## no critic;
