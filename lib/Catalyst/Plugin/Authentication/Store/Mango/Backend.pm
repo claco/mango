@@ -8,7 +8,7 @@ BEGIN {
     use Catalyst::Plugin::Authentication::Store::Mango::User;
     use Catalyst::Plugin::Authentication::Store::Mango::CachedUser;
 };
-__PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model context/);
+__PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model profile_model context/);
 
 sub new {
     my ($class, $config) = @_;
@@ -34,11 +34,19 @@ sub user_supports {
 
 sub from_session {
 	my ($self, $c, $id) = @_;
-    my $roles = $c->session->{'__mango_roles'} || [];
+    my $roles = $c->session->{'__mango_user_roles'} || [];
+
+    my $user = bless {
+        provider => $self->user_model->provider,
+        data => {
+            id => $c->session->{'__mango_user_id'},
+            username => $id
+        }
+    }, $self->user_model->result_class;
 
     return Catalyst::Plugin::Authentication::Store::Mango::CachedUser->new(
         $self,
-        $id,
+        $user,
         $roles
     );
 };

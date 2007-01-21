@@ -12,3 +12,12 @@ View::TT:
 Model::Users:
   connection_info:
     - dbi:SQLite:data/mango.db
+Model::Roles:
+  connection_info:
+    - dbi:SQLite:data/mango.db
+Model::Profiles:
+  connection_info:
+    - dbi:SQLite:data/mango.db
+authentication:
+  mango:
+    stuff: foo

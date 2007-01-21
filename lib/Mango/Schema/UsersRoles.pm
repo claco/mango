@@ -21,12 +21,10 @@ __PACKAGE__->add_columns(
     },
 );
 __PACKAGE__->set_primary_key(qw/user_id role_id/);
-
 __PACKAGE__->belongs_to(
     user => 'Mango::Schema::Users',
     {'foreign.id' => 'self.user_id'}
 );
-
 __PACKAGE__->belongs_to(
     role => 'Mango::Schema::Roles',
     {'foreign.id' => 'self.role_id'}

@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Web::Model::Roles;
+package Mango::Web::Model::Profiles;
 use strict;
 use warnings;
 
@@ -8,12 +8,12 @@ BEGIN {
 };
 
 __PACKAGE__->config(
-    provider => 'Mango::Provider::Roles'
+    provider => 'Mango::Provider::Profiles'
 );
 
 =head1 NAME
 
-Mango::Web::Model::Roles - Catalyst Model
+Mango::Web::Model::Profiles - Catalyst Model
 
 =head1 DESCRIPTION
 

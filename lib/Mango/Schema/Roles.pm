@@ -18,15 +18,19 @@ __PACKAGE__->add_columns(
     },
     name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
         is_nullable => 0
+    },
+    description => {
+        data_type   => 'VARCHAR',
+        size        => 100,
+        is_nullable => 1
     }
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint(
     name => [qw/name/]
 );
-
 __PACKAGE__->has_many(
     map_users_roles => 'Mango::Schema::UsersRoles',
     {'foreign.role_id' => 'self.id'}

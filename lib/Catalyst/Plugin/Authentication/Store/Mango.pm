@@ -17,6 +17,7 @@ sub setup {
     $c->config->{authentication}{mango}{password_type} ||= 'clear';
     $c->config->{authorization}{mango}{model} ||= 'Roles';
     $c->config->{authorization}{mango}{role_name_field} ||= 'name';
+    $c->config->{profiles}{mango}{model} ||= 'Profiles';
 
     $c->default_auth_store(
         Catalyst::Plugin::Authentication::Store::Mango::Backend->new({
@@ -38,6 +39,10 @@ sub prepare {
     $c->default_auth_store->role_model(
         $c->model($c->config->{authorization}{mango}{model})
     ) unless $c->default_auth_store->role_model;
+
+    $c->default_auth_store->profile_model(
+        $c->model($c->config->{profiles}{mango}{model})
+    ) unless $c->default_auth_store->profile_model;
 
     $c->default_auth_store->context($c);
 

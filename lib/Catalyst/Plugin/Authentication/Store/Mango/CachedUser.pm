@@ -15,12 +15,6 @@ sub new {
     return bless {store => $store, user => $user, roles => $roles}, $class;
 };
 
-sub id {
-    my $self = shift;
-
-    return $self->user;
-};
-
 sub roles {
     my $self = shift;
 
@@ -31,7 +25,8 @@ sub supported_features {
     my $self = shift;
 
     return {
-        roles => 1
+        roles => 1,
+        profiles => 1
     };
 };
 

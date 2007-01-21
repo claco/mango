@@ -67,13 +67,15 @@ sub supported_features {
 		},
         session => 1,
         roles => 1,
+        profiles => 1
 	};
 };
 
 sub for_session {
     my $self = shift;
 
-    $self->store->context->session->{'__mango_roles'} = [$self->roles];
+    $self->store->context->session->{'__mango_user_roles'} = [$self->roles];
+    $self->store->context->session->{'__mango_user_id'} = $self->user->id;
 
     return $self->id;
 };
@@ -95,6 +97,16 @@ sub roles {
     };
 
     return @roles;
+};
+
+sub profile {
+    my $self = shift;
+
+    if (!$self->{'profile'}) {
+        $self->{'profile'} = $self->store->profile_model->user_profile($self->user->id);
+    };
+
+    return $self->{'profile'};
 };
 
 #sub AUTOLOAD {

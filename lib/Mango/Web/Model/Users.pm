@@ -4,8 +4,12 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Model::Mango::Users/;
+    use base qw/Catalyst::Model::Mango::Provider/;
 };
+
+__PACKAGE__->config(
+    provider => 'Mango::Provider::Users'
+);
 
 =head1 NAME
 
