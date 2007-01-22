@@ -74,11 +74,8 @@ sub search {
 
 sub update {
     my ($self, $object) = @_;
-    my $result = $self->resultset->single({
-        id => $object->id
-    });
 
-    return $result->update($object->data);
+    return $self->resultset->update($object->data);
 };
 
 sub delete {
