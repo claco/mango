@@ -67,7 +67,8 @@ sub supported_features {
 		},
         session => 1,
         roles => 1,
-        profiles => 1
+        profiles => 1,
+        carts => 1
 	};
 };
 

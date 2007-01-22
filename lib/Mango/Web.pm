@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use Catalyst::Runtime '5.7001';
+    use Mango ();
 };
 
 $ENV{DBIC_TRACE} = 1;
@@ -15,7 +16,7 @@ use Catalyst qw/
     Session
     Session::Store::File
     Session::State::Cookie
-    Authentication
+    Authentication::Mango
     Authentication::Store::Mango
     Authentication::Credential::Password
     Authorization::Roles
@@ -24,7 +25,7 @@ use Catalyst qw/
     Mango::I18N
 /;
 
-our $VERSION = '0.01';
+our $VERSION = $Mango::VERSION;
 
 __PACKAGE__->config(name => 'Mango::Web');
 __PACKAGE__->setup;

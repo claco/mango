@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use Catalyst::Runtime '5.7001';
+    use Mango ();
 };
 
 use Catalyst qw/
@@ -18,7 +19,7 @@ use Catalyst qw/
     Mango::I18N
 /;
 
-our $VERSION = '0.01';
+our $VERSION = $Mango::VERSION;
 
 __PACKAGE__->config(name => 'Mango::Setup');
 __PACKAGE__->setup;

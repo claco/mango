@@ -2,10 +2,11 @@
 package Catalyst::Plugin::Authentication::Store::Mango;
 use strict;
 use warnings;
-our $VERSION = '0.01';
+our $VERSION = $Mango::VERSION;
 
 BEGIN {
     use Catalyst::Plugin::Authentication::Store::Mango::Backend;
+    use Mango ();
 };
 
 sub setup {

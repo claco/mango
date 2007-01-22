@@ -7,6 +7,7 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Catalyst::Plugin::Authentication::Store::Mango::User;
     use Catalyst::Plugin::Authentication::Store::Mango::CachedUser;
+    use Catalyst::Plugin::Authentication::Store::Mango::AnonymousUser;
 };
 __PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model profile_model context/);
 
@@ -23,6 +24,14 @@ sub get_user {
     return Catalyst::Plugin::Authentication::Store::Mango::User->new(
         $self,
         $user
+    );
+};
+
+sub get_anonymous_user {
+    my $self = shift;
+
+    return Catalyst::Plugin::Authentication::Store::Mango::AnonymousUser->new(
+        $self
     );
 };
 

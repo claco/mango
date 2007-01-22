@@ -2,11 +2,13 @@
 package Catalyst::Plugin::Mango::I18N;
 use strict;
 use warnings;
+our $VERSION = $Mango::VERSION;
 
 BEGIN {
     use Mango::I18N ();
     use I18N::LangTags ();
     use I18N::LangTags::Detect ();
+    use Mango ();
 };
 
 sub language {

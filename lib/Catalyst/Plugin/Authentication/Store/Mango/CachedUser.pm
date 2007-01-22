@@ -2,7 +2,6 @@
 package Catalyst::Plugin::Authentication::Store::Mango::CachedUser;
 use strict;
 use warnings;
-use overload '""' => sub {shift->id}, fallback => 1;
 
 BEGIN {
     use base qw/Catalyst::Plugin::Authentication::Store::Mango::User/;
@@ -26,7 +25,8 @@ sub supported_features {
 
     return {
         roles => 1,
-        profiles => 1
+        profiles => 1,
+        carts => 1
     };
 };
 
