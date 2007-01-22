@@ -109,13 +109,12 @@ sub profile {
     return $self->{'profile'};
 };
 
-#sub AUTOLOAD {
-#    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
-#    return if $method =~ /(DESTROY|ACCEPT_CONTEXT)/;
+sub AUTOLOAD {
+    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
+    return if $method =~ /(DESTROY|ACCEPT_CONTEXT|config)/;
 
-#warn $method;
-#    return shift->user->$method(@_);
-#};
+    return shift->user->$method(@_);
+};
 
 1;
 __END__
