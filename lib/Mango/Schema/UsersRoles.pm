@@ -12,12 +12,14 @@ __PACKAGE__->table('users_roles');
 __PACKAGE__->source_name('UsersRoles');
 __PACKAGE__->add_columns(
     user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+        data_type      => 'UINT',
+        is_nullable    => 0,
+        is_foreign_key => 1
     },
     role_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+        data_type      => 'UINT',
+        is_nullable    => 0,
+        is_foreign_key => 1
     },
 );
 __PACKAGE__->set_primary_key(qw/user_id role_id/);

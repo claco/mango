@@ -17,8 +17,9 @@ __PACKAGE__->add_columns(
         is_nullable       => 0
     },
     user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+        data_type      => 'UINT',
+        is_nullable    => 0,
+        is_foreign_key => 1
     },
     first_name => {
         data_type   => 'VARCHAR',
