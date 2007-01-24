@@ -110,6 +110,25 @@ sub profile {
     return $self->{'profile'};
 };
 
+sub cart {
+    my $self = shift;
+    my $cart;
+
+    if (my $cart_id = $self->store->context->session->{'__mango_cart_id'}) {
+        $cart = $self->store->cart_model->search({
+            id => $cart_id
+        })->first;
+    };
+
+    if (!$cart) {
+        $cart = $self->store->cart_model->create({});
+
+        $self->store->context->session->{'__mango_cart_id'} = $cart->id;
+    };
+
+    return $cart;
+};
+
 sub AUTOLOAD {
     my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
     return if $method =~ /(DESTROY|ACCEPT_CONTEXT|config)/;

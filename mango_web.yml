@@ -18,6 +18,9 @@ Model::Roles:
 Model::Profiles:
   connection_info:
     - dbi:SQLite:data/mango.db
+Model::Carts:
+  connection_info:
+    - dbi:SQLite:data/mango.db
 authentication:
   mango:
     stuff: foo

@@ -9,7 +9,7 @@ BEGIN {
     use Catalyst::Plugin::Authentication::Store::Mango::CachedUser;
     use Catalyst::Plugin::Authentication::Store::Mango::AnonymousUser;
 };
-__PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model profile_model context/);
+__PACKAGE__->mk_group_accessors('inherited', qw/user_model role_model profile_model cart_model context/);
 
 sub new {
     my ($class, $config) = @_;

@@ -32,7 +32,7 @@ sub create {
 sub search {
     my $self = shift;
 
-    return $self->storage->search;
+    return $self->storage->search(@_);
 };
 
 1;
