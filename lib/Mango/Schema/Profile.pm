@@ -8,7 +8,7 @@ BEGIN {
     use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->load_components(qw/+Handel::Components::DefaultValues InflateColumn::DateTime Core/);
 __PACKAGE__->table('profile');
 __PACKAGE__->source_name('Profiles');
 __PACKAGE__->add_columns(
@@ -44,6 +44,10 @@ __PACKAGE__->add_unique_constraint(
 __PACKAGE__->belongs_to(user => 'Mango::Schema::User',
     {'foreign.id' => 'self.user_id'}
 );
+__PACKAGE__->default_values({
+    created => sub {DateTime->now}
+});
+
 1;
 __END__
 

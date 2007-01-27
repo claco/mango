@@ -8,7 +8,7 @@ BEGIN {
     use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->load_components(qw/+Handel::Components::DefaultValues InflateColumn::DateTime Core/);
 __PACKAGE__->table('role');
 __PACKAGE__->source_name('Roles');
 __PACKAGE__->add_columns(
@@ -41,6 +41,9 @@ __PACKAGE__->has_many(
     {'foreign.role_id' => 'self.id'}
 );
 __PACKAGE__->many_to_many(users => 'map_user_role', 'user');
+__PACKAGE__->default_values({
+    created => sub {DateTime->now}
+});
 
 1;
 __END__

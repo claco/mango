@@ -8,7 +8,7 @@ BEGIN {
     use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->load_components(qw/+Handel::Components::DefaultValues InflateColumn::DateTime Core/);
 __PACKAGE__->table('user');
 __PACKAGE__->source_name('Users');
 __PACKAGE__->add_columns(
@@ -47,6 +47,9 @@ __PACKAGE__->might_have(profile => 'Mango::Schema::Profile',
 __PACKAGE__->has_many(wishlists => 'Mango::Schema::Wishlist',
     {'foreign.user_id' => 'self.id'}
 );
+__PACKAGE__->default_values({
+    created => sub {DateTime->now}
+});
 
 1;
 __END__
