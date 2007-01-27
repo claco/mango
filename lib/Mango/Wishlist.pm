@@ -1,21 +1,24 @@
 # $Id$
-package Mango::Cart;
+package Mango::Wishlist;
 use strict;
 use warnings;
 
 BEGIN {
     use base qw/Handel::Cart/;
+    use Handel::Constraints ();
     use DateTime ();
 };
 
 ## Yes, this isn't the preferred way. Sue me. I don't want the storage classes
 ## floating around this dist. If you make your own cart, feel free to do it the
 ## correct way. ;-)
-__PACKAGE__->item_class('Mango::Cart::Item');
+__PACKAGE__->item_class('Mango::Wishlist::Item');
 __PACKAGE__->storage->setup({
     schema_class       => 'Mango::Schema',
-    schema_source      => 'Carts',
-    constraints        => undef,
+    schema_source      => 'Wishlists',
+    constraints        => {
+        name           => {'Check Name'    => \&Handel::Constraints::constraint_cart_name},
+    },
     default_values     => {
         created        => sub {DateTime->now}
     },

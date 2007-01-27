@@ -1,4 +1,5 @@
-package Mango::Cart::Item;
+# $Id$
+package Mango::Wishlist::Item;
 use strict;
 use warnings;
 
@@ -9,14 +10,11 @@ BEGIN {
 };
 __PACKAGE__->storage->setup({
     schema_class     => 'Mango::Schema',
-    schema_source    => 'CartItems',
-    currency_columns => [qw/price/],
+    schema_source    => 'WishlistItems',
     constraints      => {
-        quantity     => {'Check Quantity' => \&Handel::Constraints::constraint_quantity},
-        price        => {'Check Price'    => \&Handel::Constraints::constraint_price}
+        quantity     => {'Check Quantity' => \&Handel::Constraints::constraint_quantity}
     },
     default_values   => {
-        price        => 0,
         quantity     => 1,
         created      => sub {DateTime->now}
     }
@@ -25,11 +23,11 @@ __PACKAGE__->create_accessors;
 
 =head1 NAME
 
-Mango::Cart::Item - Cart Item Class
+Mango::Wishlist::Item - Wishlist Item Class
 
 =head1 SYNOPSIS
 
-    use Mango::Cart::Item;
+    use Mango::Wishlist::Item;
     
     my $items = $cart->items;
     while (my $item = $items->next) {
@@ -38,7 +36,7 @@ Mango::Cart::Item - Cart Item Class
 
 =head1 DESCRIPTION
 
-My Cart Item Class
+My WishlistItem Class
 
 =head1 AUTHOR
 
