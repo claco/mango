@@ -1,62 +1,63 @@
 # $Id$
-package Mango::Schema::Users;
+package Mango::Schema::Role;
 use strict;
 use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
+    use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('users');
-__PACKAGE__->source_name('Users');
+__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->table('role');
+__PACKAGE__->source_name('Roles');
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'UINT',
         is_auto_increment => 1,
         is_nullable       => 0
     },
-    username => {
+    name => {
         data_type   => 'VARCHAR',
         size        => 25,
         is_nullable => 0
     },
-    password => {
+    description => {
         data_type   => 'VARCHAR',
-        size        => 255,
-        is_nullable => 0
+        size        => 100,
+        is_nullable => 1
+    },
+    created => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint(
-    name => [qw/username/]
+    name => [qw/name/]
 );
 __PACKAGE__->has_many(
-    map_users_roles => 'Mango::Schema::UsersRoles',
-    {'foreign.user_id' => 'self.id'}
+    map_user_role => 'Mango::Schema::UserRole',
+    {'foreign.role_id' => 'self.id'}
 );
-__PACKAGE__->many_to_many(roles => 'map_users_roles', 'role');
-
-__PACKAGE__->might_have(profile => 'Mango::Schema::Profiles',
-    {'foreign.user_id' => 'self.id'}
-);
+__PACKAGE__->many_to_many(users => 'map_user_role', 'user');
 
 1;
 __END__
 
 =head1 NAME
 
-Mango::Schema::Users - DBIC schema class for Users
+Mango::Schema::Role - DBIC schema class for Roles
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Users')->search;
+    my $roles = $schema->resultset('Roles')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Users is loaded by Mango::Schema to read/write user data.
+Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
 
 =head1 COLUMNS
 
@@ -70,23 +71,13 @@ Contains the primary key for each role record.
         is_nullable       => 0
     },
 
-=head2 username
+=head2 name
 
-Contains the user name.
+Contains the role name.
 
-    username => {
+    name => {
         data_type   => 'VARCHAR',
         size        => '25',
-        is_nullable => 0
-    },
-
-=head2 password
-
-The users password.
-
-    password => {
-        data_type   => 'VARCHAR',
-        size        => '255',
         is_nullable => 0
     }
 

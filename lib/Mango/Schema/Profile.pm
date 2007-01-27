@@ -1,42 +1,49 @@
 # $Id$
-package Mango::Schema::Roles;
+package Mango::Schema::Profile;
 use strict;
 use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
+    use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('roles');
-__PACKAGE__->source_name('Roles');
+__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->table('profile');
+__PACKAGE__->source_name('Profiles');
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'UINT',
         is_auto_increment => 1,
         is_nullable       => 0
     },
-    name => {
+    user_id => {
+        data_type      => 'UINT',
+        is_nullable    => 0,
+        is_foreign_key => 1
+    },
+    first_name => {
         data_type   => 'VARCHAR',
         size        => 25,
-        is_nullable => 0
-    },
-    description => {
-        data_type   => 'VARCHAR',
-        size        => 100,
         is_nullable => 1
+    },
+    last_name => {
+        data_type   => 'VARCHAR',
+        size        => 25,
+        is_nullable => 1
+    },
+    created => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint(
-    name => [qw/name/]
+    user_id => [qw/user_id/]
 );
-__PACKAGE__->has_many(
-    map_users_roles => 'Mango::Schema::UsersRoles',
-    {'foreign.role_id' => 'self.id'}
+__PACKAGE__->belongs_to(user => 'Mango::Schema::User',
+    {'foreign.id' => 'self.user_id'}
 );
-__PACKAGE__->many_to_many(users => 'map_users_roles', 'user');
-
 1;
 __END__
 

@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Schema::Cart::Item;
+package Mango::Schema::Wishlist::Item;
 use strict;
 use warnings;
 
@@ -9,15 +9,15 @@ BEGIN {
 };
 
 __PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
-__PACKAGE__->table('cart_item');
-__PACKAGE__->source_name('CartItems');
+__PACKAGE__->table('wishlist_item');
+__PACKAGE__->source_name('WishlistItems');
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'UINT',
         is_auto_increment => 1,
         is_nullable       => 0
     },
-    cart_id => {
+    wishlist_id => {
         data_type         => 'UINT',
         is_auto_increment => 1,
         is_nullable       => 0,
@@ -34,12 +34,6 @@ __PACKAGE__->add_columns(
         is_nullable    => 0,
         default_value  => 1
     },
-    price => {
-        data_type      => 'DECIMAL',
-        size           => [9,2],
-        is_nullable    => 0,
-        default_value  => '0.00'
-    },
     description => {
         data_type     => 'VARCHAR',
         size          => 255,
@@ -52,8 +46,8 @@ __PACKAGE__->add_columns(
     }
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->belongs_to(cart => 'Mango::Schema::Cart',
-    {'foreign.id' => 'self.cart_id'}
+__PACKAGE__->belongs_to(wishlist => 'Mango::Schema::Wishlist',
+    {'foreign.id' => 'self.wishlist_id'}
 );
 
 1;

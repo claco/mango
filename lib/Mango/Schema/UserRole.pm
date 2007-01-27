@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Schema::UsersRoles;
+package Mango::Schema::UserRole;
 use strict;
 use warnings;
 
@@ -8,7 +8,7 @@ BEGIN {
 };
 
 __PACKAGE__->load_components(qw/Core/);
-__PACKAGE__->table('users_roles');
+__PACKAGE__->table('user_role');
 __PACKAGE__->source_name('UsersRoles');
 __PACKAGE__->add_columns(
     user_id => {
@@ -24,11 +24,11 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key(qw/user_id role_id/);
 __PACKAGE__->belongs_to(
-    user => 'Mango::Schema::Users',
+    user => 'Mango::Schema::User',
     {'foreign.id' => 'self.user_id'}
 );
 __PACKAGE__->belongs_to(
-    role => 'Mango::Schema::Roles',
+    role => 'Mango::Schema::Role',
     {'foreign.id' => 'self.role_id'}
 );
 
@@ -37,13 +37,13 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::UsersRoles - DBIC schema class for Users Role membership
+Mango::Schema::UserRole - DBIC schema class for Users Role membership
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('UUsersRoles')->search;
+    my $roles = $schema->resultset('UsersRoles')->search;
 
 =head1 DESCRIPTION
 
