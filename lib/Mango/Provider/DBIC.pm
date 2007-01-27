@@ -44,7 +44,7 @@ sub create {
     my ($self, $data) = @_;
     my $result = $self->resultset->create($data);
 
-    return self->result_class->new({
+    return $self->result_class->new({
         provider => $self,
         data => {$result->get_columns}
     });
