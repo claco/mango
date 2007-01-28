@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Web::View::TT;
+package Mango::Web::View::XHTML;
 use strict;
 use warnings;
 
@@ -12,15 +12,15 @@ __END__
 
 =head1 NAME
 
-Mango::Web::View::TT - Catalyst view class for Mango::Web
+Mango::Web::View::XHTML - Catalyst view class for Mango::Web
 
 =head1 SYNOPSIS
 
-    $c->view('TT');
+    $c->view('XHTML');
 
 =head1 DESCRIPTION
 
-Mango::Web::View::TT is the default Template Toolkit view for the Mango Web
+Mango::Web::View::XHTML is the default Template Toolkit view for the Mango Web
 application.
 
 =head1 AUTHOR

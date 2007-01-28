@@ -15,31 +15,26 @@ __PACKAGE__->source_name('Roles');
 sub add_users {
     my ($self, $role, @users) = @_;
 
-    if (Scalar::Util::blessed $role && $role->isa('Mango::Role')) {
+    if (Scalar::Util::blessed($role) && $role->isa('Mango::Role')) {
         $role = $role->id;
     };
 
-    $role = $self->resultset->single({
-        id => $role
-    });
-
     foreach my $user (@users) {
-        if (Scalar::Util::blessed $user && $user->isa('Mango::User')) {
+        if (Scalar::Util::blessed($user) && $user->isa('Mango::User')) {
             $user = $user->id;
         };
 
-        $role->add_to_map_users_roles({
-            user_id => $user
+        $self->schema->resultset('UsersRoles')->create({
+            user_id => $user,
+            role_id => $role
         });
     };
 };
 
-sub user_roles {
-    my ($self, $user) = @_;
-
-    if (Scalar::Util::blessed $user && $user->isa('Mango::User')) {
-        $user = $user->id;
-    };
+sub get_by_user {
+    my $self = shift;
+    my $user = shift;
+    my $id = Scalar::Util::blessed($user) ? $user->id : $user ;
 
     my @results = map {
         $self->result_class->new({
@@ -47,9 +42,9 @@ sub user_roles {
             data => {$_->get_columns}
         })
     } $self->resultset->search({
-        'map_users_roles.user_id' => $user
+        'map_user_role.user_id' => $id
     }, {
-        join => 'map_users_roles'
+        join => 'map_user_role'
     })->all;
 
     if (wantarray) {

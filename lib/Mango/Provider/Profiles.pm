@@ -9,21 +9,17 @@ BEGIN {
 __PACKAGE__->result_class('Mango::Profile');
 __PACKAGE__->source_name('Profiles');
 
-sub user_profile {
-    my ($self, $user) = @_;
+sub get_by_user {
+    my $self = shift;
+    my $object = shift;
+    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
 
-    if (Scalar::Util::blessed $user && $user->isa('Mango::User')) {
-        $user = $user->id;
-    };
-
-    my $result = $self->resultset->find_or_create({
-        'user_id' => $user
-    });
+    my $result = $self->resultset->find_or_create({user_id => $id}, @_);
 
     return $self->result_class->new({
         provider => $self,
         data => {$result->get_columns}
-    })
+    });
 };
 
 1;

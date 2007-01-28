@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider/;
+    use Handel::Constants qw/CART_TYPE_TEMP/;
 
     __PACKAGE__->mk_group_accessors('simple', qw/storage/);
 };
@@ -33,6 +34,18 @@ sub search {
     my $self = shift;
 
     return $self->storage->search(@_);
+};
+
+sub update {
+    my ($self, $object) = @_;
+
+    return $object->update;
+};
+
+sub delete {
+    my $self = shift;
+
+    return $self->storage->destroy(@_);
 };
 
 1;

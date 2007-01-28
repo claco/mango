@@ -6,6 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Class::Inspector ();
+    use Scalar::Util ();
     use Mango::I18N qw/translate/;
 
     __PACKAGE__->mk_group_accessors('component_class', qw/result_class/);
@@ -74,6 +75,22 @@ sub set_component_class {
     $self->set_inherited($field, $value);
 
     return;
+};
+
+sub get_by_id {
+    my $self = shift;
+    my $object = shift;
+    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+
+    return $self->search({id => $id}, @_)->first;
+};
+
+sub get_by_user {
+    my $self = shift;
+    my $object = shift;
+    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+
+    return $self->search({user_id => $id}, @_);
 };
 
 1;
