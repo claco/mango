@@ -118,6 +118,38 @@ sub populate_schema {
         [2,1],
     ]);
 
+    $schema->populate('Profiles', [
+        [ qw/id user_id first_name last_name created/ ],
+        [1,1,'Christopher', 'Laco', DateTime->now]
+    ]);
+
+    $schema->populate('Carts', [
+        [ qw/id user_id created/ ],
+        [1,1,DateTime->now],
+        [2,0,DateTime->now],
+    ]);
+
+    $schema->populate('CartItems', [
+        [ qw/id cart_id sku quantity price description created/ ],
+        [1,1,'ABC-123',1,1.11,'SKU1',DateTime->now],
+        [2,1,'DEF-345',2,2.22,'SKU2',DateTime->now],
+        [3,2,'GHI-678',3,3.33,'SKU3',DateTime->now],
+    ]);
+
+    $schema->populate('Wishlists', [
+        [ qw/id user_id name description created/ ],
+        [1,1,'Wishlist1','First Wishlist',DateTime->now],
+        [2,1,'Wishlist2','Second Wishlist',DateTime->now],
+        [3,2,'Wishlist3','Third Wishlist',DateTime->now],
+    ]);
+
+    $schema->populate('WishlistItems', [
+        [ qw/id wishlist_id sku quantity description created/ ],
+        [1,1,'WABC-123',1,'WSKU1',DateTime->now],
+        [2,1,'WDEF-345',2,'WSKU2',DateTime->now],
+        [3,2,'WGHI-678',3,'WSKU3',DateTime->now],
+    ]);
+
 };
 
 1;
