@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 57;
+        plan tests => 69;
     };
 
     use_ok('Mango::Provider::Users');
@@ -105,4 +105,37 @@ isa_ok($provider, 'Mango::Provider::Users');
     is($user->username, 'test2');
     is($user->password, 'password2');
     is($user->created, '2004-07-04T12:00:00');
+};
+
+
+## create
+{
+    my $current = DateTime->now;
+    my $user = $provider->create({
+        username => 'user1',
+        password => 'password1'
+    });
+    isa_ok($user, 'Mango::User');
+    ok($user->id);
+    is($user->username, 'user1');
+    is($user->password, 'password1');
+    cmp_ok($user->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 4);
+};
+
+
+## create w/DateTime
+{
+    my $current = DateTime->now;
+    my $user = $provider->create({
+        username => 'user2',
+        password => 'password2',
+        created  => DateTime->now
+    });
+    isa_ok($user, 'Mango::User');
+    ok($user->id);
+    is($user->username, 'user2');
+    is($user->password, 'password2');
+    cmp_ok($user->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 5);
 };
