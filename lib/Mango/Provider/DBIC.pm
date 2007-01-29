@@ -46,7 +46,7 @@ sub create {
 
     return $self->result_class->new({
         provider => $self,
-        data => {$result->get_columns}
+        data => {$result->get_inflated_columns}
     });
 };
 
@@ -59,7 +59,7 @@ sub search {
     my @results = map {
         $self->result_class->new({
             provider => $self,
-            data => {$_->get_columns}
+            data => {$_->get_inflated_columns}
         })
     } $self->resultset->search($filter, $options)->all;
 
