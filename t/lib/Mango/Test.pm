@@ -93,14 +93,7 @@ sub clear_schema {
 
 sub populate_schema {
     my ($self, $schema, %options) = @_;
-    my $date = DateTime->new(
-        year => 2004,
-        month => 7,
-        day => 4,
-        hour => 12,
-        minute => 0,
-        second => 0
-    );
+    my $date = '2004-07-04 12:00:00';
     
     if ($options{'clear'}) {
         $self->clear_schema($schema, %options);
