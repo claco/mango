@@ -51,12 +51,6 @@ __PACKAGE__->default_values({
     created => sub {DateTime->now}
 });
 
-sub get_inflated_columns {
-    my $self = shift;
-
-    return map {$_ => $self->$_} $self->columns;
-};
-
 1;
 __END__
 
