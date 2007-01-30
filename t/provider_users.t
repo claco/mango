@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 95;
+        plan tests => 96;
     };
 
     use_ok('Mango::Provider::Users');
+    use_ok('Mango::User');
 };
 
 my $schema = Mango::Test->init_schema;
