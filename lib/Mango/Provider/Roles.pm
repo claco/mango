@@ -39,7 +39,7 @@ sub get_by_user {
     my @results = map {
         $self->result_class->new({
             provider => $self,
-            data => {$_->get_columns}
+            data => {$_->get_inflated_columns}
         })
     } $self->resultset->search({
         'map_user_role.user_id' => $id
