@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 69;
+        plan tests => 95;
     };
 
     use_ok('Mango::Provider::Users');
@@ -116,7 +116,7 @@ isa_ok($provider, 'Mango::Provider::Users');
         password => 'password1'
     });
     isa_ok($user, 'Mango::User');
-    ok($user->id);
+    is($user->id, 4);
     is($user->username, 'user1');
     is($user->password, 'password1');
     cmp_ok($user->created->epoch, '>=', $current->epoch);
@@ -133,9 +133,120 @@ isa_ok($provider, 'Mango::Provider::Users');
         created  => DateTime->now
     });
     isa_ok($user, 'Mango::User');
-    ok($user->id);
+    is($user->id, 5);
     is($user->username, 'user2');
     is($user->password, 'password2');
     cmp_ok($user->created->epoch, '>=', $current->epoch);
     is($provider->search->count, 5);
+};
+
+
+## update directly
+{
+    my $date = DateTime->new(
+        year   => 1964,
+        month  => 10,
+        day    => 16,
+        hour   => 16,
+        minute => 12,
+        second => 47,
+        nanosecond => 500000000,
+        time_zone => 'Asia/Taipei',
+    );
+
+    my $user = Mango::User->new({
+        data => {
+            id => 5,
+            username => 'updateduser2',
+            password => 'updatedpassword2',
+            created  => $date
+        }
+    });
+
+    ok($provider->update($user));
+
+    my $updated = $provider->get_by_id(5);    
+    isa_ok($updated, 'Mango::User');
+    is($updated->id, 5);
+    is($updated->username, 'updateduser2');
+    is($updated->password, 'updatedpassword2');
+    cmp_ok($updated->created->epoch, '=', $date->epoch);
+    is($provider->search->count, 5);
+};
+
+
+## update on result
+{
+    my $date = DateTime->new(
+        year   => 1974,
+        month  => 11,
+        day    => 12,
+        hour   => 13,
+        minute => 11,
+        second => 42,
+        nanosecond => 400000000,
+        time_zone => 'Asia/Taipei',
+    );
+
+    my $user = Mango::User->new({
+        provider => $provider,
+        data => {
+            id => 4,
+            username => 'updateduser1',
+            password => 'updatedpassword1',
+            created  => $date
+        }
+    });
+    ok($user->update);
+
+    my $updated = $provider->get_by_id(4);
+    isa_ok($updated, 'Mango::User');
+    is($updated->id, 4);
+    is($updated->username, 'updateduser1');
+    is($updated->password, 'updatedpassword1');
+    cmp_ok($updated->created->epoch, '=', $date->epoch);
+    is($provider->search->count, 5);
+};
+
+
+## delete using id
+{
+    ok($provider->delete(5));
+    is($provider->search->count, 4);
+    is($provider->get_by_id(5), undef);
+};
+
+
+## delete using hash
+{
+    ok($provider->delete({id => 4}));
+    is($provider->search->count, 3);
+    is($provider->get_by_id(4), undef);
+};
+
+
+## delete using hash
+{
+    my $user = Mango::User->new({
+        data => {
+            id => 3
+        }
+    });
+    ok($provider->delete($user));
+    is($provider->search->count, 2);
+    is($provider->get_by_id(3), undef);
+};
+
+
+## delete on result object
+{
+    my $user = Mango::User->new({
+        provider => $provider,
+        data => {
+            id => 2
+        }
+    });
+    ok($user->delete);
+    is($provider->search->count, 1);
+    is($provider->get_by_id(2), undef);
 };
