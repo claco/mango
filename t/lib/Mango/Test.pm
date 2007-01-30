@@ -108,8 +108,8 @@ sub populate_schema {
 
     $schema->populate('Roles', [
         [ qw/id name description created/ ],
-        [1,'admin','Administrators', $date],
-        [2,'editor','Editors', $date],
+        [1,'role1','Role1', $date],
+        [2,'role2','Role2', $date],
     ]);
 
     $schema->populate('UsersRoles', [
