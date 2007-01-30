@@ -75,16 +75,16 @@ sub search {
 sub update {
     my ($self, $object) = @_;
 
-    return $self->resultset->update($object->data);
+    return $self->resultset->find($object->id)->update($object->data);
 };
 
 sub delete {
     my ($self, $filter) = @_;
 
-    if (ref $filter ne 'HASH') {
-        $filter = {id => $filter};
-    } elsif (Scalar::Util::blessed $filter) {
+    if (Scalar::Util::blessed $filter) {
         $filter = {id => $filter->id};
+    } elsif (ref $filter ne 'HASH') {
+        $filter = {id => $filter};
     };
 
     return $self->resultset->search($filter)->delete_all;
