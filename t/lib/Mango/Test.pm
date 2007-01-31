@@ -127,7 +127,7 @@ sub populate_schema {
     $schema->populate('Carts', [
         [ qw/id user_id created/ ],
         [1,1,$date],
-        [2,0,$date],
+        [2,undef,$date],
     ]);
 
     $schema->populate('CartItems', [
