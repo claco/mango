@@ -22,7 +22,7 @@ __PACKAGE__->add_columns(
         data_type      => 'UINT',
         is_nullable    => 1,
         is_foreign_key => 1,
-        default_value  => 0
+        default_value  => undef
     },
     created => {
         data_type     => 'DATETIME',
