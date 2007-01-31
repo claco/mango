@@ -24,12 +24,11 @@ __PACKAGE__->storage->setup({
     },
     validation_profile => undef
 });
+__PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
-sub search {
-    my $class = shift;
-
-    return $class->SUPER::search(@_);
+sub type {
+    
 };
 
 sub save {

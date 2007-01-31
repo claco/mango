@@ -27,7 +27,7 @@ sub set_column {
     return $self->data->{$column} = $value;
 };
 
-sub delete {
+sub destroy {
     my $self = shift;
 
     return $self->provider->delete($self);

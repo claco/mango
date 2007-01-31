@@ -5,7 +5,6 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider/;
-    use Handel::Constants qw/CART_TYPE_TEMP/;
 
     __PACKAGE__->mk_group_accessors('simple', qw/storage/);
 };
@@ -26,8 +25,9 @@ sub setup {
 
 sub create {
     my $self = shift;
+    my $data = shift || {};
 
-    return $self->storage->create(@_);
+    return $self->storage->create($data, @_);
 };
 
 sub search {
@@ -44,8 +44,15 @@ sub update {
 
 sub delete {
     my $self = shift;
+    my $filter = shift;
 
-    return $self->storage->destroy(@_);
+    if (Scalar::Util::blessed $filter) {
+        $filter = {id => $filter->id};
+    } elsif (ref $filter ne 'HASH') {
+        $filter = {id => $filter};
+    };
+
+    return $self->storage->destroy($filter, @_);
 };
 
 1;

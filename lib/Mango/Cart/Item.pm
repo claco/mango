@@ -21,6 +21,7 @@ __PACKAGE__->storage->setup({
         created      => sub {DateTime->now}
     }
 });
+__PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 =head1 NAME
