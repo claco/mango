@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 96;
+        plan tests => 103;
     };
 
     use_ok('Mango::Provider::Users');
@@ -50,14 +50,33 @@ isa_ok($provider, 'Mango::Provider::Users');
 };
 
 
+## get by id for nothing
+{
+    my $user = $provider->get_by_id(100);
+    is($user, undef);
+};
+
+
 ## get by user (mapped to get_by_id for this provider)
 {
-    my $user = $provider->get_by_user(2);
+    my $users = $provider->get_by_user(2);
+    isa_ok($users, 'Mango::Iterator');
+    is($users->count, 1);
+
+    my $user = $users->next;
     isa_ok($user, 'Mango::User');
     is($user->id, 2);
     is($user->username, 'test2');
     is($user->password, 'password2');
     is($user->created, '2004-07-04T12:00:00');
+};
+
+
+## get by user for nothing
+{
+    my $users = $provider->get_by_user(100);
+    isa_ok($users, 'Mango::Iterator');
+    is($users->count, 0);
 };
 
 
@@ -106,6 +125,14 @@ isa_ok($provider, 'Mango::Provider::Users');
     is($user->username, 'test2');
     is($user->password, 'password2');
     is($user->created, '2004-07-04T12:00:00');
+};
+
+
+## search for nothing
+{
+    my $users = $provider->search({username => 'foooz'});
+    isa_ok($users, 'Mango::Iterator');
+    is($users->count, 0);
 };
 
 
@@ -226,7 +253,7 @@ isa_ok($provider, 'Mango::Provider::Users');
 };
 
 
-## delete using hash
+## delete using object
 {
     my $user = Mango::User->new({
         data => {
@@ -247,7 +274,7 @@ isa_ok($provider, 'Mango::Provider::Users');
             id => 2
         }
     });
-    ok($user->delete);
+    ok($user->destroy);
     is($provider->search->count, 1);
     is($provider->get_by_id(2), undef);
 };

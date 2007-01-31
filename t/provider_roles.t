@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 99;
+        plan tests => 104;
     };
 
     use_ok('Mango::Provider::Roles');
@@ -51,6 +51,13 @@ isa_ok($provider, 'Mango::Provider::Roles');
 };
 
 
+## get by id for nothing
+{
+    my $role = $provider->get_by_id(100);
+    is($role, undef);
+};
+
+
 ## get by user
 {
     my @roles = $provider->get_by_user(2);
@@ -86,6 +93,14 @@ isa_ok($provider, 'Mango::Provider::Roles');
     is($role->name, 'role2');
     is($role->description, 'Role2');
     is($role->created, '2004-07-04T12:00:00');
+};
+
+
+## get by user for nothing
+{
+    my $roles = $provider->get_by_user(100);
+    isa_ok($roles, 'Mango::Iterator');
+    is($roles->count, 0);
 };
 
 
@@ -134,6 +149,14 @@ isa_ok($provider, 'Mango::Provider::Roles');
     is($role->name, 'role2');
     is($role->description, 'Role2');
     is($role->created, '2004-07-04T12:00:00');
+};
+
+
+## search for nothing
+{
+    my $roles = $provider->search({name => 'foooz'});
+    isa_ok($roles, 'Mango::Iterator');
+    is($roles->count, 0);
 };
 
 
@@ -254,7 +277,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 };
 
 
-## delete using hash
+## delete using object
 {
     my $role = Mango::Role->new({
         data => {
@@ -275,7 +298,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
             id => 1
         }
     });
-    ok($role->delete);
+    ok($role->destroy);
     is($provider->search->count, 0);
     is($provider->get_by_id(1), undef);
 };
