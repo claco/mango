@@ -7,6 +7,7 @@ BEGIN {
     use base qw/Mango::Provider/;
     use Scalar::Util ();
     use Mango::Iterator;
+    use Mango::I18N qw/translate/;
 
     __PACKAGE__->mk_group_accessors('component_class', qw/schema_class/);
     __PACKAGE__->mk_group_accessors('inherited', qw/
@@ -28,6 +29,11 @@ sub resultset {
     my $self = shift;
 
     if (!$self->_resultset) {
+        if (!$self->source_name) {
+            die translate('NO_SCHEMA_SOURCE');
+        };
+
+
         $self->_resultset($self->schema->resultset($self->source_name));
     };
 
@@ -36,6 +42,8 @@ sub resultset {
 
 sub schema {
     my $self = shift;
+
+    die translate('NO_SCHEMA_CLASS') unless $self->schema_class;
 
     if (!$self->_schema) {
         $self->_schema(
