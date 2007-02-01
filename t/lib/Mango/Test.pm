@@ -121,7 +121,8 @@ sub populate_schema {
 
     $schema->populate('Profiles', [
         [ qw/id user_id first_name last_name created/ ],
-        [1,1,'Christopher', 'Laco', $date]
+        [1,1,'First1', 'Last1', $date],
+        [2,2,'First2', 'Last2', $date],
     ]);
 
     $schema->populate('Carts', [
