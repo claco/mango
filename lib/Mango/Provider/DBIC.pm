@@ -6,8 +6,9 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider/;
     use Scalar::Util ();
-    use Mango::Iterator;
-    use Mango::I18N qw/translate/;
+    use DateTime ();
+    use Mango::Iterator ();
+    use Mango::Exception qw/:try/;
 
     __PACKAGE__->mk_group_accessors('component_class', qw/schema_class/);
     __PACKAGE__->mk_group_accessors('inherited', qw/
@@ -30,11 +31,14 @@ sub resultset {
 
     if (!$self->_resultset) {
         if (!$self->source_name) {
-            die translate('NO_SCHEMA_SOURCE');
+            throw Mango::Exception('SCHEMA_SOURCE_NOT_SPECIFIED');
         };
 
-
-        $self->_resultset($self->schema->resultset($self->source_name));
+        try {
+            $self->_resultset($self->schema->resultset($self->source_name));
+        } except {
+            throw Mango::Exception('SCHEMA_SOURCE_NOT_FOUND', $self->source_name);
+        };
     };
 
     return $self->_resultset;
@@ -43,7 +47,9 @@ sub resultset {
 sub schema {
     my $self = shift;
 
-    die translate('NO_SCHEMA_CLASS') unless $self->schema_class;
+    if (!$self->schema_class) {
+        throw Mango::Exception('SCHEMA_CLASS_NOT_SPECIFIED');
+    };
 
     if (!$self->_schema) {
         $self->_schema(
@@ -89,7 +95,11 @@ sub search {
 sub update {
     my ($self, $object) = @_;
 
-    return $self->resultset->find($object->id)->update($object->data);
+    $object->updated(DateTime->now);
+
+    return $self->resultset->find($object->id)->update(
+        {%{$object->data}}
+    );
 };
 
 sub delete {

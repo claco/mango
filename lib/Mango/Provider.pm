@@ -7,7 +7,8 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Class::Inspector ();
     use Scalar::Util ();
-    use Mango::I18N qw/translate/;
+    use DateTime ();
+    use Mango::Exception ();
 
     __PACKAGE__->mk_group_accessors('component_class', qw/result_class/);
 };
@@ -34,25 +35,27 @@ sub setup {
 sub create {
     my ($self, $data) = @_;
 
-    die translate('VIRTUAL_METHOD');
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
 sub search {
     my ($self, $filter, $options) = @_;
 
-    die translate('VIRTUAL_METHOD');
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
 sub update {
     my ($self, $object) = @_;
 
-    die translate('VIRTUAL_METHOD');
+    $object->updated(DateTime->now);
+
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
 sub delete {
     my ($self, $filter) = @_;
 
-    die translate('VIRTUAL_METHOD');
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
 sub get_component_class {
@@ -68,7 +71,7 @@ sub set_component_class {
         if (!Class::Inspector->loaded($value)) {
             eval "use $value"; ## no critic
 
-            die translate('COMPCLASS_NOT_LOADED', $field, $value) if $@;
+            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value) if $@;
         };
     };
 
