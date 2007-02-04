@@ -8,7 +8,13 @@ BEGIN {
     use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/+Handel::Components::DefaultValues InflateColumn::DateTime Core/);
+__PACKAGE__->load_components(qw/
+    +Handel::Components::DefaultValues
+    +Handel::Components::Constraints
+    +Handel::Components::Validation
+    InflateColumn::DateTime
+    Core
+/);
 __PACKAGE__->table('user');
 __PACKAGE__->source_name('Users');
 __PACKAGE__->add_columns(
@@ -30,6 +36,10 @@ __PACKAGE__->add_columns(
     created => {
         data_type     => 'DATETIME',
         is_nullable   => 0
+    },
+    updated => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
@@ -48,7 +58,8 @@ __PACKAGE__->has_many(wishlists => 'Mango::Schema::Wishlist',
     {'foreign.user_id' => 'self.id'}
 );
 __PACKAGE__->default_values({
-    created => sub {DateTime->now}
+    created => sub {DateTime->now},
+    updated => sub {DateTime->now}
 });
 
 1;

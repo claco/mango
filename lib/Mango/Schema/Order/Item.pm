@@ -1,11 +1,10 @@
 # $Id$
-package Mango::Schema::Wishlist::Item;
+package Mango::Schema::Order::Item;
 use strict;
 use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
-    use DateTime ();
 };
 
 __PACKAGE__->load_components(qw/
@@ -15,19 +14,18 @@ __PACKAGE__->load_components(qw/
     InflateColumn::DateTime
     Core
 /);
-__PACKAGE__->table('wishlist_item');
-__PACKAGE__->source_name('WishlistItems');
+__PACKAGE__->table('order_item');
+__PACKAGE__->source_name('OrderItems');
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'UINT',
         is_auto_increment => 1,
-        is_nullable       => 0
-    },
-    wishlist_id => {
-        data_type         => 'UINT',
-        is_auto_increment => 1,
         is_nullable       => 0,
-        is_foreign_key    => 1
+    },
+    order_id => {
+        data_type      => 'UINT',
+        is_nullable    => 0,
+        is_foreign_key => 1
     },
     sku => {
         data_type      => 'VARCHAR',
@@ -39,6 +37,18 @@ __PACKAGE__->add_columns(
         size           => 3,
         is_nullable    => 0,
         default_value  => 1
+    },
+    price => {
+        data_type      => 'DECIMAL',
+        size           => [9,2],
+        is_nullable    => 0,
+        default_value  => '0.00'
+    },
+    total => {
+        data_type      => 'DECIMAL',
+        size           => [9,2],
+        is_nullable    => 0,
+        default_value  => '0.00'
     },
     description => {
         data_type     => 'VARCHAR',
@@ -56,8 +66,8 @@ __PACKAGE__->add_columns(
     }
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->belongs_to(wishlist => 'Mango::Schema::Wishlist',
-    {'foreign.id' => 'self.wishlist_id'}
+__PACKAGE__->belongs_to(order => 'Mango::Schema::Order',
+    {'foreign.id' => 'self.order_id'}
 );
 __PACKAGE__->default_values({
     created => sub {DateTime->now},

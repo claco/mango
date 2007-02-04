@@ -5,10 +5,15 @@ use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
-    use DateTime ();
 };
 
-__PACKAGE__->load_components(qw/InflateColumn::DateTime Core/);
+__PACKAGE__->load_components(qw/
+    +Handel::Components::DefaultValues
+    +Handel::Components::Constraints
+    +Handel::Components::Validation
+    InflateColumn::DateTime
+    Core
+/);
 __PACKAGE__->table('cart_item');
 __PACKAGE__->source_name('CartItems');
 __PACKAGE__->add_columns(
@@ -19,7 +24,6 @@ __PACKAGE__->add_columns(
     },
     cart_id => {
         data_type         => 'UINT',
-        is_auto_increment => 1,
         is_nullable       => 0,
         is_foreign_key    => 1
     },
@@ -49,12 +53,20 @@ __PACKAGE__->add_columns(
     created => {
         data_type     => 'DATETIME',
         is_nullable   => 0
+    },
+    updated => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->belongs_to(cart => 'Mango::Schema::Cart',
     {'foreign.id' => 'self.cart_id'}
 );
+__PACKAGE__->default_values({
+    created => sub {DateTime->now},
+    updated => sub {DateTime->now}
+});
 
 1;
 __END__
