@@ -100,16 +100,16 @@ sub populate_schema {
     };
 
     $schema->populate('Users', [
-        [ qw/id username password created/ ],
-        [1,'test1','password1', $date],
-        [2,'test2','password2', $date],
-        [3,'test3','password3', $date],
+        [ qw/id username password created updated/ ],
+        [1,'test1','password1',$date,$date],
+        [2,'test2','password2',$date,$date],
+        [3,'test3','password3',$date,$date],
     ]);
 
     $schema->populate('Roles', [
-        [ qw/id name description created/ ],
-        [1,'role1','Role1', $date],
-        [2,'role2','Role2', $date],
+        [ qw/id name description created updated/ ],
+        [1,'role1','Role1',$date,$date],
+        [2,'role2','Role2',$date,$date],
     ]);
 
     $schema->populate('UsersRoles', [
@@ -120,38 +120,53 @@ sub populate_schema {
     ]);
 
     $schema->populate('Profiles', [
-        [ qw/id user_id first_name last_name created/ ],
-        [1,1,'First1', 'Last1', $date],
-        [2,2,'First2', 'Last2', $date],
+        [ qw/id user_id first_name last_name created updated/ ],
+        [1,1,'First1', 'Last1',$date,$date],
+        [2,2,'First2', 'Last2',$date,$date],
     ]);
 
     $schema->populate('Carts', [
-        [ qw/id user_id created/ ],
-        [1,1,$date],
-        [2,undef,$date],
+        [ qw/id user_id created updated/ ],
+        [1,1,$date,$date],
+        [2,undef,$date,$date],
     ]);
 
     $schema->populate('CartItems', [
-        [ qw/id cart_id sku quantity price description created/ ],
-        [1,1,'ABC-123',1,1.11,'SKU1',$date],
-        [2,1,'DEF-345',2,2.22,'SKU2',$date],
-        [3,2,'GHI-678',3,3.33,'SKU3',$date],
+        [ qw/id cart_id sku quantity price description created updated/ ],
+        [1,1,'ABC-123',1,1.11,'SKU1',$date,$date],
+        [2,1,'DEF-345',2,2.22,'SKU2',$date,$date],
+        [3,2,'GHI-678',3,3.33,'SKU3',$date,$date],
     ]);
 
     $schema->populate('Wishlists', [
-        [ qw/id user_id name description created/ ],
-        [1,1,'Wishlist1','First Wishlist',$date],
-        [2,1,'Wishlist2','Second Wishlist',$date],
-        [3,2,'Wishlist3','Third Wishlist',$date],
+        [ qw/id user_id name description created updated/ ],
+        [1,1,'Wishlist1','First Wishlist',$date,$date],
+        [2,1,'Wishlist2','Second Wishlist',$date,$date],
+        [3,2,'Wishlist3','Third Wishlist',$date,$date],
     ]);
 
     $schema->populate('WishlistItems', [
-        [ qw/id wishlist_id sku quantity description created/ ],
-        [1,1,'WABC-123',1,'WSKU1',$date],
-        [2,1,'WDEF-345',2,'WSKU2',$date],
-        [3,2,'WGHI-678',3,'WSKU3',$date],
+        [ qw/id wishlist_id sku quantity description created updated/ ],
+        [1,1,'WABC-123',1,'WSKU1',$date,$date],
+        [2,1,'WDEF-345',2,'WSKU2',$date,$date],
+        [3,2,'WGHI-678',3,'WSKU3',$date,$date],
     ]);
 
+    $schema->populate('Orders', [
+        [ qw/id user_id type billtofirstname billtolastname billtoaddress1 billtoaddress2 billtoaddress3 billtocity billtostate billtozip billtocountry billtodayphone billtonightphone billtofax billtoemail comments created handling number shipmethod shipping shiptosameasbillto shiptofirstname shiptolastname shiptoaddress1 shiptoaddress2 shiptoaddress3 shiptocity shiptostate shiptozip shiptocountry shiptodayphone shiptonightphone shiptofax shiptoemail subtotal total updated tax/ ],
+        [1,1,0,'Christopher','Laco','BillToAddress1','BillToAddress2','BillToAddress3','BillToCity','BillToState','BillToZip','BillToCountry','1-111-111-1111','2-222-222-2222','3-333-333-3333','mendlefarg@gmail.com','Comments',$date,8.95,'O123456789','UPS Ground',23.95,0,'Christopher','Laco','ShipToAddress1','ShipToAddress2','ShipToAddress3','ShipToCity','ShipToState','ShipToZip','ShipToCountry','4-444-444-4444','5-555-555-5555','6-666-666-6666','chrislaco@hotmail.com',5.55,37.95,$date, 6.66],
+        [2,1,1,'Christopher','Laco','BillToAddress1','BillToAddress2','BillToAddress3','BillToCity','BillToState','BillToZip','BillToCountry','1-111-111-1111','2-222-222-2222','3-333-333-3333','mendlefarg@gmail.com','Comments',$date,8.95,'O123456789','UPS Ground',23.95,0,'Christopher','Laco','ShipToAddress1','ShipToAddress2','ShipToAddress3','ShipToCity','ShipToState','ShipToZip','ShipToCountry','4-444-444-4444','5-555-555-5555','6-666-666-6666','chrislaco@hotmail.com',5.55,37.95,$date, 6.66],
+        [3,2,1,'Christopher','Laco','BillToAddress1','BillToAddress2','BillToAddress3','BillToCity','BillToState','BillToZip','BillToCountry','1-111-111-1111','2-222-222-2222','3-333-333-3333','mendlefarg@gmail.com','Comments',$date,8.95,'O123456789','UPS Ground',23.95,0,'Christopher','Laco','ShipToAddress1','ShipToAddress2','ShipToAddress3','ShipToCity','ShipToState','ShipToZip','ShipToCountry','4-444-444-4444','5-555-555-5555','6-666-666-6666','chrislaco@hotmail.com',5.55,37.95,$date, 6.66]
+    ]);
+
+    $schema->populate('OrderItems', [
+        [ qw/id order_id sku quantity price total description created updated/ ],
+        [1,1,'SKU1111',1,1.11,0,'Line Item SKU 1', $date,$date],
+        [2,1,'SKU2222',2,2.22,0,'Line Item SKU 2', $date,$date],
+        [3,2,'SKU3333',3,3.33,0,'Line Item SKU 3', $date,$date],
+        [4,3,'SKU4444',4,4.44,0,'Line Item SKU 4', $date,$date],
+        [5,3,'SKU1111',5,5.55,0,'Line Item SKU 5', $date,$date]
+    ]);
 };
 
 1;
