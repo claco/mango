@@ -6,9 +6,10 @@ use warnings;
 BEGIN {
     use base qw/Handel::Cart::Item/;
     use Handel::Constraints ();
-    use DateTime;
+    use DateTime ();
 };
 __PACKAGE__->storage->setup({
+    autoupdate       => 0,
     schema_class     => 'Mango::Schema',
     schema_source    => 'WishlistItems',
     constraints      => {
@@ -16,11 +17,20 @@ __PACKAGE__->storage->setup({
     },
     default_values   => {
         quantity     => 1,
-        created      => sub {DateTime->now}
+        created      => sub {DateTime->now},
+        updated      => sub {DateTime->now}
     }
 });
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
+
+sub update {
+    my $self = shift;
+
+    $self->updated(DateTime->now);
+  
+    return $self->SUPER::update(@_);
+};
 
 =head1 NAME
 

@@ -13,11 +13,13 @@ BEGIN {
 ## correct way. ;-)
 __PACKAGE__->item_class('Mango::Cart::Item');
 __PACKAGE__->storage->setup({
+    autoupdate         => 0,
     schema_class       => 'Mango::Schema',
     schema_source      => 'Carts',
     constraints        => undef,
     default_values     => {
-        created        => sub {DateTime->now}
+        created        => sub {DateTime->now},
+        updated        => sub {DateTime->now}
     },
     validation_profile => undef
 });
@@ -30,6 +32,14 @@ sub type {
 
 sub save {
     
+};
+
+sub update {
+    my $self = shift;
+
+    $self->updated(DateTime->now);
+  
+    return $self->SUPER::update(@_);
 };
 
 =head1 NAME
