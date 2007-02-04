@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Schema::Role;
+package Mango::Schema::ProductAttributes;
 use strict;
 use warnings;
 
@@ -15,8 +15,8 @@ __PACKAGE__->load_components(qw/
     InflateColumn::DateTime
     Core
 /);
-__PACKAGE__->table('role');
-__PACKAGE__->source_name('Roles');
+__PACKAGE__->table('product_attribute');
+__PACKAGE__->source_name('ProductAttributes');
 __PACKAGE__->add_columns(
     id => {
         data_type         => 'INT',
@@ -24,38 +24,30 @@ __PACKAGE__->add_columns(
         is_nullable       => 0,
         extras            => {unsigned => 1}
     },
+    product_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
+    },
     name => {
         data_type   => 'VARCHAR',
         size        => 25,
         is_nullable => 0
     },
-    description => {
+    value => {
         data_type   => 'VARCHAR',
-        size        => 100,
-        is_nullable => 1
-    },
-    created => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0
-    },
-    updated => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0
+        size        => 255,
+        is_nullable => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint(
-    name => [qw/name/]
+    product_attribute_name => [qw/product_id name/]
 );
-__PACKAGE__->has_many(
-    map_user_role => 'Mango::Schema::UserRole',
-    {'foreign.role_id' => 'self.id'}
+__PACKAGE__->belongs_to(product => 'Mango::Schema::Product',
+    {'foreign.id' => 'self.product_id'}
 );
-__PACKAGE__->many_to_many(users => 'map_user_role', 'user');
-__PACKAGE__->default_values({
-    created => sub {DateTime->now},
-    updated => sub {DateTime->now}
-});
 
 1;
 __END__

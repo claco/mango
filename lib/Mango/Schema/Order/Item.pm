@@ -18,14 +18,16 @@ __PACKAGE__->table('order_item');
 __PACKAGE__->source_name('OrderItems');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
     order_id => {
-        data_type      => 'UINT',
+        data_type      => 'INT',
         is_nullable    => 0,
-        is_foreign_key => 1
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
     sku => {
         data_type      => 'VARCHAR',
@@ -36,7 +38,8 @@ __PACKAGE__->add_columns(
         data_type      => 'TINYINT',
         size           => 3,
         is_nullable    => 0,
-        default_value  => 1
+        default_value  => 1,
+        extras         => {unsigned => 1}
     },
     price => {
         data_type      => 'DECIMAL',

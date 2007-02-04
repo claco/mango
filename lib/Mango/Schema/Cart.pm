@@ -19,15 +19,17 @@ __PACKAGE__->table('cart');
 __PACKAGE__->source_name('Carts');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
     user_id => {
-        data_type      => 'UINT',
+        data_type      => 'INT',
         is_nullable    => 1,
         is_foreign_key => 1,
-        default_value  => undef
+        default_value  => undef,
+        extras         => {unsigned => 1}
     },
     created => {
         data_type     => 'DATETIME',

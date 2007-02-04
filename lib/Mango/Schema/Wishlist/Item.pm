@@ -19,15 +19,17 @@ __PACKAGE__->table('wishlist_item');
 __PACKAGE__->source_name('WishlistItems');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
-        is_auto_increment => 1,
-        is_nullable       => 0
-    },
-    wishlist_id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
-        is_foreign_key    => 1
+        extras            => {unsigned => 1}
+    },
+    wishlist_id => {
+        data_type         => 'INT',
+        is_auto_increment => 1,
+        is_nullable       => 0,
+        is_foreign_key    => 1,
+        extras            => {unsigned => 1}
     },
     sku => {
         data_type      => 'VARCHAR',
@@ -38,7 +40,8 @@ __PACKAGE__->add_columns(
         data_type      => 'TINYINT',
         size           => 3,
         is_nullable    => 0,
-        default_value  => 1
+        default_value  => 1,
+        extras         => {unsigned => 1}
     },
     description => {
         data_type     => 'VARCHAR',

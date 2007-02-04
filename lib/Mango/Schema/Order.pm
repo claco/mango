@@ -18,20 +18,23 @@ __PACKAGE__->table('orders');
 __PACKAGE__->source_name('Orders');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
     user_id => {
-        data_type      => 'UINT',
+        data_type      => 'INT',
         is_nullable    => 0,
-        is_foreign_key => 1
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
     type => {
         data_type     => 'TINYINT',
         size          => 3,
         is_nullable   => 0,
-        default_value => 0
+        default_value => 0,
+        extras        => {unsigned => 1}
     },
     number => {
         data_type     => 'VARCHAR',

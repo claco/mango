@@ -19,9 +19,10 @@ __PACKAGE__->table('user');
 __PACKAGE__->source_name('Users');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
     username => {
         data_type   => 'VARCHAR',
@@ -34,12 +35,12 @@ __PACKAGE__->add_columns(
         is_nullable => 0
     },
     created => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0
+        data_type   => 'DATETIME',
+        is_nullable => 0
     },
     updated => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0
+        data_type   => 'DATETIME',
+        is_nullable => 0
     }
 );
 __PACKAGE__->set_primary_key('id');

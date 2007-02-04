@@ -19,14 +19,16 @@ __PACKAGE__->table('wishlist');
 __PACKAGE__->source_name('Wishlists');
 __PACKAGE__->add_columns(
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
     user_id => {
-        data_type      => 'UINT',
+        data_type      => 'INT',
         is_nullable    => 0,
-        is_foreign_key => 1
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
     name => {
         data_type     => 'VARCHAR',
