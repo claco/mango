@@ -161,11 +161,18 @@ sub populate_schema {
 
     $schema->populate('OrderItems', [
         [ qw/id order_id sku quantity price total description created updated/ ],
-        [1,1,'SKU1111',1,1.11,0,'Line Item SKU 1', $date,$date],
-        [2,1,'SKU2222',2,2.22,0,'Line Item SKU 2', $date,$date],
-        [3,2,'SKU3333',3,3.33,0,'Line Item SKU 3', $date,$date],
-        [4,3,'SKU4444',4,4.44,0,'Line Item SKU 4', $date,$date],
-        [5,3,'SKU1111',5,5.55,0,'Line Item SKU 5', $date,$date]
+        [1,1,'SKU1111',1,1.11,0,'Line Item SKU 1',$date,$date],
+        [2,1,'SKU2222',2,2.22,0,'Line Item SKU 2',$date,$date],
+        [3,2,'SKU3333',3,3.33,0,'Line Item SKU 3',$date,$date],
+        [4,3,'SKU4444',4,4.44,0,'Line Item SKU 4',$date,$date],
+        [5,3,'SKU1111',5,5.55,0,'Line Item SKU 5',$date,$date]
+    ]);
+
+    $schema->populate('Products', [
+        [ qw/id sku name description price created updated/ ],
+        [1,'SKU1111','SKU 1','My SKU 1',1.11,$date,$date],
+        [2,'SKU2222','SKU 2','My SKU 2',2.22,$date,$date],
+        [3,'SKU3333','SKU 3','My SKU 3',3.33,$date,$date],
     ]);
 };
 
