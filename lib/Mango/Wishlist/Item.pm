@@ -10,6 +10,7 @@ BEGIN {
 };
 __PACKAGE__->storage->setup({
     autoupdate       => 0,
+    currency_class   => 'Mango::Currency',
     schema_class     => 'Mango::Schema',
     schema_source    => 'WishlistItems',
     constraints      => {

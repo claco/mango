@@ -16,6 +16,7 @@ BEGIN {
 __PACKAGE__->item_class('Mango::Order::Item');
 __PACKAGE__->storage->setup({
     autoupdate         => 0,
+    currency_class     => 'Mango::Currency',
     schema_class       => 'Mango::Schema',
     schema_source      => 'Orders',
     currency_columns => [qw/shipping handling subtotal tax total/],
