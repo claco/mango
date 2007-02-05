@@ -5,9 +5,11 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
+
+    __PACKAGE__->mk_group_accessors('simple', qw/provider data/);
+    __PACKAGE__->mk_group_accessors('column', qw/id created updated/);
 };
-__PACKAGE__->mk_group_accessors('simple', qw/provider data/);
-__PACKAGE__->mk_group_accessors('column', qw/id user_id created updated/);
+
 
 sub new {
     my ($class, $args) = @_;
