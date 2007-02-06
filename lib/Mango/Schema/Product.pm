@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
+    use Mango::Currency ();
     use DateTime ();
 };
 
@@ -62,6 +63,10 @@ __PACKAGE__->has_many(attributes => 'Mango::Schema::ProductAttributes', {'foreig
 __PACKAGE__->default_values({
     created => sub {DateTime->now},
     updated => sub {DateTime->now}
+});
+__PACKAGE__->inflate_column('price', {
+    inflate => sub {Mango::Currency->new(shift);},
+    deflate => sub {shift->value;}
 });
 
 1;
