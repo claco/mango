@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/sku name description price/);
+    __PACKAGE__->mk_group_accessors('column', qw/sku name description price attributes/);
 };
 
 1;
