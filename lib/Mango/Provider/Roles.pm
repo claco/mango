@@ -41,11 +41,9 @@ sub get_by_user {
             provider => $self,
             data => {$_->get_inflated_columns}
         })
-    } $self->resultset->search({
-        'map_user_role.user_id' => $id
-    }, {
-        join => 'map_user_role'
-    })->all;
+    } $self->schema->resultset('UsersRoles')->search({
+        'user_id' => $id
+    })->related_resultset('role')->search->all;
 
     if (wantarray) {
         return @results;

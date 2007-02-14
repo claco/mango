@@ -1,5 +1,5 @@
 # $Id$
-package Mango::Schema::ProductAttributes;
+package Mango::Schema::ProductAttribute;
 use strict;
 use warnings;
 

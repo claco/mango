@@ -10,15 +10,27 @@ BEGIN {
 };
 
 sub add_attribute {
-    my ($self, $data) = @_;
+    my $self = shift;
 
-    return $self->provider->create_attribute($self, $data);
+    return $self->provider->create_attribute($self, @_);
 };
 
 sub attributes {
     my $self = shift;
 
     return $self->provider->search_attributes($self, @_);
+};
+
+sub add_tags {
+    my $self = shift;
+
+    return $self->provider->create_tags($self, @_);
+};
+
+sub tags {
+    my $self = shift;
+
+    return $self->provider->search_tags($self, @_);
 };
 
 1;

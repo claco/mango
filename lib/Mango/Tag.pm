@@ -1,12 +1,12 @@
 # $Id$
-package Mango::Attribute;
+package Mango::Tag;
 use strict;
 use warnings;
 
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/name value/);
+    __PACKAGE__->mk_group_accessors('column', qw/name/);
 };
 
 sub delete {
@@ -26,4 +26,3 @@ sub update {
 };
 
 1;
-__END__
