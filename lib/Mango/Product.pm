@@ -10,9 +10,13 @@ BEGIN {
 };
 
 sub add_attribute {
+    return shift->add_attributes(@_);
+};
+
+sub add_attributes {
     my $self = shift;
 
-    return $self->provider->create_attribute($self, @_);
+    return $self->provider->add_attributes($self, @_);
 };
 
 sub attributes {
@@ -21,10 +25,20 @@ sub attributes {
     return $self->provider->search_attributes($self, @_);
 };
 
+sub delete_attributes {
+    my $self = shift;
+
+    return $self->provider->delete_attributes($self, @_);
+};
+
+sub add_tag {
+    return shift->add_tags(@_);
+};
+
 sub add_tags {
     my $self = shift;
 
-    return $self->provider->create_tags($self, @_);
+    return $self->provider->add_tags($self, @_);
 };
 
 sub tags {

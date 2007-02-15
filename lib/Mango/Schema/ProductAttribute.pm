@@ -39,6 +39,14 @@ __PACKAGE__->add_columns(
         data_type   => 'VARCHAR',
         size        => 255,
         is_nullable => 0
+    },
+    created => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
+    },
+    updated => {
+        data_type     => 'DATETIME',
+        is_nullable   => 0
     }
 );
 __PACKAGE__->set_primary_key('id');
@@ -48,6 +56,10 @@ __PACKAGE__->add_unique_constraint(
 __PACKAGE__->belongs_to(product => 'Mango::Schema::Product',
     {'foreign.id' => 'self.product_id'}
 );
+__PACKAGE__->default_values({
+    created => sub {DateTime->now},
+    updated => sub {DateTime->now}
+});
 
 1;
 __END__

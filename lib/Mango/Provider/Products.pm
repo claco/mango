@@ -14,7 +14,7 @@ BEGIN {
 __PACKAGE__->attribute_class('Mango::Attribute');
 __PACKAGE__->attribute_source_name('ProductAttributes');
 __PACKAGE__->tag_class('Mango::Tag');
-__PACKAGE__->tag_source_name('ProductsTags');
+__PACKAGE__->tag_source_name('Tags');
 __PACKAGE__->result_class('Mango::Product');
 __PACKAGE__->source_name('Products');
 
@@ -40,6 +40,7 @@ sub get_by_tags {
         })
     } $self->resultset->search(
         [map({'tag.name' => $_}, @tags)], {
+            distinct => 1,
             join => {'map_product_tag' => 'tag'}
         }
     );
@@ -53,16 +54,37 @@ sub get_by_tags {
     };
 };
 
-sub create_attribute {
-    my ($self, $product, $data) = @_;
-    my $resultset = $self->schema->resultset($self->attribute_source_name);
+sub create {
+    my ($self, $data) = (shift, shift);
+    my $attributes = delete $data->{'attributes'};
+    my $tags = delete $data->{'tags'};
+    my $product = $self->SUPER::create($data, @_);
 
-    if (Scalar::Util::blessed $data && $data->isa('Mango::Attribute')) {
-        $data = {$data->data};
+    if ($attributes) {
+        $product->add_attributes(@{$attributes});
     };
-    $data->{'product_id'} = $product->id;
+    if ($tags) {
+        $product->add_tags(@{$tags});
+    };
 
-    return $resultset->create($data);
+    return $product;
+};
+
+sub add_attributes {
+    my ($self, $product, @data) = @_;
+    my $resultset = $self->schema->resultset($self->attribute_source_name);
+    my @added;
+
+    foreach my $attribute (@data) {
+        if (Scalar::Util::blessed $attribute && $attribute->isa('Mango::Attribute')) {
+            $attribute = {%{$attribute->data}};
+        };
+        $attribute->{'product_id'} = $product->id;
+
+        push @added, $resultset->update_or_create($attribute, {key => 'product_attribute_name'});
+    };
+
+    return scalar @added;
 };
 
 sub search_attributes {
@@ -76,6 +98,7 @@ sub search_attributes {
     my @results = map {
         $self->attribute_class->new({
             provider => $self,
+            product => $product,
             data => {$_->get_inflated_columns}
         })
     } $self->schema->resultset($self->attribute_source_name)->search(
@@ -92,15 +115,17 @@ sub search_attributes {
 };
 
 sub delete_attributes {
-    my ($self, $filter, $options) = @_;
+    my ($self, $product, $filter, $options) = @_;
     my $resultset = $self->schema->resultset($self->attribute_source_name);
 
     $filter ||= {};
     $options ||= {};
 
+    $filter->{'product_id'} = $product->id;
+
     return $resultset->search(
         $filter, $options
-    )->all;
+    )->delete_all;
 };
 
 sub update_attribute {
@@ -136,6 +161,29 @@ sub search_tags {
             data => \@results
         });
     };
+};
+
+sub add_tags {
+    my ($self, $product, @data) = @_;
+    my $resultset = $self->schema->resultset($self->tag_source_name);
+    my @added;
+
+    foreach my $tag (@data) {
+        if (Scalar::Util::blessed $tag && $tag->isa('Mango::Tag')) {
+            $tag = {%{$tag->data}};
+        } elsif (!ref $tag) {
+            $tag = {name => $tag};
+        };
+
+        my $newtag = $resultset->find_or_create($tag);
+        $newtag->related_resultset('map_product_tag')->find_or_create({
+            product_id => $product->id,
+            tag_id => $newtag->id
+        });
+        push @added, $newtag;
+    };
+
+    return scalar @added;
 };
 
 1;

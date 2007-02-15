@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/name value/);
+    __PACKAGE__->mk_group_accessors('column', qw/name value product/);
 };
 
 sub delete {
@@ -16,7 +16,7 @@ sub delete {
     $filter ||= {};
     $filter->{'id'} = $self->id;
 
-    return $self->provider->delete_attributes($filter, @_);
+    return $self->provider->delete_attributes($self->product, $filter, @_);
 };
 
 sub update {
