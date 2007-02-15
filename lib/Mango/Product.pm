@@ -47,5 +47,11 @@ sub tags {
     return $self->provider->search_tags($self, @_);
 };
 
+sub delete_tags {
+    my $self = shift;
+
+    return $self->provider->delete_tags($self, @_);
+};
+
 1;
 __END__

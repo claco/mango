@@ -39,7 +39,7 @@ sub get_by_tags {
             data => {$_->get_inflated_columns}
         })
     } $self->resultset->search(
-        [map({'tag.name' => $_}, @tags)], {
+        {'tag.name' => \@tags}, {
             distinct => 1,
             join => {'map_product_tag' => 'tag'}
         }
@@ -137,6 +137,29 @@ sub update_attribute {
     );
 };
 
+sub add_tags {
+    my ($self, $product, @data) = @_;
+    my $resultset = $self->schema->resultset($self->tag_source_name);
+    my @added;
+
+    foreach my $tag (@data) {
+        if (Scalar::Util::blessed $tag && $tag->isa('Mango::Tag')) {
+            $tag = {%{$tag->data}};
+        } elsif (!ref $tag) {
+            $tag = {name => $tag};
+        };
+
+        my $newtag = $resultset->find_or_create($tag);
+        $newtag->related_resultset('map_product_tag')->find_or_create({
+            product_id => $product->id,
+            tag_id => $newtag->id
+        });
+        push @added, $newtag;
+    };
+
+    return scalar @added;
+};
+
 sub search_tags {
     my ($self, $product, $filter, $options) = @_;
 
@@ -163,27 +186,18 @@ sub search_tags {
     };
 };
 
-sub add_tags {
-    my ($self, $product, @data) = @_;
+sub delete_tags {
+    my ($self, $product, $filter, $options) = @_;
     my $resultset = $self->schema->resultset($self->tag_source_name);
-    my @added;
 
-    foreach my $tag (@data) {
-        if (Scalar::Util::blessed $tag && $tag->isa('Mango::Tag')) {
-            $tag = {%{$tag->data}};
-        } elsif (!ref $tag) {
-            $tag = {name => $tag};
-        };
+    $filter ||= {};
+    $options ||= {};
 
-        my $newtag = $resultset->find_or_create($tag);
-        $newtag->related_resultset('map_product_tag')->find_or_create({
-            product_id => $product->id,
-            tag_id => $newtag->id
-        });
-        push @added, $newtag;
-    };
-
-    return scalar @added;
+    return $resultset->search(
+        $filter, $options
+    )->related_resultset('map_product_tag')->search({
+        'product_id' => $product->id
+    })->delete_all;
 };
 
 1;
