@@ -70,6 +70,12 @@ sub create {
     return $product;
 };
 
+sub add_attribute {
+    my @attributes = shift->add_attributes(@_);
+
+    return shift @attributes;
+};
+
 sub add_attributes {
     my ($self, $product, @data) = @_;
     my $resultset = $self->schema->resultset($self->attribute_source_name);
@@ -81,10 +87,14 @@ sub add_attributes {
         };
         $attribute->{'product_id'} = $product->id;
 
-        push @added, $resultset->update_or_create($attribute, {key => 'product_attribute_name'});
+        push @added, $self->attribute_class->new({
+            provider => $self,
+            product => $product,
+            data => {$resultset->update_or_create($attribute, {key => 'product_attribute_name'})->get_inflated_columns}
+        });
     };
 
-    return scalar @added;
+    return @added;
 };
 
 sub search_attributes {
@@ -137,6 +147,12 @@ sub update_attribute {
     );
 };
 
+sub add_tag {
+    my @tags = shift->add_tags(@_);
+
+    return shift @tags;
+};
+
 sub add_tags {
     my ($self, $product, @data) = @_;
     my $resultset = $self->schema->resultset($self->tag_source_name);
@@ -154,10 +170,13 @@ sub add_tags {
             product_id => $product->id,
             tag_id => $newtag->id
         });
-        push @added, $newtag;
+        push @added, $self->tag_class->new({
+            provider => $self,
+            data => {$newtag->get_inflated_columns}
+        });
     };
 
-    return scalar @added;
+    return @added;
 };
 
 sub search_tags {

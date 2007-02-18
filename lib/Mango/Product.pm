@@ -10,7 +10,9 @@ BEGIN {
 };
 
 sub add_attribute {
-    return shift->add_attributes(@_);
+    my $self = shift;
+
+    return $self->provider->add_attribute($self, @_);
 };
 
 sub add_attributes {
@@ -32,7 +34,9 @@ sub delete_attributes {
 };
 
 sub add_tag {
-    return shift->add_tags(@_);
+    my $self = shift;
+
+    return $self->provider->add_tag($self, @_);
 };
 
 sub add_tags {
