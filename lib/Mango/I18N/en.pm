@@ -13,13 +13,31 @@ BEGIN {
 %Lexicon = (
     Language => 'English',
 
-    "RESOURCE_NOT_FOUND" =>
-        "Resource Not Found",
-    "RESOURCE_NOT_FOUND_MESSAGE" =>
-        "The requested resource was not found on this server.",
+    RESOURCE_NOT_FOUND =>
+        'Resource Not Found',
+    RESOURCE_NOT_FOUND_MESSAGE =>
+        'The requested resource was not found on this server.',
+    UNAUTHORIZED =>
+        'Unauthorized',
+    UNAUTHORIZED_MESSAGE =>
+        'The requested resource requires user authentication.',
+    VIRTUAL_METHOD =>
+        'This method must be overriden!',
+    METHOD_NOT_IMPLEMENTED =>
+        'Method not implemented!',
+    COMPCLASS_NOT_LOADED =>
+        'The component class [_1] [_2] could not be loaded: [_3]',
+    SCHEMA_SOURCE_NOT_SPECIFIED =>
+        'No schema_source is specified!',
+    SCHEMA_SOURCE_NOT_FOUND =>
+        'Schema source [_1] not found!',
+    SCHEMA_CLASS_NOT_SPECIFIED =>
+        'No schema_class is specified!',
+    PROVIDER_CLASS_NOT_SPECIFIED =>
+        'No provider class is specified!',
+    PROVIDER_CLASS_NOT_LOADED =>
+        'The provider [_1] could not be loaded: [_2]!',
 
-    "VIRTUAL_METHOD" =>
-        "This method must be overriden!",
 );
 
 1;
