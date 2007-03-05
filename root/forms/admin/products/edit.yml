@@ -1,0 +1,46 @@
+---
+name: products_edit
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 1
+submit: LABEL_UPDATE
+fields:
+  - id:
+      type: hidden
+      force: 1
+      constraints:
+        - NOT_BLANK
+        - UINT
+  - sku:
+      type: text
+      size: 25
+      maxlength: 25
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 25
+        - PRODUCT_UNIQUE
+  - name:
+      type: text
+      size: 25
+      maxlength: 25
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 25
+  - description:
+      type: text
+      size: 50
+      maxlength: 100
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 100
+  - price:
+      type: text
+      size: 25
+      maxlength: 12
+      constraints:
+        - NOT_BLANK
+        - DECIMAL, 9, 2
+  - created:
+      size: 20
+      disabled: 1
