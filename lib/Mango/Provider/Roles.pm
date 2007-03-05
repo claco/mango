@@ -31,6 +31,23 @@ sub add_users {
     };
 };
 
+*remove_user = \&remove_users;
+
+sub remove_users {
+    my ($self, $role, @users) = @_;
+
+    if (Scalar::Util::blessed($role) && $role->isa('Mango::Role')) {
+        $role = $role->id;
+    };
+
+    $self->schema->resultset('UsersRoles')->search({
+        role_id => $role,
+        user_id => [map {
+            Scalar::Util::blessed($_) ? $_->id : $_
+        } @users]
+    })->delete;
+};
+
 sub get_by_user {
     my $self = shift;
     my $user = shift;
