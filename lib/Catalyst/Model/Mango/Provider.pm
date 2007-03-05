@@ -5,26 +5,24 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::Model Class::Accessor::Grouped/;
-    use Class::Inspector;
-    use Catalyst::Exception;
-    use Mango::I18N qw/translate/;
+    use Class::Inspector ();
+    use Mango::Exception ();
+
+    __PACKAGE__->mk_group_accessors('inherited', qw/provider/);
 };
-__PACKAGE__->mk_group_accessors('inherited', qw/provider/);
 
 sub COMPONENT {
     my $self = shift->new(@_);
     my $provider_class = delete $self->{'provider'};
 
-    Catalyst::Exception->throw(
-        message => translate('No provider class specified')
-    ) unless $provider_class;
+    if (!$provider_class) {
+        throw Mango::Exception('PROVIDER_CLASS_NOT_SPECIFIED');
+    };
 
     if (!Class::Inspector->loaded($provider_class)) {
         eval "use $provider_class"; ## no critic;
         if ($@) {
-            Catalyst::Exception->throw(
-                message => translate('Could not load class [_1]: [_2]', $provider_class, $@)
-            );
+            throw Mango::Exception('PROVIDERCLASS_NOT_LOADED', $provider_class, $@);
         };
     };
 
