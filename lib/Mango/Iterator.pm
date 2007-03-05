@@ -3,7 +3,10 @@ use strict;
 use warnings;
 
 BEGIN {
+    use base qw/Class::Accessor::Grouped/;
     use Scalar::Util qw/blessed/;
+
+    __PACKAGE__->mk_group_accessors('simple', qw/provider data pager/);
 };
 
 sub new {
