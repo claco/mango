@@ -1,0 +1,21 @@
+cart/save:
+  name:
+    NOT_BLANK: The name field cannot be empty.
+    LENGTH: The name field must be between 1 and 50 characters.
+cart/update:
+  id:
+    REGEX: The id field is in the wrong format.
+  quantity:
+    NOT_BLANK: The quantity field cannot be empty.
+    UINT: The quantity field must be a positive number.
+cart/delete:
+  id:
+    REGEX: The id field is in the wrong format.
+cart/destroy:
+  id:
+    REGEX: The id field is in the wrong format.
+cart/restore:
+  id:
+    REGEX: The id field is in the wrong format.
+  mode:
+    BETWEEN: The mode field must be between 1 and 3.

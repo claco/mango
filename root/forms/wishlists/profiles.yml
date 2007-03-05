@@ -1,0 +1,39 @@
+wishlists/save:
+  - name
+  - [ [NOT_BLANK], [LENGTH, 1, 50] ]
+wishlists/delete:
+  - id
+  -
+    -
+      - REGEX
+      - !perl/regexp:
+        REGEXP: '^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$'
+        MODIFIERS: i
+wishlists/destroy:
+  - id
+  -
+    -
+      - REGEX
+      - !perl/regexp:
+        REGEXP: '^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$'
+        MODIFIERS: i
+wishlists/update:
+  - id
+  -
+    -
+      - REGEX
+      - !perl/regexp:
+        REGEXP: '^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$'
+        MODIFIERS: i
+  - quantity
+  - [ [NOT_BLANK], [UINT] ]
+wishlists/restore:
+  - id
+  -
+    -
+      - REGEX
+      - !perl/regexp:
+        REGEXP: '^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}$'
+        MODIFIERS: i
+  - mode
+  - [ [BETWEEN, 1, 3] ]
