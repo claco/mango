@@ -54,5 +54,5 @@ fields:
         - NOT_BLANK
         - LENGTH, 1, 25
   - roles:
-      type: select
+      type: checkbox
       multiple: 1
