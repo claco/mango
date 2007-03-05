@@ -5,6 +5,7 @@ use warnings;
 BEGIN {
     use base qw/Mango::Web::Base::Form/;
     use FormValidator::Simple::Constants;
+    use Set::Scalar ();
 };
 
 =head1 NAME
@@ -92,7 +93,6 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
     my $form    = $c->forward('form');
 
     $form->field('roles', options => [map {[$_->id, $_->name]} @roles]);
-
     $form->values({
         id               => $user->id,
         username         => $user->username,
@@ -101,19 +101,46 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
         created          => $user->created . '',
         first_name       => $profile->first_name,
         last_name        => $profile->last_name,
-        roles            => [map {$_->id} @membership]
+        
+        ## for some reason FB is wonky about no selected multiples compared to values
+        ## yet it get's empty fields correct against non multiple values
+        roles            => $c->request->method eq 'GET' ? [map {$_->id} @membership] : []
     });
 
     $c->stash->{'roles'} = $c->model('Roles')->search;
     $c->stash->{'user_roles'} = $c->model('Roles')->get_by_user($user);
 
     if ($c->forward('submitted') && $c->forward('validate')) {
+        my $current_roles = Set::Scalar->new(map {$_->id} @membership);
+        my $selected_roles = Set::Scalar->new($form->field('roles'));
+        
+        warn "SELECTED: ", $selected_roles->size;
+        warn "ROLES: ", $form->field('roles');
+        
+        my $deleted_roles = $current_roles - $selected_roles;
+        my $added_roles = $selected_roles - $current_roles;
+
+warn "DELETED: ", $deleted_roles->members;
+warn "ADDED: ", $added_roles->members;
+
         $user->password($form->field('password'));
         $user->update;
 
         $profile->first_name($form->field('first_name'));
         $profile->last_name($form->field('last_name'));
         $profile->update;
+
+        if ($deleted_roles->size) {
+            map {
+                $c->model('Roles')->remove_users($_, $user)
+            } $deleted_roles->members;
+        };
+
+        if ($added_roles->size) {
+            map {
+                $c->model('Roles')->add_users($_, $user)
+            } $added_roles->members;
+        };
     };
 };
 
