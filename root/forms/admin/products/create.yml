@@ -21,7 +21,6 @@ fields:
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
-        - ROLE_UNIQUE
   - description:
       type: text
       size: 50
