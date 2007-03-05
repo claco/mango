@@ -93,7 +93,7 @@ sub roles {
     my $role_name_field = $self->store->{'authz'}{'role_name_field'};
     my @roles;
 
-    foreach my $role ($self->store->role_model->user_roles($self->user->id)) {
+    foreach my $role ($self->store->role_model->get_by_user($self->user->id)) {
         push @roles, $role->$role_name_field;
     };
 
@@ -114,19 +114,21 @@ sub cart {
     my $self = shift;
     my $cart;
 
-    if (my $cart_id = $self->store->context->session->{'__mango_cart_id'}) {
-        $cart = $self->store->cart_model->search({
-            id => $cart_id
-        })->first;
+    if (!$self->{'cart'}) {
+        if (my $cart_id = $self->store->context->session->{'__mango_cart_id'}) {
+            $cart = $self->store->cart_model->search({id => $cart_id})->first;
+        };
+
+        if (!$cart) {
+            $cart = $self->store->cart_model->create({});
+            $self->store->context->session->{'__mango_cart_id'} = $cart->id;
+        };
+
+        $self->{'cart'} = $cart;
+        $self->store->context->session_expires(1);
     };
 
-    if (!$cart) {
-        $cart = $self->store->cart_model->create({});
-
-        $self->store->context->session->{'__mango_cart_id'} = $cart->id;
-    };
-
-    return $cart;
+    return $self->{'cart'};
 };
 
 sub AUTOLOAD {
