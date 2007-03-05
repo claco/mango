@@ -174,6 +174,28 @@ sub populate_schema {
         [2,'SKU2222','SKU 2','My SKU 2',2.22,$date,$date],
         [3,'SKU3333','SKU 3','My SKU 3',3.33,$date,$date],
     ]);
+
+    $schema->populate('ProductAttributes', [
+        [ qw/id product_id name value created updated/ ],
+        [1,1,'Attribute1','Value1',$date,$date],
+        [2,1,'Attribute2','Value2',$date,$date],
+        [3,3,'Attribute3','Value3',$date,$date],
+    ]);
+
+    $schema->populate('Tags', [
+        [ qw/id name created updated/ ],
+        [1,'Tag1',$date,$date],
+        [2,'Tag2',$date,$date],
+        [3,'Tag3',$date,$date],
+        [4,'Tag4',$date,$date],
+    ]);
+
+    $schema->populate('ProductTags', [
+        [ qw/product_id tag_id/ ],
+        [1,1],
+        [1,2],
+        [3,3],
+    ]);
 };
 
 1;
