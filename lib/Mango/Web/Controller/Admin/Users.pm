@@ -41,10 +41,16 @@ sub index : Private {
 sub load : PathPart('admin/users') Chained('/') CaptureArgs(1) {
     my ($self, $c, $id) = @_;
     my $user = $c->model('Users')->get_by_id($id);
-    my $profile = $c->model('Profiles')->get_by_user($user)->first;
 
-    $c->stash->{'user'} = $user;
-    $c->stash->{'profile'} = $profile;
+    if ($user) {
+        my $profile = $c->model('Profiles')->get_by_user($user)->first;
+
+        $c->stash->{'user'} = $user;
+        $c->stash->{'profile'} = $profile;
+    } else {
+        $c->response->status(404);
+        $c->detach;
+    };
 };
 
 sub create : Local {
