@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
+    use Scalar::Util ();
 };
 __PACKAGE__->result_class('Mango::User');
 __PACKAGE__->source_name('Users');
