@@ -1,0 +1,37 @@
+[% USE HTML %]
+<h1>Your Saved Shopping Carts</h1>
+[% INCLUDE wishlists/errors %]
+[% IF carts.count %]
+    <table border="0" cellpadding="3" cellspacing="5">
+        <tr>
+            <th align="left">Name</th>
+            <th align="right">Restore Mode</th>
+            <th></th>
+        </tr>
+    [% WHILE (cart = carts.next) %]
+        <tr>
+            <td align="left" valign="top">[% HTML.escape(cart.name) %]</td>
+            <td>
+                <form action="[% c.uri_for('/wishlists/restore/') %]" method="POST">
+                    <input type="hidden" name="id" value="[% HTML.escape(cart.id) %]">
+                    <select name="mode">
+                        [% USE hc = Handel.Constants %]
+                        <option value="[% HTML.escape(hc.CART_MODE_APPEND) %]">Append</option>
+                        <option value="[% HTML.escape(hc.CART_MODE_MERGE) %]">Merge</option>
+                        <option value="[% HTML.escape(hc.CART_MODE_REPLACE) %]">Replace</option>
+                    </select>
+                    <input type="submit" value="Restore Cart">
+                </form>
+            </td>
+            <td>
+                <form action="[% c.uri_for('/wishlists/destroy/') %]" method="POST">
+                    <input type="hidden" name="id" value="[% HTML.escape(cart.id) %]">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+    [% END %]
+    </table>
+[% ELSE %]
+    <p>You have no saved shopping carts.</p>
+[% END %]
