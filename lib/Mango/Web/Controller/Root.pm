@@ -12,7 +12,7 @@ __PACKAGE__->config->{namespace} = '';
 sub default : Private {
     my ($self, $c) = @_;
 
-    $c->res->status(404);
+    $c->response->status(404);
     $c->stash->{'template'} = 'errors/404';
 };
 

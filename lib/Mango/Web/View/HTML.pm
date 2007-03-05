@@ -1,17 +1,17 @@
 # $Id$
-package Mango::Web::View::XHTML;
+package Mango::Web::View::HTML;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Web::View::HTML/;
+    use base qw/Catalyst::View::TT/;
 };
 
 sub process {
     my ($self, $c) = (shift, shift);
 
     $self->NEXT::process($c, @_);
-    $c->res->content_type('application/xhtml+xml; charset=utf-8');
+    $c->res->content_type('text/html; charset=utf-8');
 
     return 1;
 };
