@@ -76,18 +76,21 @@ sub search {
     $filter  ||= {};
     $options ||= {};
 
+    my $resultset = $self->resultset->search($filter, $options);
     my @results = map {
         $self->result_class->new({
             provider => $self,
             data => {$_->get_inflated_columns}
         })
-    } $self->resultset->search($filter, $options)->all;
+    } $resultset->all;
 
     if (wantarray) {
         return @results;
     } else {
         return Mango::Iterator->new({
-            data => \@results
+            provider => $self,
+            data => \@results,
+            pager => $options->{'page'} ? $resultset->pager : undef
         });
     };
 };
