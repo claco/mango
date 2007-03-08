@@ -32,6 +32,18 @@ sub get_by_sku {
 
 sub get_by_tags {
     my ($self, @tags) = @_;
+    my %where;
+    my $count;
+
+    foreach my $tag (@tags) {
+        if (!$count) {
+            $count = 1;
+            $where{'tag.name'} = $tag;
+        } else {
+            $where{'tag_' . $count . '.name'} = $tag;
+        };
+        $count++
+    };
 
     my @results = map {
         $self->result_class->new({
@@ -39,9 +51,11 @@ sub get_by_tags {
             data => {$_->get_inflated_columns}
         })
     } $self->resultset->search(
-        {'tag.name' => \@tags}, {
+        \%where, {
             distinct => 1,
-            join => {'map_product_tag' => 'tag'}
+            join => [
+                map {{'map_product_tag' => 'tag'}} @tags
+            ]
         }
     );
 
@@ -164,6 +178,8 @@ sub add_tags {
         } elsif (!ref $tag) {
             $tag = {name => $tag};
         };
+
+        next unless $tag->{'name'};
 
         my $newtag = $resultset->find_or_create($tag);
         $newtag->related_resultset('map_product_tag')->find_or_create({

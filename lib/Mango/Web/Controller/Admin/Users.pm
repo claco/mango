@@ -119,15 +119,8 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
     if ($c->forward('submitted') && $c->forward('validate')) {
         my $current_roles = Set::Scalar->new(map {$_->id} @membership);
         my $selected_roles = Set::Scalar->new($form->field('roles'));
-        
-        warn "SELECTED: ", $selected_roles->size;
-        warn "ROLES: ", $form->field('roles');
-        
         my $deleted_roles = $current_roles - $selected_roles;
         my $added_roles = $selected_roles - $current_roles;
-
-warn "DELETED: ", $deleted_roles->members;
-warn "ADDED: ", $added_roles->members;
 
         $user->password($form->field('password'));
         $user->update;

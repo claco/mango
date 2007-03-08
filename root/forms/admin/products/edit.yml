@@ -1,7 +1,7 @@
 ---
 name: products_edit
 method: POST
-javascript: 0
+javascript: 1
 stylesheet: 1
 sticky: 1
 submit: LABEL_UPDATE
@@ -42,5 +42,13 @@ fields:
         - NOT_BLANK
         - DECIMAL, 9, 2
   - created:
+      type: text
       size: 20
       disabled: 1
+  - tags:
+      type: textarea
+  - attributes:
+      type: text
+      size: 50
+      maxlength: 281
+      growable: 1

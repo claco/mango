@@ -5,6 +5,7 @@ use warnings;
 BEGIN {
     use base qw/Mango::Web::Base::Form/;
     use FormValidator::Simple::Constants;
+    use Set::Scalar ();
 };
 
 =head1 NAME
@@ -40,7 +41,7 @@ sub index : Private {
 sub load : PathPart('admin/products') Chained('/') CaptureArgs(1) {
     my ($self, $c, $id) = @_;
     my $product = $c->model('Products')->get_by_id($id);
-warn "PRODUCT: ", $product;
+
     if ($product) {
         $c->stash->{'product'} = $product;
     } else {
@@ -67,6 +68,10 @@ sub create : Local {
             price => $form->field('price')
         });
 
+        if (my $tags = $form->field('tags')) {
+            $product->add_tags(split /,\s*/, $tags);
+        };
+
         $c->response->redirect(
             $c->uri_for('/admin/products', $product->id, 'edit')
         );
@@ -76,6 +81,8 @@ sub create : Local {
 sub edit : PathPart('edit') Chained('load') Args(0) {
     my ($self, $c) = @_;
     my $product = $c->stash->{'product'};
+    my @attributes = $product->attributes;
+    my @tags = $product->tags;
     my $form = $c->forward('form');
 
     ## I love being evil. I'll make plugins eventually, but I don't want
@@ -99,6 +106,8 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
         name        => $product->name,
         description => $product->description,
         price       => $product->price->value,
+        tags        => join(', ', map {$_->name} @tags),
+        attributes  => [map {$_->name . ':' . $_->value} @attributes],
         created     => $product->created . ''
     });
 
@@ -108,6 +117,25 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
         $product->description($form->field('description'));
         $product->price($form->field('price'));
         $product->update;
+
+        if (my $tags = $form->field('tags')) {
+            my $current_tags = Set::Scalar->new(map {$_->name} @tags);
+            my $selected_tags = Set::Scalar->new(split /,\s*/, $tags);
+            my $deleted_tags = $current_tags - $selected_tags;
+            my $added_tags = $selected_tags - $current_tags;
+
+            $product->add_tags($added_tags->members);
+            $product->delete_tags({
+                name => [$deleted_tags->members]
+            });
+        };
+
+        foreach my $attribute ($form->field('attributes')) {
+            my ($name, $value) = split /\s*:\s*/, $attribute;
+            $product->add_attributes({
+                name => $name, value => $value
+            });
+        };
     };
 };
 

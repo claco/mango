@@ -35,3 +35,5 @@ fields:
       constraints:
         - NOT_BLANK
         - DECIMAL, 9, 2
+  - tags:
+      type: textarea
