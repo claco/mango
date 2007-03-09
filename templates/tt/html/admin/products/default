@@ -9,11 +9,11 @@
 		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
 	</tr>
 	<tr>
-		<td colspan="4"><a href="[% c.uri_for('create') %]">New Product</a></td>
+		<td colspan="4"><a href="create/">New Product</a></td>
 	</tr>
 [% WHILE (product = products.next) %]
 	<tr>
-		<td><a href="[% c.uri_for(product.id, 'edit') %]">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
+		<td><a href="[% product.id %]/edit/">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
 		<td>[% HTML.escape(product.description) %]</td>
 		<td>[% product.created %]</td>
 		<td>[% product.updated %]</td>

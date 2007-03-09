@@ -119,21 +119,23 @@ sub search_attributes {
 
     $filter->{'product_id'} = $product->id;
 
+    my $resultset = $self->schema->resultset($self->attribute_source_name)->search(
+        $filter, $options
+    );
     my @results = map {
         $self->attribute_class->new({
             provider => $self,
             product => $product,
             data => {$_->get_inflated_columns}
         })
-    } $self->schema->resultset($self->attribute_source_name)->search(
-        $filter, $options
-    )->all;
+    } $resultset->all;
 
     if (wantarray) {
         return @results;
     } else {
         return Mango::Iterator->new({
-            data => \@results
+            data => \@results,
+            pager => $options->{'page'} ? $resultset->pager : undef
         });
     };
 };

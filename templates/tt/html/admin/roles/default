@@ -9,11 +9,11 @@
 		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
 	</tr>
 	<tr>
-		<td colspan="4"><a href="[% c.uri_for('create') %]">New Role</a></td>
+		<td colspan="4"><a href="create/">New Role</a></td>
 	</tr>
 [% WHILE (role = roles.next) %]
 	<tr>
-		<td><a href="[% c.uri_for(role.id, 'edit') %]">[% HTML.escape(role.name) %]</a></td>
+		<td><a href="[% role.id %]/edit/">[% HTML.escape(role.name) %]</a></td>
 		<td>[% HTML.escape(role.description) %]</td>
 		<td>[% role.created %]</td>
 		<td>[% role.updated %]</td>

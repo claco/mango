@@ -6,7 +6,7 @@
 	[% IF page == pager.current_page %]
 		[% page %]
 	[% ELSE %]
-		<a href="[% c.uri_for('.') %]?page=[% page %]">[% page %]</a>
+		<a href="[% c.request.uri_with({'page' => page}) %]">[% page %]</a>
 	[% END %]
 	</div>
 [% END %]

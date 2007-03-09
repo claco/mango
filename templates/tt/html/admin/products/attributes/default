@@ -1,0 +1,22 @@
+[% USE HTML -%]
+[% INCLUDE 'includes/admin/menu' %]
+
+<table border="1">
+	<tr>
+		<th>[% c.loc('LABEL_NAME') %] ([% c.loc('LABEL_SKU') %])</th>
+		<th>[% c.loc('LABEL_DESCRIPTION') %]</th>
+		<th>[% c.loc('LABEL_CREATED') %]</th>
+		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
+	</tr>
+	<tr>
+		<td colspan="4"><a href="create/">New Attribute</a></td>
+	</tr>
+[% WHILE (attribute = attributes.next) %]
+	<tr>
+		<td><a href="[% attribute.id %]/edit/">[% HTML.escape(attribute.name) %]</a></td>
+		<td>[% HTML.escape(attribute.value) %]</td>
+		<td>[% attribute.created %]</td>
+		<td>[% attribute.updated %]</td>
+	</tr>
+[% END %]
+</table>

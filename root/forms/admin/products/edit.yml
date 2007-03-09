@@ -47,8 +47,3 @@ fields:
       disabled: 1
   - tags:
       type: textarea
-  - attributes:
-      type: text
-      size: 50
-      maxlength: 281
-      growable: 1
