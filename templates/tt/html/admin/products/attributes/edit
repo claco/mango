@@ -1,0 +1,11 @@
+[% USE HTML -%]
+[% INCLUDE 'includes/admin/menu' %]
+
+[% IF NOT attribute %]
+	[% c.loc('ATTRIBUTE_NOT_FOUND') %]
+[% ELSE %]
+	<h2>[% HTML.escape(attribute.name) %]</h2>
+	[% INCLUDE 'includes/errors' %]
+	[% form.render %]
+[% END %]
+

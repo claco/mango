@@ -11,6 +11,7 @@ BEGIN {
     use FormValidator::Simple 0.17 ();
     use YAML ();
     use Path::Class ();
+    use File::Find::Rule ();
     use File::Basename ();
 
     __PACKAGE__->mk_group_accessors('simple', qw/forms profiles messages validator/);
@@ -19,9 +20,12 @@ BEGIN {
 sub COMPONENT {
     my ($self, $c) = (shift->NEXT::COMPONENT(@_), shift);
     my $prefix = Catalyst::Utils::class2prefix(ref $self);
-    my @files = glob(
-        $c->path_to('root', 'forms', $prefix, '*.yml')
+    my @files = File::Find::Rule->file->name("*.yml")->in(
+        $c->path_to('root', 'forms', $prefix)
     );
+    #my @files = glob(
+    #    $c->path_to('root', 'forms', $prefix, '*.yml')
+    #);
 
     $self->forms({});
     $self->profiles({});
@@ -29,6 +33,7 @@ sub COMPONENT {
     $self->validator(FormValidator::Simple->new);
 
     foreach my $file (@files) {
+        warn $file;
         $c->log->debug("Loading Form '$file'");
 
         my $filename = Path::Class::file($file)->basename;
@@ -78,23 +83,24 @@ sub COMPONENT {
         };
         $form->submit('LABEL_SUBMIT') unless $config->{'submit'};
 
+        warn "ACTION :", $action;
         $self->forms->{$action} = $form;
         $self->profiles->{$action} = $profile;
         $self->messages->{$action} = $messages;
 
-use Data::Dump qw/dump/;
-warn "PROFILE: ", $action;
-warn dump $profile;
+#use Data::Dump qw/dump/;
+#warn "PROFILE: ", $action;
+#warn dump $profile;
 
-use Data::Dump qw/dump/;
-warn "MESSAGES: ", $action;
-warn dump $messages;
+#use Data::Dump qw/dump/;
+#warn "MESSAGES: ", $action;
+#warn dump $messages;
 
 
     };
 
-warn "ALL MESSAGES: ";
-warn dump $self->messages;
+#warn "ALL MESSAGES: ";
+#warn dump $self->messages;
 
     $self->validator->set_messages($self->messages);
 
