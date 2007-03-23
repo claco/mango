@@ -1,0 +1,23 @@
+---
+name: attributes_create
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 1
+submit: LABEL_CREATE
+fields:
+  - name:
+      type: text
+      size: 25
+      maxlength: 25
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 25
+        - ATTRIBUTE_UNIQUE
+  - value:
+      type: text
+      size: 50
+      maxlength: 255
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 255

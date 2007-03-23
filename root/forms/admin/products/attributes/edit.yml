@@ -1,5 +1,5 @@
 ---
-name: products_edit
+name: attributes_edit
 method: POST
 javascript: 0
 stylesheet: 1
@@ -12,14 +12,6 @@ fields:
       constraints:
         - NOT_BLANK
         - UINT
-  - sku:
-      type: text
-      size: 25
-      maxlength: 25
-      constraints:
-        - NOT_BLANK
-        - LENGTH, 1, 25
-        - PRODUCT_UNIQUE
   - name:
       type: text
       size: 25
@@ -27,23 +19,15 @@ fields:
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
-  - description:
+        - ATTRIBUTE_UNIQUE
+  - value:
       type: text
       size: 50
-      maxlength: 100
+      maxlength: 255
       constraints:
         - NOT_BLANK
-        - LENGTH, 1, 100
-  - price:
-      type: text
-      size: 25
-      maxlength: 12
-      constraints:
-        - NOT_BLANK
-        - DECIMAL, 9, 2
+        - LENGTH, 1, 255
   - created:
       type: text
       size: 20
       disabled: 1
-  - tags:
-      type: textarea

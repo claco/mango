@@ -32,6 +32,9 @@ Model::Profiles:
 Model::Products:
   connection_info:
     - dbi:SQLite:data/mango.db
+Model::Tags:
+  connection_info:
+    - dbi:SQLite:data/mango.db
 Model::Carts:
   connection_info:
     - dbi:SQLite:data/mango.db
