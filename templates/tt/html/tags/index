@@ -1,0 +1,13 @@
+[% USE HTML -%]
+<div id="tags">
+[% WHILE (tag = tags.next) %]
+	<a href="tags/[% HTML.escape(tag.name) %]/">[% HTML.escape(tag.name) %]</a>
+[% END %]
+</div>
+<div id="products">
+[% WHILE (product = products.next) %]
+	<div class="product">
+		[% HTML.escape(product.sku) %]
+	</div>
+[% END %]
+</div>

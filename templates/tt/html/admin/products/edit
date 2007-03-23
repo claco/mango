@@ -6,7 +6,7 @@
 [% ELSE %]
 	<h2>[% HTML.escape(product.sku) %] - [% HTML.escape(product.name) %]</h2>
 	<ul>
-		<li><a href="../attributes/">Edit Attributes</a></li>
+		<li><a href="../attributes/">[% c.loc('LABEL_EDIT_ATTRIBUTES') %]</a></li>
 	</ul>
 	[% INCLUDE 'includes/errors' %]
 	[% form.render %]

@@ -9,7 +9,7 @@
 		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
 	</tr>
 	<tr>
-		<td colspan="4"><a href="create/">New Product</a></td>
+		<td colspan="4"><a href="create/">[% c.loc('LABEL_NEW_PRODUCT') %]</a></td>
 	</tr>
 [% WHILE (product = products.next) %]
 	<tr>
