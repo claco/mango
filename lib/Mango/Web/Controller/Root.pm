@@ -18,7 +18,11 @@ sub default : Private {
 
 sub index : Private {
     my ($self, $c) = @_;
+    $c->stash->{'tags'} = $c->model('Tags')->search;
 
+    warn "A";
+    warn map {$_->name} $c->model('Tags')->get_related_tags('tagall', 'tag3')->all;
+    warn "B";
 };
 
 sub end : ActionClass('RenderView') {}

@@ -23,12 +23,13 @@ Catalyst Controller.
 
 sub default : Private {
     my ($self, $c, @tags) = @_;
+    $c->stash->{'template'} = 'tags/index';
 
     shift @tags;
 
     my $products = $c->model('Products')->get_by_tags(@tags);
 
-    $c->response->body($products->count);
+    $c->stash->{'products'} = $products;
 };
 
 

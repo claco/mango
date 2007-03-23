@@ -27,7 +27,7 @@ Catalyst Controller.
 sub index : PathPart('admin/products') Chained('/') Args(0) {
     my ($self, $c) = @_;
     $c->stash->{'template'} = 'admin/products/default';
-warn "LOAD ALL PRODUCTS";
+
     my $page = $c->request->param('page') || 1;
     my $products = $c->model('Products')->search(undef, {
         page => $page,
@@ -43,7 +43,7 @@ sub load : PathPart('admin/products') Chained('/') CaptureArgs(1) {
     $c->stash->{'template'} = 'admin/products/edit';
 
     my $product = $c->model('Products')->get_by_id($id);
-warn "LOAD PRODUCT $id";
+
     if ($product) {
         $c->stash->{'product'} = $product;
     } else {
@@ -54,8 +54,10 @@ warn "LOAD PRODUCT $id";
 
 sub create : PathPart('admin/products/create') Chained('/') Args(0) {
     my ($self, $c) = @_;
+    $c->stash->{'template'} = 'admin/products/create';
+
     my $form = $c->forward('form');
-warn "CREATE PRODUCT";
+
     ## I love being evil. I'll make plugins eventually, but I don't want
     ## the module clutter at the moment
     local *FormValidator::Simple::Validator::PRODUCT_UNIQUE = sub {
@@ -82,10 +84,12 @@ warn "CREATE PRODUCT";
 
 sub edit : PathPart('edit') Chained('load') Args(0) {
     my ($self, $c) = @_;
+    $c->stash->{'template'} = 'admin/products/edit';
+
     my $product = $c->stash->{'product'};
     my @tags = $product->tags;
     my $form = $c->forward('form');
-warn "EDIT PRODUCT";
+
     ## I love being evil. I'll make plugins eventually, but I don't want
     ## the module clutter at the moment
     local *FormValidator::Simple::Validator::PRODUCT_UNIQUE = sub {
@@ -140,62 +144,6 @@ warn "EDIT PRODUCT";
     };
 };
 
-#sub attributes : PathPart('attributes') Chained('load') Args(0) {
-#    my ($self, $c) = @_;
-#    my $product = $c->stash->{'product'};
-
-#    my $page = $c->request->param('page') || 1;
-#    my $attributes = $product->attributes(undef, {
-#        page => $page,
-#        rows => 1
-#    });
-
-#    $c->stash->{'template'} = 'admin/products/attributes/default';
-#    $c->stash->{'attributes'} = $attributes;
-#    $c->stash->{'pager'} = $attributes->pager;
-
-#    warn "LOAD ALL ATTRIBUTES";
-#};
-
-#sub attributes_create : PathPart('attributes/create') Chained('load') Args(0) {
-#    my ($self, $c) = @_;
-#    my $form = $c->forward('form');
-
-#    if ($c->forward('submitted') && $c->forward('validate')) {
-#            warn "VALIDATED ATTRIBUTE";
-#    };
-#};
-
-#sub attribute_load : PathPart('attributes') Chained('load') CaptureArgs(1) {
-#    my ($self, $c, $id) = @_;
-#    $c->stash->{'template'} = 'admin/products/attributes/edit';
-
-#    my $attribute = $c->stash->{'product'}->attributes({
-#        id => $id
-#    })->first;
-#    warn "LOAD ATTRIBUTE: $attribute";
-
-#    if ($attribute) {
-#        $c->stash->{'attribute'} = $attribute;
-#    } else {
-#        $c->response->status(404);
-#        $c->detach;
-#    };
-#};
-
-#sub attribute_edit : PathPart('edit') Chained('attribute_load') Args(0) {
-#    my ($self, $c) = @_;
-#    $c->stash->{'template'} = 'admin/products/attributes/edit';
-#    my $form = $c->forward('form', 'admin/products/attributes/edit');
-#    warn "FORM :", $form;
-#    warn "EDIT ATTRIBUTE";
-#};
-
-# /admin/products/create
-# /admin/products/1/edit
-# /admin/products/1/attributes
-# /admin/products/1/attributes/create
-# /admin/products/1/attributes/2/edit
 
 
 =head1 AUTHOR
