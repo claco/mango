@@ -30,42 +30,35 @@ sub get_by_sku {
     })->first;
 };
 
-sub get_by_tags {
-    my ($self, @tags) = @_;
-    my %where;
-    my $count;
+sub search {
+    my ($self, $filter, $options) = @_;
 
-    foreach my $tag (@tags) {
-        if (!$count) {
-            $count = 1;
-            $where{'tag.name'} = $tag;
-        } else {
-            $where{'tag_' . $count . '.name'} = $tag;
+    $filter ||= {};
+    $options ||= {};
+
+    if (my $tags = delete $filter->{'tags'}) {
+        my $count;
+
+        foreach my $tag (@{$tags}) {
+            last unless @{$tags};
+
+            if (!$count) {
+                $count = 1;
+                $filter->{'tag.name'} = $tag;
+            } else {
+                $filter->{'tag_' . $count . '.name'} = $tag;
+            };
+            $count++
         };
-        $count++
+
+        $options->{'distinct'} = 1;
+        if (!defined $options->{'join'}) {
+            $options->{'join'} = [];
+        };
+        push @{$options->{'join'}}, map {{'map_product_tag' => 'tag'}} @{$tags};
     };
 
-    my @results = map {
-        $self->result_class->new({
-            provider => $self,
-            data => {$_->get_inflated_columns}
-        })
-    } $self->resultset->search(
-        \%where, {
-            distinct => 1,
-            join => [
-                map {{'map_product_tag' => 'tag'}} @tags
-            ]
-        }
-    );
-
-    if (wantarray) {
-        return @results;
-    } else {
-        return Mango::Iterator->new({
-            data => \@results
-        });
-    };
+    return $self->SUPER::search($filter, $options);
 };
 
 sub create {

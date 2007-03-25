@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 275;
+        plan tests => 301;
     };
 
     use_ok('Mango::Provider::Products');
@@ -37,7 +37,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->sku, 'SKU1111');
     is($product->name, 'SKU 1');
     is($product->description, 'My SKU 1');
-    is($product->price, 1.11);
+    is($product->price+0, 1.11);
     isa_ok($product->price, 'Mango::Currency');
     is($product->created, '2004-07-04T12:00:00');
 };
@@ -54,7 +54,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->sku, 'SKU2222');
     is($product->name, 'SKU 2');
     is($product->description, 'My SKU 2');
-    is($product->price, 2.22);
+    is($product->price+0, 2.22);
     is($product->created, '2004-07-04T12:00:00');
 };
 
@@ -90,7 +90,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->sku, 'SKU2222');
     is($product->name, 'SKU 2');
     is($product->description, 'My SKU 2');
-    is($product->price, 2.22);
+    is($product->price+0, 2.22);
     is($product->created, '2004-07-04T12:00:00');
 };
 
@@ -102,18 +102,56 @@ isa_ok($provider, 'Mango::Provider::Products');
 };
 
 
-## get by tags
+## search with tags
 {
-    my $products = $provider->get_by_tags(qw/Tag1 Tag3 Tag2/);
+    my $products = $provider->search({
+        tags => [qw/Tag1 Tag2/]
+    });
     isa_ok($products, 'Mango::Iterator');
-    is($products->count, 2);
+    is($products->count, 1);
 
     my $product = $products->next;
     is($product->id, 1);
     is($product->sku, 'SKU1111');
     is($product->name, 'SKU 1');
     is($product->description, 'My SKU 1');
-    is($product->price, 1.11);
+    is($product->price+0, 1.11);
+    is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search for tags for no matches
+{
+    my $products = $provider->search({
+        tags => [qw/Tag1 Tag2 Tag3/]
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 0);
+};
+
+
+## search for tags with no tags
+{
+    my $products = $provider->search({
+        tags => []
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 3);
+
+    my $product = $products->next;
+    is($product->id, 1);
+    is($product->sku, 'SKU1111');
+    is($product->name, 'SKU 1');
+    is($product->description, 'My SKU 1');
+    is($product->price+0, 1.11);
+    is($product->created, '2004-07-04T12:00:00');
+
+    $product = $products->next;
+    is($product->id, 2);
+    is($product->sku, 'SKU2222');
+    is($product->name, 'SKU 2');
+    is($product->description, 'My SKU 2');
+    is($product->price+0, 2.22);
     is($product->created, '2004-07-04T12:00:00');
 
     $product = $products->next;
@@ -121,8 +159,38 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->sku, 'SKU3333');
     is($product->name, 'SKU 3');
     is($product->description, 'My SKU 3');
-    is($product->price, 3.33);
+    is($product->price+0, 3.33);
     is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search with tags and other filters
+{
+    my $products = $provider->search({
+        tags => [qw/Tag3/],
+        sku  => 'SKU3333'
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 1);
+
+    my $product = $products->next;
+    is($product->id, 3);
+    is($product->sku, 'SKU3333');
+    is($product->name, 'SKU 3');
+    is($product->description, 'My SKU 3');
+    is($product->price+0, 3.33);
+    is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search with tags and other filters with no match
+{
+    my $products = $provider->search({
+        tags => [qw/Tag3/],
+        sku  => 'BOGUSSKU'
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 0);
 };
 
 
@@ -173,7 +241,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->sku, 'SKU2222');
     is($product->name, 'SKU 2');
     is($product->description, 'My SKU 2');
-    is($product->price, 2.22);
+    is($product->price+0, 2.22);
     is($product->created, '2004-07-04T12:00:00');
 };
 
@@ -431,7 +499,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->id, 5);
     is($product->name, 'SKU 5');
     is($product->description, 'My SKU 5');
-    is($product->price, 5.55);
+    is($product->price+0, 5.55);
     cmp_ok($product->created->epoch, '>=', $current->epoch);
 
     my $attribute = $product->add_attribute({
