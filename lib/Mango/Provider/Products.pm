@@ -196,24 +196,11 @@ sub search_tags {
     $filter ||= {};
     $options ||= {};
 
-    my @results = map {
-        $self->tag_class->new({
-            provider => $self,
-            data => {$_->get_inflated_columns}
-        })
-    } $self->schema->resultset('ProductTags')->search({
-        'product_id' => $product->id
-    })->related_resultset('tag')->search(
-        $filter, $options
-    )->all;
-
-    if (wantarray) {
-        return @results;
-    } else {
-        return Mango::Iterator->new({
-            data => \@results
-        });
+    $filter->{'products'} = {
+        'id' => $product->id
     };
+
+    return $self->tags($filter, $options);
 };
 
 sub delete_tags {
@@ -228,6 +215,43 @@ sub delete_tags {
     )->related_resultset('map_product_tag')->search({
         'product_id' => $product->id
     })->delete_all;
+};
+
+sub tags {
+    my ($self, $filter, $options) = @_;
+
+    $filter ||= {};
+    $options ||= {};
+
+    my $pfilter = delete $filter->{'products'} || {};
+
+    foreach my $key (keys %{$pfilter}) {
+        next if $key =~ /^me\./;
+        $pfilter->{"me.$key"} = delete $pfilter->{$key};
+    };
+    foreach my $key (keys %{$filter}) {
+        next if $key =~ /^tag\./;
+        $pfilter->{"tag.$key"} = delete $filter->{$key};
+    };
+
+    my @results = map {
+        $self->tag_class->new({
+            provider => $self,
+            data => {$_->get_inflated_columns}
+        })
+    } $self->resultset('ProductTags')->search(
+        $pfilter
+    )->related_resultset('map_product_tag')->related_resultset('tag')->search(
+        $filter, $options
+    )->all;
+
+    if (wantarray) {
+        return @results;
+    } else {
+        return Mango::Iterator->new({
+            data => \@results
+        });
+    };
 };
 
 1;

@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 301;
+        plan tests => 313;
     };
 
     use_ok('Mango::Provider::Products');
@@ -362,6 +362,40 @@ isa_ok($provider, 'Mango::Provider::Products');
     my $tags = $provider->search_tags($product, {name => 'Tag1'});
     isa_ok($tags, 'Mango::Iterator');
     is($tags->count, 0);
+};
+
+
+## search all tags assigned to products
+{
+    my $tags = $provider->tags;
+    isa_ok($tags, 'Mango::Iterator');
+    is($tags->count, 3);
+
+    my $tag = $tags->next;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag1');
+
+    $tag = $tags->next;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag2');
+
+    $tag = $tags->next;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag3');
+};
+
+
+## search all tags assigned to products with filter
+{
+    my $tags = $provider->tags({
+        name => 'Tag2'
+    });
+    isa_ok($tags, 'Mango::Iterator');
+    is($tags->count, 1);
+
+    my $tag = $tags->next;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag2');
 };
 
 
