@@ -30,6 +30,14 @@ sub create {
     return $self->storage->create($data, @_);
 };
 
+sub get_by_user {
+    my $self = shift;
+    my $object = shift;
+    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+
+    return $self->search({user_id => $id}, @_);
+};
+
 sub search {
     my $self = shift;
 

@@ -239,7 +239,7 @@ sub tags {
             provider => $self,
             data => {$_->get_inflated_columns}
         })
-    } $self->resultset('ProductTags')->search(
+    } $self->resultset->search(
         $pfilter
     )->related_resultset('map_product_tag')->related_resultset('tag')->search(
         $filter, $options

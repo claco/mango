@@ -22,32 +22,8 @@ sub new {
     return $self;
 };
 
-sub setup {
-    my ($self, $args) = @_;
-
-    if (ref $args eq 'HASH') {
-        map {$self->$_($args->{$_})} keys %{$args};
-    };
-
-    return;
-};
-
 sub create {
     my ($self, $data) = @_;
-
-    throw Mango::Exception('VIRTUAL_METHOD');
-};
-
-sub search {
-    my ($self, $filter, $options) = @_;
-
-    throw Mango::Exception('VIRTUAL_METHOD');
-};
-
-sub update {
-    my ($self, $object) = @_;
-
-    $object->updated(DateTime->now);
 
     throw Mango::Exception('VIRTUAL_METHOD');
 };
@@ -56,6 +32,14 @@ sub delete {
     my ($self, $filter) = @_;
 
     throw Mango::Exception('VIRTUAL_METHOD');
+};
+
+sub get_by_id {
+    my $self = shift;
+    my $object = shift;
+    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+
+    return $self->search({id => $id}, @_)->first;
 };
 
 sub get_component_class {
@@ -80,20 +64,28 @@ sub set_component_class {
     return;
 };
 
-sub get_by_id {
-    my $self = shift;
-    my $object = shift;
-    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+sub search {
+    my ($self, $filter, $options) = @_;
 
-    return $self->search({id => $id}, @_)->first;
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
-sub get_by_user {
-    my $self = shift;
-    my $object = shift;
-    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+sub setup {
+    my ($self, $args) = @_;
 
-    return $self->search({user_id => $id}, @_);
+    if (ref $args eq 'HASH') {
+        map {$self->$_($args->{$_})} keys %{$args};
+    };
+
+    return;
+};
+
+sub update {
+    my ($self, $object) = @_;
+
+    $object->updated(DateTime->now);
+
+    throw Mango::Exception('VIRTUAL_METHOD');
 };
 
 1;
@@ -112,6 +104,9 @@ Mango::Provider - Provider base class
     BEGIN {
         use base qw/Mango::Provider/;
     };
+    __PACKAGE__->result_class('MyClass');
+    
+    my $object = $provider->create(\%data);
 
 =head1 DESCRIPTION
 
@@ -121,70 +116,42 @@ Mango::Provider is a base abstract class for all providers used in Mango.
 
 =head2 new
 
-Creates a new provider object. If options are passed into new, those are
-blessed into the new object.
-
 =over
 
 =item Arguments: \%options
 
 =back
 
+Creates a new provider object. If options are passed to new, those are
+sent to C<setup>.
+
     my $provider = Mango::Provider->new({
         result_class => 'MyResultClass'
     });
+
+The following options are available at the class level, to new/setup and take
+the same data as their method counterparts:
+
+    result_class
 
 =head1 METHODS
 
 =head2 create
 
-Creates a new result of type C<result_class>.
-
 =over
 
-=item Arguments: \%values
-
-A hash containing the values for the new object.
+=item Arguments: \%data
 
 =back
+
+Creates a new result of type C<result_class> using the supplied data.
 
     my $object = $provider->create({
         id => 23,
         thingy => 'value'
     });
 
-=head2 search
-
-Returns a list of objects matching the specified filter.
-
-=over
-
-=item Arguments: \%filter, \%options
-
-=back
-
-    my @objects = $provider->search({col => 'value'});
-
-The list of available options are up to each individual provider.
-
-=head2 update
-
-Saves any changes made to the object back to the underlying store.
-
-=over
-
-=item Arguments: $object
-
-=back
-
-    my $object = $provider->create(\%data);
-    $object->col('value');
-    
-    $provider->update($object);
-
 =head2 delete
-
-Deletes objects from the store matching the supplied filter.
 
 =over
 
@@ -192,9 +159,108 @@ Deletes objects from the store matching the supplied filter.
 
 =back
 
+Deletes objects from the store matching the supplied filter.
+
     $provider->delete({
         col => 'value'
     });
+
+=head2 get_by_id
+
+=over
+
+=item Arguments: $id
+
+=back
+
+Retrieves an object from the provider matching the specified id.
+
+    my $object = $provider->get_by_id(23);
+
+Returns undef if no matching result can be found.
+
+=head2 result_class
+
+=over
+
+=item Arguments: $class
+
+=back
+
+Gets/sets the name of the result class results should be returned as.
+
+    $provider->result_class('MyClass');
+    my $object = $provider->search->first;
+    print ref $object; # MyClass
+
+An exception will be thrown if the specificed class can not be loaded.
+
+=head2 search
+
+=over
+
+=item Arguments: \%filter, \%options
+
+=back
+
+Returns a list of objects in list context, or a Mango::Iterator in scalar
+context matching the specified filter.
+
+    my @objects = $provider->search({
+        col => 'value'
+    });
+    
+    my $iterator = $provider->search({
+        col => 'value'
+    });
+
+The list of supported options are at the disgression each individual provider.
+
+=head2 setup
+
+=over
+
+=item Arguments: \%options
+
+=back
+
+Calls each key as a method with the supplied value. C<setup> is automatically
+called by C<new>.
+
+    my $provider = Mango::Provider->new({
+        result_class => 'MyResultClass'
+    });
+
+This is the same as:
+
+    my $provider = Mango::Provider->new;
+    $provider->setup({
+        result_class => 'MyResultClass'
+    });
+
+which is the same as:
+
+    my $provider = Mango::Provider->new;
+    $provider->result_class('MyResultClass');
+
+=head2 update
+
+=over
+
+=item Arguments: $object
+
+=back
+
+Saves any changes made to the object back to the underlying store.
+
+    my $object = $provider->create(\%data);
+    $object->col('value');
+    
+    $provider->update($object);
+
+=head1 SEE ALSO
+
+L<Mango::Iterator>
 
 =head1 AUTHOR
 

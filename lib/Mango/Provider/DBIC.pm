@@ -26,10 +26,34 @@ BEGIN {
 };
 __PACKAGE__->schema_class('Mango::Schema');
 
-sub resultset {
-    my $self = shift;
+sub create {
+    my ($self, $data) = @_;
+    my $result = $self->resultset->create($data);
 
-    if (!$self->_resultset) {
+    return $self->result_class->new({
+        provider => $self,
+        data => {$result->get_inflated_columns}
+    });
+};
+
+sub delete {
+    my ($self, $filter) = @_;
+
+    if (Scalar::Util::blessed $filter) {
+        $filter = {id => $filter->id};
+    } elsif (ref $filter ne 'HASH') {
+        $filter = {id => $filter};
+    };
+
+    return $self->resultset->search($filter)->delete_all;
+};
+
+sub resultset {
+    my ($self, $resultset) = @_;
+
+    if ($resultset) {
+        $self->_resultset($resultset);
+    } elsif (!$self->_resultset) {
         if (!$self->source_name) {
             throw Mango::Exception('SCHEMA_SOURCE_NOT_SPECIFIED');
         };
@@ -45,29 +69,20 @@ sub resultset {
 };
 
 sub schema {
-    my $self = shift;
+    my ($self, $schema) = @_;
 
-    if (!$self->schema_class) {
-        throw Mango::Exception('SCHEMA_CLASS_NOT_SPECIFIED');
-    };
-
-    if (!$self->_schema) {
+    if ($schema) {
+        $self->_schema($schema);
+    } elsif (!$self->_schema) {
+        if (!$self->schema_class) {
+            throw Mango::Exception('SCHEMA_CLASS_NOT_SPECIFIED');
+        };
         $self->_schema(
             $self->schema_class->connect(@{$self->connection_info || []})
         );
     };
 
     return $self->_schema;
-};
-
-sub create {
-    my ($self, $data) = @_;
-    my $result = $self->resultset->create($data);
-
-    return $self->result_class->new({
-        provider => $self,
-        data => {$result->get_inflated_columns}
-    });
 };
 
 sub search {
@@ -105,17 +120,298 @@ sub update {
     );
 };
 
-sub delete {
-    my ($self, $filter) = @_;
-
-    if (Scalar::Util::blessed $filter) {
-        $filter = {id => $filter->id};
-    } elsif (ref $filter ne 'HASH') {
-        $filter = {id => $filter};
-    };
-
-    return $self->resultset->search($filter)->delete_all;
-};
-
 1;
 __END__
+
+=head1 NAME
+
+Mango::Provider::DBIC - Provider class for DBIx::Class based providers
+
+=head1 SYNOPSIS
+
+    package MyApp::Provider::Users;
+    use strict;
+    use warnings;
+    
+    BEGIN {
+        use base qw/Mango::Provider::DBIC/;
+    };
+    __PACKAGE__->schema_class('MySchema');
+    __PACKAGE__->source_name('Users');
+    
+    my $object = $provider->create(\%data);
+
+=head1 DESCRIPTION
+
+Mango::Provider::DBIC is a base abstract class for all DBIx::Class based
+providers used in Mango.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+=over
+
+=item Arguments: \%options
+
+=back
+
+Creates a new provider object. If options are passed to new, those are
+sent to C<setup>.
+
+    my $provider = Mango::Provider::DBIC->new({
+        schema_class => 'MySchema',
+        source_name  => 'Users',
+        result_class => 'MyResultClass'
+    });
+
+The following options are available at the class level, to new/setup and take
+the same data as their method counterparts:
+
+    connection_info
+    resultset
+    schema_class
+    schema
+    source_name
+
+See L<Mango::Provider/new> a list of other possible options.
+
+=head1 METHODS
+
+=head2 connection_info
+
+=over
+
+=item Arguments: \@info
+
+=back
+
+Gets/sets the connection information used when connecting to the database.
+
+    $provider->connection_info(['dbi:mysql:foo', 'user', 'pass', {PrintError=>1}]);
+
+The info argument is an array ref that holds the following values:
+
+=over
+
+=item $dsn
+
+The DBI dsn to use to connect to.
+
+=item $username
+
+The username for the database you are connecting to.
+
+=item $password
+
+The password for the database you are connecting to.
+
+=item \%attr
+
+The attributes to be pass to DBI for this connection.
+
+=back
+
+See L<DBI> for more information about dsns and connection attributes.
+
+=head2 create
+
+=over
+
+=item Arguments: \%data
+
+=back
+
+Creates a new result of type C<result_class> using the supplied data.
+
+    my $object = $provider->create({
+        id => 23,
+        thingy => 'value'
+    });
+
+=head2 delete
+
+=over
+
+=item Arguments: \%filter
+
+=back
+
+Deletes objects from the store matching the supplied filter.
+
+    $provider->delete({
+        col => 'value'
+    });
+
+=head2 get_by_id
+
+=over
+
+=item Arguments: $id
+
+=back
+
+Retrieves an object from the provider matching the specified id.
+
+    my $object = $provider->get_by_id(23);
+
+Returns undef if no matching result can be found.
+
+=head2 resultset
+
+=over
+
+=item Arguments: $resultset
+
+=back
+
+Gets/sets the DBIx::Class::Resultset to be used by this provider. If no
+resultset is set, the resultset for the specified C<source_name> will be created
+automatically.
+
+    $provider->resultset;
+    # same as $schema->resultset($provider->source_name)
+    
+    $provider->resultset(
+        $schema->resultset($provder->source_name)->search({default => 'search'})
+    );
+
+=head2 result_class
+
+=over
+
+=item Arguments: $class
+
+=back
+
+Gets/sets the name of the result class results should be returned as.
+
+    $provider->result_class('MyClass');
+    my $object = $provider->search->first;
+    print ref $object; # MyClass
+
+An exception will be thrown if the specificed class can not be loaded.
+
+=head2 schema
+
+=over
+
+=item Arguments: $schema
+
+=back
+
+Gets/sets the DBIx::Class schema instance to be used for this provider. If no
+schema is set, a new instance of the C<schema_class> will be created
+automatically when it is needed.
+
+    my $schema = $provider->schema;
+    $schema->dbh->{'AutoCommit'} = 0;
+
+=head2 schema_class
+
+=over
+
+=item Arguments: $class
+
+=back
+
+Gets/sets the DBIx::Class schema class to be used for this provider. An
+exception will be thrown if the specified class can not be loaded.
+
+    $provider->schema_class('MySchema');
+    my $schema = $provider->schema;
+    print ref $schema; # MySchema
+
+The default schema class is Mango::Schema.
+
+=head2 search
+
+=over
+
+=item Arguments: \%filter, \%options
+
+=back
+
+Returns a list of objects in list context, or a Mango::Iterator in scalar
+context matching the specified filter.
+
+    my @objects = $provider->search({
+        col => 'value'
+    });
+    
+    my $iterator = $provider->search({
+        col => 'value'
+    });
+
+See L<DBIx::Class::Resultset/ATTRIBUTES> for a list of other possible options.
+
+=head2 setup
+
+=over
+
+=item Arguments: \%options
+
+=back
+
+Calls each key as a method with the supplied value. C<setup> is automatically
+called by C<new>.
+
+    my $provider = Mango::Provider->new({
+        schema_class => 'MySchema',
+        result_class => 'MyResultClass'
+    });
+
+This is the same as:
+
+    my $provider = Mango::Provider->new;
+    $provider->setup({
+        schema_class => 'MySchema',
+        result_class => 'MyResultClass'
+    });
+
+which is the same as:
+
+    my $provider = Mango::Provider->new;
+    $provider->schema_class('MySchema');
+    $provider->result_class('MyResultClass');
+
+=head2 source_name
+
+=over
+
+=item Arguments: $source
+
+=back
+
+Gets/sets the DBIx::Class schema source to be used when creating the default
+resultset.
+
+    $provider->source_name('Users');
+    $provider->resultset;
+    ## same as $schema->resultset('Users')
+
+=head2 update
+
+=over
+
+=item Arguments: $object
+
+=back
+
+Saves any changes made to the object back to the underlying store.
+
+    my $object = $provider->create(\%data);
+    $object->col('value');
+    
+    $provider->update($object);
+
+=head1 SEE ALSO
+
+L<Mango::Provider>, L<DBIx::Class>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
