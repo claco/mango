@@ -144,7 +144,7 @@ the same data as their method counterparts:
 
 =back
 
-Creates a new result of type C<result_class> using the supplied data.
+Creates a new object of type C<result_class> using the supplied data.
 
     my $object = $provider->create({
         id => 23,
@@ -159,7 +159,7 @@ Creates a new result of type C<result_class> using the supplied data.
 
 =back
 
-Deletes objects from the store matching the supplied filter.
+Deletes objects from the provider matching the supplied filter.
 
     $provider->delete({
         col => 'value'
@@ -190,10 +190,11 @@ Returns undef if no matching result can be found.
 Gets/sets the name of the result class results should be returned as.
 
     $provider->result_class('MyClass');
+    
     my $object = $provider->search->first;
     print ref $object; # MyClass
 
-An exception will be thrown if the specificed class can not be loaded.
+An exception will be thrown if the specified class can not be loaded.
 
 =head2 search
 
@@ -203,7 +204,7 @@ An exception will be thrown if the specificed class can not be loaded.
 
 =back
 
-Returns a list of objects in list context, or a Mango::Iterator in scalar
+Returns a list of objects in list context or a Mango::Iterator in scalar
 context matching the specified filter.
 
     my @objects = $provider->search({
@@ -214,7 +215,41 @@ context matching the specified filter.
         col => 'value'
     });
 
-The list of supported options are at the disgression each individual provider.
+The complete list of supported options are at the disgression each individual
+provider, but each provider should support the following options:
+
+=over
+
+=item order_by
+
+The name/direction of of the column(s) to sort the results.
+
+    {order_by => 'col asc'}
+
+=item page
+
+The page number of the results to return.
+
+    {page => 2}
+
+=item rows
+
+The number of results per page to return.
+
+    {rows => 10}
+
+=back
+
+When using rows/page, you can retrieve a Data::Page object from the iterator.
+
+    my $results = $provider->search(undef, {
+        rows => 10, page => 2
+    });
+    my $pager = $results->pager;
+    print "Page 2 of ", $pager->last_page;
+    while (my $result = $results->next) {
+        print $result->id;
+    };
 
 =head2 setup
 
@@ -231,7 +266,7 @@ called by C<new>.
         result_class => 'MyResultClass'
     });
 
-This is the same as:
+is the same as:
 
     my $provider = Mango::Provider->new;
     $provider->setup({
