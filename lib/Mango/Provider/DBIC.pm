@@ -14,6 +14,7 @@ BEGIN {
     __PACKAGE__->mk_group_accessors('inherited', qw/
         source_name
         connection_info
+        updated_column
         _resultset
         _schema
     /);
@@ -25,6 +26,7 @@ BEGIN {
     };
 };
 __PACKAGE__->schema_class('Mango::Schema');
+__PACKAGE__->updated_column('updated');
 
 sub create {
     my ($self, $data) = @_;
@@ -112,8 +114,9 @@ sub search {
 
 sub update {
     my ($self, $object) = @_;
+    my $updated_column = $self->updated_column;
 
-    $object->updated(DateTime->now);
+    $object->$updated_column(DateTime->now);
 
     return $self->resultset->find($object->id)->update(
         {%{$object->data}}
@@ -170,8 +173,8 @@ the same data as their method counterparts:
 
     connection_info
     resultset
-    schema_class
     schema
+    schema_class
     source_name
 
 See L<Mango::Provider/new> a list of other possible options.
@@ -222,7 +225,7 @@ See L<DBI> for more information about dsns and connection attributes.
 
 =back
 
-Creates a new result of type C<result_class> using the supplied data.
+Creates a new object of type C<result_class> using the supplied data.
 
     my $object = $provider->create({
         id => 23,
@@ -243,20 +246,6 @@ Deletes objects from the store matching the supplied filter.
         col => 'value'
     });
 
-=head2 get_by_id
-
-=over
-
-=item Arguments: $id
-
-=back
-
-Retrieves an object from the provider matching the specified id.
-
-    my $object = $provider->get_by_id(23);
-
-Returns undef if no matching result can be found.
-
 =head2 resultset
 
 =over
@@ -266,8 +255,8 @@ Returns undef if no matching result can be found.
 =back
 
 Gets/sets the DBIx::Class::Resultset to be used by this provider. If no
-resultset is set, the resultset for the specified C<source_name> will be created
-automatically.
+resultset is set, the resultset for the specified C<source_name> will be
+created automatically.
 
     $provider->resultset;
     # same as $schema->resultset($provider->source_name)
@@ -275,22 +264,6 @@ automatically.
     $provider->resultset(
         $schema->resultset($provder->source_name)->search({default => 'search'})
     );
-
-=head2 result_class
-
-=over
-
-=item Arguments: $class
-
-=back
-
-Gets/sets the name of the result class results should be returned as.
-
-    $provider->result_class('MyClass');
-    my $object = $provider->search->first;
-    print ref $object; # MyClass
-
-An exception will be thrown if the specificed class can not be loaded.
 
 =head2 schema
 
@@ -322,7 +295,8 @@ exception will be thrown if the specified class can not be loaded.
     my $schema = $provider->schema;
     print ref $schema; # MySchema
 
-The default schema class is Mango::Schema.
+If no schema class is specified in the subclass, the default schema class is
+Mango::Schema.
 
 =head2 search
 
@@ -332,7 +306,7 @@ The default schema class is Mango::Schema.
 
 =back
 
-Returns a list of objects in list context, or a Mango::Iterator in scalar
+Returns a list of objects in list context or a Mango::Iterator in scalar
 context matching the specified filter.
 
     my @objects = $provider->search({
@@ -343,37 +317,7 @@ context matching the specified filter.
         col => 'value'
     });
 
-See L<DBIx::Class::Resultset/ATTRIBUTES> for a list of other possible options.
-
-=head2 setup
-
-=over
-
-=item Arguments: \%options
-
-=back
-
-Calls each key as a method with the supplied value. C<setup> is automatically
-called by C<new>.
-
-    my $provider = Mango::Provider->new({
-        schema_class => 'MySchema',
-        result_class => 'MyResultClass'
-    });
-
-This is the same as:
-
-    my $provider = Mango::Provider->new;
-    $provider->setup({
-        schema_class => 'MySchema',
-        result_class => 'MyResultClass'
-    });
-
-which is the same as:
-
-    my $provider = Mango::Provider->new;
-    $provider->schema_class('MySchema');
-    $provider->result_class('MyResultClass');
+See L<DBIx::Class::Resultset/ATTRIBUTES> for a list of possible options.
 
 =head2 source_name
 
@@ -398,7 +342,8 @@ resultset.
 
 =back
 
-Saves any changes made to the object back to the underlying store.
+Sets the 'updated' column to DateTime->now and saves any changes made to the
+object back to the underlying store.
 
     my $object = $provider->create(\%data);
     $object->col('value');
