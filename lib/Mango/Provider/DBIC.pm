@@ -246,6 +246,20 @@ Deletes objects from the store matching the supplied filter.
         col => 'value'
     });
 
+=head2 get_by_id
+
+=over
+
+=item Arguments: $id
+
+=back
+
+Retrieves an object from the provider matching the specified id.
+
+    my $object = $provider->get_by_id(23);
+
+Returns undef if no matching result can be found.
+
 =head2 resultset
 
 =over
