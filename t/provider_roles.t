@@ -60,7 +60,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 
 ## get by user
 {
-    my @roles = $provider->get_by_user(2);
+    my @roles = $provider->search({ user => 2 });
     is(scalar @roles, 1);
     my $role = $roles[0];
     isa_ok($role, 'Mango::Role');
@@ -78,7 +78,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
             id => 1
         }
     });
-    my @roles = $provider->get_by_user($user);
+    my @roles = $provider->search({ user => $user });
     is(scalar @roles, 2);
     my $role = $roles[0];
     isa_ok($role, 'Mango::Role');
@@ -98,7 +98,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 
 ## get by user for nothing
 {
-    my $roles = $provider->get_by_user(100);
+    my $roles = $provider->search({ user => 100 });
     isa_ok($roles, 'Mango::Iterator');
     is($roles->count, 0);
 };

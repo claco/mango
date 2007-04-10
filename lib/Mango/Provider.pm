@@ -7,7 +7,6 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Class::Inspector ();
     use Scalar::Util ();
-    use DateTime ();
     use Mango::Exception ();
 
     __PACKAGE__->mk_group_accessors('component_class', qw/result_class/);
@@ -82,8 +81,6 @@ sub setup {
 
 sub update {
     my ($self, $object) = @_;
-
-    $object->updated(DateTime->now);
 
     throw Mango::Exception('VIRTUAL_METHOD');
 };

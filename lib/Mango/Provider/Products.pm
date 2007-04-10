@@ -18,10 +18,6 @@ __PACKAGE__->tag_source_name('Tags');
 __PACKAGE__->result_class('Mango::Product');
 __PACKAGE__->source_name('Products');
 
-sub get_by_user {
-    throw Mango::Exception('METHOD_NOT_IMPLEMENTED');
-};
-
 sub get_by_sku {
     my ($self, $sku) = @_;
 
