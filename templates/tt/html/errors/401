@@ -1,5 +1,0 @@
-[% page.title = c.loc('UNAUTHORIZED') %]
-
-<p>
-	[% c.loc('UNAUTHORIZED_MESSAGE') %]
-</p>

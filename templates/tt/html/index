@@ -1,4 +1,0 @@
-[% USE HTML -%]
-[% WHILE (tag = tags.next) %]
-	<a href="tags/[% HTML.escape(tag.name) %]/">[% HTML.escape(tag.name) %]</a>
-[% END %]

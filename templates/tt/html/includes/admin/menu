@@ -1,5 +1,0 @@
-<ul>
-	<li><a href="[% c.uri_for('/admin/users/') %]">Users</a></li>
-	<li><a href="[% c.uri_for('/admin/roles/') %]">Roles</a></li>
-	<li><a href="[% c.uri_for('/admin/products/') %]">Products</a></li>
-</ul>

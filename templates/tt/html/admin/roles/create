@@ -1,5 +1,0 @@
-[% USE HTML -%]
-[% INCLUDE 'includes/admin/menu' %]
-
-[% INCLUDE 'includes/errors' %]
-[% form.render %]
