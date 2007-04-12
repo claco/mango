@@ -63,31 +63,50 @@ Mango::Schema::Tag - DBIC schema class for Tags
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Roles')->search;
+    my $tags = $schema->resultset('Tags')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
+Mango::Schema::Tag is loaded by Mango::Schema to read/write tag data.
 
 =head1 COLUMNS
 
 =head2 id
 
-Contains the primary key for each role record.
+Contains the primary key for each tag record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
 
 =head2 name
 
-Contains the role name.
+Contains the tag name.
 
     name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
+        is_nullable => 0
+    },
+
+=head2 created
+
+When the role record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the role record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
         is_nullable => 0
     }
 

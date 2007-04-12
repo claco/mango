@@ -39,17 +39,17 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::UserRole - DBIC schema class for Users Role membership
+Mango::Schema::UserRole - DBIC schema class for users role membership
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('UsersRoles')->search;
+    my $user_roles = $schema->resultset('UsersRoles')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::UsersRoles is loaded by Mango::Schema to read/write role
+Mango::Schema::UsersRole is loaded by Mango::Schema to read/write user/role
 membership data.
 
 =head1 COLUMNS
@@ -59,17 +59,21 @@ membership data.
 Contains the user id for each role record.
 
     user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
 
 =head2 role_id
 
 Contains the role id for each role record.
 
-    user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+    role_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     }
 
 =head1 AUTHOR

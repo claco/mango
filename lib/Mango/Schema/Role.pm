@@ -72,7 +72,7 @@ Mango::Schema::Role - DBIC schema class for Roles
 
 =head1 DESCRIPTION
 
-Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
+Mango::Schema::Role is loaded by Mango::Schema to read/write role data.
 
 =head1 COLUMNS
 
@@ -81,9 +81,10 @@ Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
 Contains the primary key for each role record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
 
 =head2 name
@@ -92,7 +93,35 @@ Contains the role name.
 
     name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
+        is_nullable => 0
+    },
+
+=head2 description
+
+The description of the role.
+
+    description => {
+        data_type   => 'VARCHAR',
+        size        => 100,
+        is_nullable => 1
+    },
+
+=head2 created
+
+When the role record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the role record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
         is_nullable => 0
     }
 

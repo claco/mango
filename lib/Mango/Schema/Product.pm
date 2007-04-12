@@ -79,37 +79,87 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::Role - DBIC schema class for Roles
+Mango::Schema::Product - DBIC schema class for products
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Roles')->search;
+    my $products = $schema->resultset('Products')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
+Mango::Schema::Product is loaded by Mango::Schema to read/write product data.
 
 =head1 COLUMNS
 
 =head2 id
 
-Contains the primary key for each role record.
+Contains the primary key for each product record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
+    },
+
+=head2 sku
+
+The sku, or part number of the product.
+
+    sku => {
+        data_type      => 'VARCHAR',
+        size           => 25,
+        is_nullable    => 0,
     },
 
 =head2 name
 
-Contains the role name.
+Contains the product name.
 
     name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
+        is_nullable => 0
+    },
+
+=head2 description
+
+The products description.
+
+    description => {
+        data_type   => 'VARCHAR',
+        size        => 100,
+        is_nullable => 1
+    },
+
+=head2 price
+
+The price of the current product.
+
+    price => {
+        data_type      => 'DECIMAL',
+        size           => [9,2],
+        is_nullable    => 0,
+        default_value  => '0.00'
+    },
+
+=head2 created
+
+When the product record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the product record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
         is_nullable => 0
     }
 

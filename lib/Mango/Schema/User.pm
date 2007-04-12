@@ -74,11 +74,11 @@ Mango::Schema::User - DBIC schema class for Users
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Users')->search;
+    my $users = $schema->resultset('Users')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Users is loaded by Mango::Schema to read/write user data.
+Mango::Schema::User is loaded by Mango::Schema to read/write user data.
 
 =head1 COLUMNS
 
@@ -87,9 +87,10 @@ Mango::Schema::Users is loaded by Mango::Schema to read/write user data.
 Contains the primary key for each role record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
 
 =head2 username
@@ -98,7 +99,7 @@ Contains the user name.
 
     username => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
         is_nullable => 0
     },
 
@@ -108,7 +109,7 @@ The users password.
 
     password => {
         data_type   => 'VARCHAR',
-        size        => '255',
+        size        => 255,
         is_nullable => 0
     },
 
@@ -117,9 +118,17 @@ The users password.
 When the user record was created.
 
     created => {
-        data_type   => 'datetime',
-        is_nullable => 0,
-        default     => sub {DateTime->now}
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the user record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
     }
 
 =head1 AUTHOR

@@ -66,37 +66,77 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::Role - DBIC schema class for Roles
+Mango::Schema::ProductAttribute - DBIC schema class for product attributes
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Roles')->search;
+    my $attributes = $schema->resultset('ProductAttributes')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
+Mango::Schema::ProductAttribute is loaded by Mango::Schema to read/write product attribute data.
 
 =head1 COLUMNS
 
 =head2 id
 
-Contains the primary key for each role record.
+Contains the primary key for each attribute record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
+    },
+
+=head2 product_id
+
+The product id foreign key assigned to the attribute.
+
+    product_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
 
 =head2 name
 
-Contains the role name.
+Contains the attribute name.
 
     name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
+        is_nullable => 0
+    },
+
+=head2 value
+
+The value of the attribute.
+
+    value => {
+        data_type   => 'VARCHAR',
+        size        => 255,
+        is_nullable => 0
+    },
+
+=head2 created
+
+When the attribute record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the attribute record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
         is_nullable => 0
     }
 

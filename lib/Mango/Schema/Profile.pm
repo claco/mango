@@ -66,37 +66,77 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::Roles - DBIC schema class for Roles
+Mango::Schema::Profile - DBIC schema class for Profiles
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('Roles')->search;
+    my $profiles = $schema->resultset('Profiles')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::Roles is loaded by Mango::Schema to read/write role data.
+Mango::Schema::Profile is loaded by Mango::Schema to read/write user profile data.
 
 =head1 COLUMNS
 
 =head2 id
 
-Contains the primary key for each role record.
+Contains the primary key for each profile record.
 
     id => {
-        data_type         => 'UINT',
+        data_type         => 'INT',
         is_auto_increment => 1,
-        is_nullable       => 0
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
     },
 
-=head2 name
+=head2 user_id
 
-Contains the role name.
+Containts the user id foreign key.
 
-    name => {
+    user_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
+    },
+
+=head2 first_name
+
+Contains the users first name.
+
+    first_name => {
         data_type   => 'VARCHAR',
-        size        => '25',
+        size        => 25,
+        is_nullable => 1
+    },
+
+=head2 last_name
+
+Containts the users last name.
+
+    last_name => {
+        data_type   => 'VARCHAR',
+        size        => 25,
+        is_nullable => 1
+    },
+
+=head2 created
+
+When the profile record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the profile record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
         is_nullable => 0
     }
 

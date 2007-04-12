@@ -39,37 +39,41 @@ __END__
 
 =head1 NAME
 
-Mango::Schema::ProductTag - DBIC schema class for Product Tag membership
+Mango::Schema::ProductTag - DBIC schema class for product tags
 
 =head1 SYNOPSIS
 
     use Mango::Schema;
     my $schema = Mango::Schema->connect;
-    my $roles = $schema->resultset('UsersRoles')->search;
+    my $prodct_tags = $schema->resultset('ProductTags')->search;
 
 =head1 DESCRIPTION
 
-Mango::Schema::UsersRoles is loaded by Mango::Schema to read/write role
+Mango::Schema::ProductTag is loaded by Mango::Schema to read/write role
 membership data.
 
 =head1 COLUMNS
 
-=head2 user_id
+=head2 product_id
 
-Contains the user id for each role record.
+Contains the product id for each product/tag pivot record.
 
-    user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+    product_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     },
 
-=head2 role_id
+=head2 tag_id
 
-Contains the role id for each role record.
+Contains the tag id for each product/tag pivot record.
 
-    user_id => {
-        data_type   => 'UINT',
-        is_nullable => 0
+    tag_id => {
+        data_type      => 'INT',
+        is_nullable    => 0,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
     }
 
 =head1 AUTHOR
