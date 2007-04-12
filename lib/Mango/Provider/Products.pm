@@ -269,7 +269,7 @@ Mango::Provider::Products - Provider class for product information
 =head1 DESCRIPTION
 
 Mango::Provider::Products is the provider class responsible for creating,
-deleting, updating and searching product informaiton, including product
+deleting, updating and searching product information, including product
 tags and attributes.
 
 =head1 CONSTRUCTOR
@@ -287,7 +287,7 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Products->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> a list of other
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
 possible options.
 
 =head1 METHODS

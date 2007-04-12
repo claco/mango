@@ -29,7 +29,7 @@ sub delete {
 
         if (my $user = delete $filter->{'user'}) {
             $filter->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
-        };        
+        };
     } elsif (ref $filter ne 'HASH') {
         $filter = {id => $filter};
     };
@@ -82,7 +82,7 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Profiles->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> a list of other
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
 possible options.
 
 =head1 METHODS
@@ -131,7 +131,7 @@ column manually in case it changes later.
 
 =back
 
-Deletes profile from the provider matching the supplied filter.
+Deletes profiles from the provider matching the supplied filter.
 
     $provider->delete({
         id => 23

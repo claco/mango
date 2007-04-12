@@ -62,7 +62,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 
 ## get by user
 {
-    my @wishlists = $provider->get_by_user(1);
+    my @wishlists = $provider->search({ user => 1 });
     is(scalar @wishlists, 2);
     my $wishlist = $wishlists[0];
     isa_ok($wishlist, 'Mango::Wishlist');
@@ -81,7 +81,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
             id => 2
         }
     });
-    my @wishlists = $provider->get_by_user($user);
+    my @wishlists = $provider->search({ user => $user });
     is(scalar @wishlists, 1);
     my $wishlist = $wishlists[0];
     isa_ok($wishlist, 'Mango::Wishlist');
@@ -95,7 +95,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 
 ## get by user for nothing
 {
-    my $wishlists = $provider->get_by_user(100);
+    my $wishlists = $provider->search({ user => 100 });
     isa_ok($wishlists, 'Mango::Iterator');
     is($wishlists->count, 0);
 };

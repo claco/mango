@@ -58,7 +58,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
 
 ## get by user
 {
-    my @carts = $provider->get_by_user(1);
+    my @carts = $provider->search({ user => 1 });
     is(scalar @carts, 1);
     my $cart = $carts[0];
     isa_ok($cart, 'Mango::Cart');
@@ -75,7 +75,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
             id => 1
         }
     });
-    my @carts = $provider->get_by_user($user);
+    my @carts = $provider->search({ user => $user });
     is(scalar @carts, 1);
     my $cart = $carts[0];
     isa_ok($cart, 'Mango::Cart');
@@ -87,7 +87,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
 
 ## get by user for nothing
 {
-    my $carts = $provider->get_by_user(100);
+    my $carts = $provider->search({ user => 100 });
     isa_ok($carts, 'Mango::Iterator');
     is($carts->count, 0);
 };

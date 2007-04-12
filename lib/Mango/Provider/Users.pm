@@ -42,7 +42,7 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Users->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> a list of other
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
 possible options.
 
 =head1 METHODS
