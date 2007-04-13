@@ -236,7 +236,7 @@ Creates a new object of type C<result_class> using the supplied data.
 
 =over
 
-=item Arguments: \%filter
+=item Arguments: \%filter or $object
 
 =back
 
@@ -245,6 +245,14 @@ Deletes objects from the store matching the supplied filter.
     $provider->delete({
         col => 'value'
     });
+
+It can also delete an object passed into it:
+
+    $provider->delete($object);
+
+This is the same as:
+
+    $provider->delete({ id => $object->id });
 
 =head2 get_by_id
 

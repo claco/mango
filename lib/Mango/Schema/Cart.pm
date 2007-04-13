@@ -28,7 +28,6 @@ __PACKAGE__->add_columns(
         data_type      => 'INT',
         is_nullable    => 1,
         is_foreign_key => 1,
-        default_value  => undef,
         extras         => {unsigned => 1}
     },
     created => {
@@ -52,3 +51,66 @@ __PACKAGE__->default_values({
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Schema::Cart - DBIC schema class for carts
+
+=head1 SYNOPSIS
+
+    use Mango::Schema;
+    my $schema = Mango::Schema->connect;
+    my $carts = $schema->resultset('Carts')->search;
+
+=head1 DESCRIPTION
+
+Mango::Schema::Cart is loaded by Mango::Schema to read/write cart data.
+
+=head1 COLUMNS
+
+=head2 id
+
+Contains the primary key for each cart record.
+
+    id => {
+        data_type         => 'INT',
+        is_auto_increment => 1,
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
+    },
+
+=head2 user_id
+
+Contains the foreign key to the user this cart belongs to.
+
+    user_id => {
+        data_type      => 'INT',
+        is_nullable    => 1,
+        is_foreign_key => 1,
+        extras         => {unsigned => 1}
+    },
+
+=head2 created
+
+When the cart record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the cart record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    }
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

@@ -62,3 +62,88 @@ __PACKAGE__->default_values({
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Schema::Wishlist - DBIC schema class for wishlists
+
+=head1 SYNOPSIS
+
+    use Mango::Schema;
+    my $schema = Mango::Schema->connect;
+    my $carts = $schema->resultset('Wishlists')->search;
+
+=head1 DESCRIPTION
+
+Mango::Schema::Wishlist is loaded by Mango::Schema to read/write wishlist data.
+
+=head1 COLUMNS
+
+=head2 id
+
+Contains the primary key for each wishlist record.
+
+    id => {
+        data_type         => 'INT',
+        is_auto_increment => 1,
+        is_nullable       => 0,
+        extras            => {unsigned => 1}
+    },
+
+=head2 user_id
+
+Contains the foreign key to the user this wishlist belongs to.
+
+    user_id => {
+        data_type      => 'INT',
+        is_nullable    => 1,
+        is_foreign_key => 1,
+        default_value  => undef,
+        extras         => {unsigned => 1}
+    },
+
+=head2 name
+
+The name of the wishlist.
+
+    name => {
+        data_type     => 'VARCHAR',
+        size          => 50,
+        is_nullable   => 0
+    },
+
+=head2 description
+
+The description of the wishlist.
+
+    description => {
+        data_type     => 'VARCHAR',
+        size          => 255,
+        is_nullable   => 1,
+        default_value => undef
+    },
+
+=head2 created
+
+When the wishlist record was created.
+
+    created => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    },
+
+=head2 updated
+
+When the wishlist record was updated.
+
+    updated => {
+        data_type   => 'DATETIME',
+        is_nullable => 0
+    }
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

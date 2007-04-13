@@ -477,7 +477,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($attribute->name, 'CreatedAttribute3');
     is($attribute->value, 'CreatedValue3');
     cmp_ok($attribute->created->epoch, '>=', $current->epoch);
-    ok($attribute->delete);
+    ok($attribute->destroy);
 
     $attributes = $product->attributes;
     isa_ok($attributes, 'Mango::Iterator');

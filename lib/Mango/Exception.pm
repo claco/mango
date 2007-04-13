@@ -31,3 +31,47 @@ sub new {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Exception - Exception classes used in Mango
+
+=head1 SYNOPSIS
+
+    use Mango::Exception;
+    
+    throw Mango::Exception('Boom!');
+
+=head1 DESCRIPTION
+
+Mango:Exception is a subclass of Error that does some custom message processing
+for Mango based exceptions.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+=over
+
+=item Arguments: %args or $message
+
+=back
+
+When creating or throwing a new exception, you can pass in either Error-style
+arguments, or just a plain old message string.
+
+    throw Mango::Exception('Boom!');
+    throw Mango::Exception(-text => 'Boom!', -line => 27, ...);
+
+Any message passed in will automatically be translated using Mango::I18N.
+
+=head1 SEE ALSO
+
+L<Handel::Iterator>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

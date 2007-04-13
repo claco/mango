@@ -46,3 +46,31 @@ BEGIN {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Iterator - Iterator for Mango results
+
+=head1 SYNOPSIS
+
+    my $users = $provider->search;
+    while (my $user = $users->next) {
+        print $user->id;
+    };
+
+=head1 DESCRIPTION
+
+This module is simply a subclass of C<Handel::Iterator. See L<Handel::Iterator>
+for more information about what features and methods are supported.
+
+=head1 SEE ALSO
+
+L<Handel::Iterator>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
