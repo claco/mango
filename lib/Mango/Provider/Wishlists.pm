@@ -85,7 +85,7 @@ column manually in case it changes later.
 
 =back
 
-Deletes wishlsts from the provider matching the supplied filter.
+Deletes wishlists from the provider matching the supplied filter.
 
     $provider->delete({
         id => 23

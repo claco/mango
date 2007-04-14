@@ -306,6 +306,10 @@ data hashes or Mango::Attribute objects.
 
     $provider->add_attributes(23, {name => 'Attribute', value => 'Value'}, $attributeobect, ...)
 
+=head2 add_attribute
+
+Same as C<add_attributes>.
+
 =head2 add_tags
 
 =over
@@ -319,6 +323,10 @@ Mango::Product object or a product id. C<tags> can be a list of tag strings
 or Mango::Tag objects.
 
     $provider->add_tags(23, 'computer', $tagobect, ...)
+
+=head2 add_tag
+
+Same as C<add_tags>.
 
 =head2 create
 
@@ -439,11 +447,25 @@ C<product> can be a Mango::Product object or a product id.
 
 =back
 
-Returns a Mango::Profile object matching the specified id.
+Returns a Mango::Product object matching the specified id.
 
-    my $profile = $provider->get_by_id(23);
+    my $product = $provider->get_by_id(23);
 
-Returns undef if no matching profile can be found.
+Returns undef if no matching product can be found.
+
+=head2 get_by_sku
+
+=over
+
+=item Arguments: $sku
+
+=back
+
+Returns a Mango::PRoduct object matching the specified id.
+
+    my $product = $provider->get_by_sku('ABC-1234');
+
+Returns undef if no matching product can be found.
 
 =head2 search
 

@@ -14,7 +14,7 @@ BEGIN {
 sub new {
     my ($class, $args) = @_;
 
-    return bless $args, $class;
+    return bless $args || {}, $class;
 };
 
 sub get_column {
@@ -57,6 +57,18 @@ Mango::Object - Base class used for Mango result objects.
 
 Mango::Object is the base class for all result objects in Mango. It provides common
 methods exposed by all results like C<id>, C<created>, C<updated>, C<update>, etc.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+=over
+
+=item Arguments: \%args
+
+=back
+
+Creates a new object, blessing C<args> into the current package.
 
 =head1 METHODS
 

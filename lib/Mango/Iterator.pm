@@ -61,8 +61,24 @@ Mango::Iterator - Iterator for Mango results
 
 =head1 DESCRIPTION
 
-This module is simply a subclass of C<Handel::Iterator. See L<Handel::Iterator>
+This module is simply a subclass of Handel::Iterator. See L<Handel::Iterator>
 for more information about what features and methods are supported.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+=over
+
+=item Arguments: \%args
+
+=back
+
+Creates a new Mango::Iterator based on the type of data passed into args.
+
+    my $it = Mango::Iterator->new({
+        data => \@list
+    });
 
 =head1 SEE ALSO
 

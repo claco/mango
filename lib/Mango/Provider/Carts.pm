@@ -159,7 +159,7 @@ In addition to using the column names, the following special keys are available:
 
 =item user
 
-This can be a user id, or a user object for which this profile is assigned to.
+This can be a user id, or a user object for which this cart is assigned to.
 
     $provider->delete({
         user => $user
@@ -209,7 +209,7 @@ In addition to using the column names, the following special keys are available:
 
 =item user
 
-This can be a user id, or a user object for which roles are assigned to.
+This can be a user id, or a user object for which carts are assigned to.
 
     my @carts = $provider->search({
         user => $user

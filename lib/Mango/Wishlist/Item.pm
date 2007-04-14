@@ -33,9 +33,12 @@ sub update {
     return $self->SUPER::update(@_);
 };
 
+1;
+__END__
+
 =head1 NAME
 
-Mango::Wishlist::Item - Wishlist Item Class
+Mango::Wishlist::Item - Module representing an individual wishlist item
 
 =head1 SYNOPSIS
 
@@ -48,12 +51,90 @@ Mango::Wishlist::Item - Wishlist Item Class
 
 =head1 DESCRIPTION
 
-My WishlistItem Class
+Mango::Wishlist::Item represent a part in the wishlist to be ordered.
+
+=head1 METHODS
+
+=head2 id
+
+Returns the id of the current wishlist item.
+
+    print $item->id;
+
+=head2 sku
+
+=over
+
+=item Arguments: $sku
+
+=back
+
+Gets/sets the sku (stock keeping unit/part number) for the wishlist item.
+
+    $item->sku('ABC123');
+    print $item->sku;
+
+=head2 quantity
+
+=over
+
+=item Arguments: $quantity
+
+=back
+
+Gets/sets the quantity, or the number of this item being purchased.
+
+    $item->quantity(3);
+    print $item->quantity;
+
+=head2 price
+
+=over
+
+=item Arguments: $price
+
+=back
+
+Gets/sets the price for the wishlist item. The price is returned as a stringified
+L<Mango::Currency|Mango::Currency> object.
+
+    $item->price(12.95);
+    print $item->price;
+    print $item->price->format;
+
+=head2 total
+
+Returns the total price for the wishlist item as a stringified
+L<Mango::Currency|Mango::Currency> object. This is really just
+quantity*total and is provided for convenience.
+
+    print $item->total;
+    print $item->total->format;
+
+=head2 description
+
+=over
+
+=item Arguments: $description
+
+=back
+
+Gets/sets the description for the current wishlist item.
+
+    $item->description('Best Item Ever');
+    print $item->description;
+
+=head2 update
+
+Saves any changes made to the current item.
+
+=head1 SEE ALSO
+
+L<Mango::Wishlist>, L<Mango::Schema::Wishlist::Item>, L<Mango::Currency>
 
 =head1 AUTHOR
 
-    Author <author@example.com>
-
-=cut
-
-1;
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

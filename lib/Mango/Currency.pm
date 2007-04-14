@@ -20,7 +20,7 @@ Mango::Currency - Currency class for Mango
 
 =head1 DESCRIPTION
 
-Mango::Currency is returned for all inclated price columns in Mango. It is
+Mango::Currency is returned for all inflated price columns in Mango. It is
 a subclass if Handel::Currency, which is a subclass of Data::Currency.
 
 =head1 SEE ALSO

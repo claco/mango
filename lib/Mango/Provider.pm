@@ -220,7 +220,7 @@ context matching the specified filter.
         col => 'value'
     });
 
-The complete list of supported options are at the disgression each individual
+The complete list of supported options are at the discretion each individual
 provider, but each provider should support the following options:
 
 =over
@@ -297,6 +297,37 @@ Saves any changes made to the object back to the underlying store.
     $object->col('value');
     
     $provider->update($object);
+
+=head2 get_component_class
+
+=over
+
+=item Arguments: $name
+
+=back
+
+Gets the current class for the specified component name.
+
+    my $class = $self->get_component_class('result_class');
+
+There is no good reason to use this. Use the specific class accessors instead.
+
+=head2 set_component_class
+
+=over
+
+=item Arguments: $name, $value
+
+=back
+
+Sets the current class for the specified component name.
+
+    $self->set_component_class('result_class', 'MyItemClass');
+
+A L<Mango::Exception|Mango::Exception> exception will be thrown if the
+specified class can not be loaded.
+
+There is no good reason to use this. Use the specific class accessors instead.
 
 =head1 SEE ALSO
 

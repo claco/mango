@@ -93,7 +93,7 @@ Contains the primary key for each profile record.
 
 =head2 user_id
 
-Containts the user id foreign key.
+Contains the user id foreign key.
 
     user_id => {
         data_type      => 'INT',
@@ -114,7 +114,7 @@ Contains the users first name.
 
 =head2 last_name
 
-Containts the users last name.
+Contains the users last name.
 
     last_name => {
         data_type   => 'VARCHAR',
