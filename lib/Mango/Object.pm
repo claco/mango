@@ -1,4 +1,4 @@
-# $Id: Object.pm 1718 2007-02-05 03:00:43Z claco $
+# $Id$
 package Mango::Object;
 use strict;
 use warnings;

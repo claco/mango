@@ -1,4 +1,4 @@
-# $Id: Mango.pm 1668 2007-01-22 04:09:47Z claco $
+# $Id$
 package Mango;
 use strict;
 use warnings;

@@ -1,4 +1,4 @@
-# $Id: Profile.pm 1718 2007-02-05 03:00:43Z claco $
+# $Id$
 package Mango::Profile;
 use strict;
 use warnings;

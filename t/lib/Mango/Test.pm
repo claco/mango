@@ -1,4 +1,4 @@
-# $Id: Test.pm 1756 2007-03-05 02:47:04Z claco $
+# $Id$
 package Mango::Test;
 use strict;
 use warnings;

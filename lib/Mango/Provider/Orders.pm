@@ -1,4 +1,4 @@
-# $Id: Orders.pm 1785 2007-03-26 02:00:56Z claco $
+# $Id$
 package Mango::Provider::Orders;
 use strict;
 use warnings;

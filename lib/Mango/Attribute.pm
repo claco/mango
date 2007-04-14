@@ -1,4 +1,4 @@
-# $Id: Attribute.pm 1735 2007-02-15 02:56:39Z claco $
+# $Id$
 package Mango::Attribute;
 use strict;
 use warnings;

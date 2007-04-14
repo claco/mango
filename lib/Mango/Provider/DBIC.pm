@@ -1,4 +1,4 @@
-# $Id: DBIC.pm 1788 2007-04-06 01:58:23Z claco $
+# $Id$
 package Mango::Provider::DBIC;
 use strict;
 use warnings;

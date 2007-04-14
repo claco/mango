@@ -1,4 +1,4 @@
-# $Id: Exception.pm 1708 2007-02-04 02:33:21Z claco $
+# $Id$
 package Mango::Exception;
 use strict;
 use warnings;

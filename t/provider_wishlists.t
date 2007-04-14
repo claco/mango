@@ -1,5 +1,5 @@
 #!perl -wT
-# $Id: provider_wishlists.t 1699 2007-01-31 03:41:35Z claco $
+# $Id$
 use strict;
 use warnings;
 

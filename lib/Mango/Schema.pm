@@ -1,4 +1,4 @@
-# $Id: Schema.pm 1652 2007-01-07 03:08:21Z claco $
+# $Id$
 package Mango::Schema;
 use strict;
 use warnings;

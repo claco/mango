@@ -1,4 +1,4 @@
-# $Id: Users.pm 1790 2007-04-06 01:58:25Z claco $
+# $Id$
 package Mango::Provider::Users;
 use strict;
 use warnings;

@@ -1,5 +1,5 @@
 ## no critic
-# $Id: en.pm 1752 2007-03-05 02:42:43Z claco $
+# $Id$
 package Mango::I18N::en;
 use strict;
 use warnings;

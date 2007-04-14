@@ -1,4 +1,4 @@
-# $Id: Product.pm 1733 2007-02-14 03:06:56Z claco $
+# $Id$
 package Mango::Schema::Product;
 use strict;
 use warnings;

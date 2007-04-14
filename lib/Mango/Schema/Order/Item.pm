@@ -1,4 +1,4 @@
-# $Id: Item.pm 1713 2007-02-04 23:59:50Z claco $
+# $Id$
 package Mango::Schema::Order::Item;
 use strict;
 use warnings;

@@ -1,4 +1,4 @@
-# $Id: Roles.pm 1789 2007-04-06 01:58:24Z claco $
+# $Id$
 package Mango::Provider::Roles;
 use strict;
 use warnings;

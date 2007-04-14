@@ -1,4 +1,4 @@
-# $Id: UserRole.pm 1713 2007-02-04 23:59:50Z claco $
+# $Id$
 package Mango::Schema::UserRole;
 use strict;
 use warnings;

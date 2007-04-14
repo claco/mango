@@ -1,4 +1,4 @@
-# $Id: Wishlist.pm 1713 2007-02-04 23:59:50Z claco $
+# $Id$
 package Mango::Schema::Wishlist;
 use strict;
 use warnings;

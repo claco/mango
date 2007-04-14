@@ -1,4 +1,4 @@
-# $Id: Tag.pm 1734 2007-02-15 02:04:05Z claco $
+# $Id$
 package Mango::Schema::Tag;
 use strict;
 use warnings;

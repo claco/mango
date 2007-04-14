@@ -1,4 +1,4 @@
-# $Id: Currency.pm 1715 2007-02-05 02:57:49Z claco $
+# $Id$
 package Mango::Currency;
 use strict;
 use warnings;
