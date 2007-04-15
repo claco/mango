@@ -37,7 +37,16 @@ BEGIN {
         'No provider class is specified!',
     PROVIDER_CLASS_NOT_LOADED =>
         'The provider [_1] could not be loaded: [_2]!',
-
+    NOT_A_ROLE =>
+        'The object is not a Mango::Role object',
+    NOT_A_USER =>
+        'The object is not a Mango::User object',
+    NOT_A_TAG =>
+        'The object is not a Mango::Tag object',
+    NOT_A_ATTRIBUTE =>
+        'The object is not a Mango::Attribute object',
+    NOT_A_PRODUCT =>
+        'The object is not a Mango::Product object',
 );
 
 1;

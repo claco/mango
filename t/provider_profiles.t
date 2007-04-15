@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 105;
+        plan tests => 118;
     };
 
     use_ok('Mango::Provider::Profiles');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Profile');
     use_ok('Mango::User');
 };
@@ -97,20 +98,27 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 };
 
 
-## search w/iterator
+## search w/iterator w/order by
 {
-    my $profiles = $provider->search;
+    my $profiles = $provider->search(undef, {
+        order_by => 'id desc'
+    });
     isa_ok($profiles, 'Mango::Iterator');
     is($profiles->count, 2);
 
-    for (1..2) {
-        my $profile = $profiles->next;
-        isa_ok($profile, 'Mango::Profile');
-        is($profile->id, $_);
-        is($profile->first_name, "First$_");
-        is($profile->last_name, "Last$_");
-        is($profile->created, '2004-07-04T12:00:00');
-    };
+    my $profile = $profiles->next;
+    isa_ok($profile, 'Mango::Profile');
+    is($profile->id, 2);
+    is($profile->first_name, 'First2');
+    is($profile->last_name, 'Last2');
+    is($profile->created, '2004-07-04T12:00:00');
+
+    $profile = $profiles->next;
+    isa_ok($profile, 'Mango::Profile');
+    is($profile->id, 1);
+    is($profile->first_name, 'First1');
+    is($profile->last_name, 'Last1');
+    is($profile->created, '2004-07-04T12:00:00');
 };
 
 
@@ -175,7 +183,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 {
     my $current = DateTime->now;
     my $profile = $provider->create({
-        user_id => 4,
+        user => 4,
         first_name => 'First4',
         last_name => 'Last4',
         created  => DateTime->now
@@ -323,4 +331,85 @@ isa_ok($provider, 'Mango::Provider::Profiles');
         user => $user
     });
     is($provider->search->count, 0);
+};
+
+
+## create/delete using user object in hash as id
+{
+    my $user = Mango::User->new({
+        data => {
+            id => 4
+        }
+    });
+
+    my $profile = $provider->create({
+        user => $user,
+        first_name => 'First4',
+        last_name => 'Last4'
+    });
+    isa_ok($profile, 'Mango::Profile');
+    is($profile->user_id, 4);
+    is($profile->first_name, 'First4');
+    is($profile->last_name, 'Last4');
+    is($provider->search->count, 1);
+
+    $provider->delete({
+        user => $user->id
+    });
+    is($provider->search->count, 0);
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create({
+            user => bless({}, 'Junk'),
+            first_name => 'Christopher'
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## search throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };

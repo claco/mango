@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
+    use Mango::Exception ();
 };
 __PACKAGE__->result_class('Mango::Profile');
 __PACKAGE__->source_name('Profiles');
@@ -13,7 +14,15 @@ sub create {
     my ($self, $data) = @_;
 
     if (my $user = delete $data->{'user'}) {
-        $data->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $data->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $data->{'user_id'} = $user;
+        };
     };
 
     return $self->SUPER::create($data);
@@ -25,12 +34,18 @@ sub delete {
     if (Scalar::Util::blessed $filter) {
         $filter = {id => $filter->id};
     } elsif (ref $filter eq 'HASH') {
-        $filter ||= {};
-
         if (my $user = delete $filter->{'user'}) {
-            $filter->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+            if (Scalar::Util::blessed($user)) {
+                if ($user->isa('Mango::User')) {
+                    $filter->{'user_id'} = $user->id;
+                } else {
+                    throw Mango::Exception('NOT_A_USER');
+                };
+            } else {
+                $filter->{'user_id'} = $user;
+            };
         };
-    } elsif (ref $filter ne 'HASH') {
+    } else {
         $filter = {id => $filter};
     };
 
@@ -44,7 +59,15 @@ sub search {
     $options ||= {};
 
     if (my $user = delete $filter->{'user'}) {
-        $filter->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $filter->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $filter->{'user_id'} = $user;
+        };
     };
 
     return $self->SUPER::search($filter, $options);

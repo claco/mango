@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 311;
+        plan tests => 368;
     };
 
     use_ok('Mango::Provider::Products');
@@ -88,8 +88,71 @@ isa_ok($provider, 'Mango::Provider::Products');
 
 ## search with tags
 {
+    my $tag2 = Mango::Tag->new({
+        data => {name => 'Tag2'}
+    });
+    my $products = $provider->search({
+        tags => [qw/Tag1/, $tag2]
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 1);
+
+    my $product = $products->next;
+    is($product->id, 1);
+    is($product->sku, 'SKU1111');
+    is($product->name, 'SKU 1');
+    is($product->description, 'My SKU 1');
+    is($product->price+0, 1.11);
+    is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search with tags with existing join as array
+{
     my $products = $provider->search({
         tags => [qw/Tag1 Tag2/]
+    }, {
+        join => ['attributes']
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 1);
+
+    my $product = $products->next;
+    is($product->id, 1);
+    is($product->sku, 'SKU1111');
+    is($product->name, 'SKU 1');
+    is($product->description, 'My SKU 1');
+    is($product->price+0, 1.11);
+    is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search with tags with existing join as string
+{
+    my $products = $provider->search({
+        tags => [qw/Tag1 Tag2/]
+    }, {
+        join => 'attributes'
+    });
+    isa_ok($products, 'Mango::Iterator');
+    is($products->count, 1);
+
+    my $product = $products->next;
+    is($product->id, 1);
+    is($product->sku, 'SKU1111');
+    is($product->name, 'SKU 1');
+    is($product->description, 'My SKU 1');
+    is($product->price+0, 1.11);
+    is($product->created, '2004-07-04T12:00:00');
+};
+
+
+## search with tags with existing join as hash
+{
+    my $products = $provider->search({
+        tags => [qw/Tag1 Tag2/]
+    }, {
+        join => {'map_product_tag' => 'tag'}
     });
     isa_ok($products, 'Mango::Iterator');
     is($products->count, 1);
@@ -118,16 +181,18 @@ isa_ok($provider, 'Mango::Provider::Products');
 {
     my $products = $provider->search({
         tags => []
+    }, {
+        order_by => 'id desc'
     });
     isa_ok($products, 'Mango::Iterator');
     is($products->count, 3);
 
     my $product = $products->next;
-    is($product->id, 1);
-    is($product->sku, 'SKU1111');
-    is($product->name, 'SKU 1');
-    is($product->description, 'My SKU 1');
-    is($product->price+0, 1.11);
+    is($product->id, 3);
+    is($product->sku, 'SKU3333');
+    is($product->name, 'SKU 3');
+    is($product->description, 'My SKU 3');
+    is($product->price+0, 3.33);
     is($product->created, '2004-07-04T12:00:00');
 
     $product = $products->next;
@@ -139,11 +204,11 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->created, '2004-07-04T12:00:00');
 
     $product = $products->next;
-    is($product->id, 3);
-    is($product->sku, 'SKU3333');
-    is($product->name, 'SKU 3');
-    is($product->description, 'My SKU 3');
-    is($product->price+0, 3.33);
+    is($product->id, 1);
+    is($product->sku, 'SKU1111');
+    is($product->name, 'SKU 1');
+    is($product->description, 'My SKU 1');
+    is($product->price+0, 1.11);
     is($product->created, '2004-07-04T12:00:00');
 };
 
@@ -244,22 +309,25 @@ isa_ok($provider, 'Mango::Provider::Products');
         data => {id => 1}
     });
 
-    my $attributes = $provider->search_attributes($product);
+    my $attributes = $provider->search_attributes($product->id, undef, {
+        order_by => 'id desc'
+    });
     isa_ok($attributes, 'Mango::Iterator');
     is($attributes->count, 2);
+    is($attributes->pager, undef);
 
     my $attribute = $attributes->next;
-    isa_ok($attribute, 'Mango::Attribute');
-    is($attribute->id, 1);
-    is($attribute->name, 'Attribute1');
-    is($attribute->value, 'Value1');
-    is($attribute->created, '2004-07-04T12:00:00');
-
-    $attribute = $attributes->next;
     isa_ok($attribute, 'Mango::Attribute');
     is($attribute->id, 2);
     is($attribute->name, 'Attribute2');
     is($attribute->value, 'Value2');
+    is($attribute->created, '2004-07-04T12:00:00');
+
+    $attribute = $attributes->next;
+    isa_ok($attribute, 'Mango::Attribute');
+    is($attribute->id, 1);
+    is($attribute->name, 'Attribute1');
+    is($attribute->value, 'Value1');
     is($attribute->created, '2004-07-04T12:00:00');
 };
 
@@ -270,11 +338,32 @@ isa_ok($provider, 'Mango::Provider::Products');
         data => {id => 1}
     });
 
-    my $attributes = $provider->search_attributes($product, {name => 'Attribute2'});
+    my $attributes = $provider->search_attributes($product, {name => 'Attribute2'}, {
+        page => 1, rows => 1
+    });
     isa_ok($attributes, 'Mango::Iterator');
     is($attributes->count, 1);
+    isa_ok($attributes->pager, 'Data::Page');
 
     my $attribute = $attributes->next;
+    isa_ok($attribute, 'Mango::Attribute');
+    is($attribute->id, 2);
+    is($attribute->name, 'Attribute2');
+    is($attribute->value, 'Value2');
+    is($attribute->created, '2004-07-04T12:00:00');
+};
+
+
+## search for attributes w/filter return list
+{
+    my $product = Mango::Product->new({
+        data => {id => 1}
+    });
+
+    my @attributes = $provider->search_attributes($product, {name => 'Attribute2'});
+    is(scalar @attributes, 1);
+
+    my $attribute = shift @attributes;
     isa_ok($attribute, 'Mango::Attribute');
     is($attribute->id, 2);
     is($attribute->name, 'Attribute2');
@@ -301,7 +390,7 @@ isa_ok($provider, 'Mango::Provider::Products');
         data => {id => 1}
     });
 
-    my $tags = $provider->search_tags($product);
+    my $tags = $provider->search_tags($product->id);
     isa_ok($tags, 'Mango::Iterator');
     is($tags->count, 2);
 
@@ -520,7 +609,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($product->price+0, 5.55);
     cmp_ok($product->created->epoch, '>=', $current->epoch);
 
-    my $attribute = $product->add_attribute({
+    my $attribute = $provider->add_attribute($product->id, {
         name => 'CreatedAttribute1', value => 'CreatedValue1'
     });
     isa_ok($attribute, 'Mango::Attribute');
@@ -585,6 +674,13 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($attribute->value, 'CreatedValue3');
     cmp_ok($attribute->created->epoch, '>=', $current->epoch);
 
+    $attribute = $product->add_attribute({
+        name => 'CreatedAttribute3', value => 'CreatedValue3'
+    });
+    isa_ok($attribute, 'Mango::Attribute');
+    is($attribute->name, 'CreatedAttribute3');
+    is($attribute->value, 'CreatedValue3');
+
     my @tags = $product->add_tags(qw/foo bar baz/);
     is(scalar @tags, 3);
 
@@ -600,13 +696,17 @@ isa_ok($provider, 'Mango::Provider::Products');
     isa_ok($tag, 'Mango::Tag');
     is($tag->name, 'baz');
 
-    $tag = $product->add_tag('quix');
+    $tag = $provider->add_tag($product->id, 'quix');
     isa_ok($tag, 'Mango::Tag');
     is($tag->name, 'quix');
 
+    $tag = $product->add_tag('fark');
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'fark');
+
     my $tags = $product->tags;
     isa_ok($tags, 'Mango::Iterator');
-    is($tags->count, 4);
+    is($tags->count, 5);
 
     is($provider->search->count, 5);
 };
@@ -680,6 +780,21 @@ isa_ok($provider, 'Mango::Provider::Products');
 };
 
 
+## update attribute
+{
+    my $product = $provider->search->first;
+    my $attribute = $product->attributes({id => 1})->first;
+
+    $attribute->name('UpdatedName');
+    $attribute->value('UpdatedValue');
+    $attribute->update;
+
+    $attribute = $product->attributes({id => 1})->first;
+    is($attribute->name, 'UpdatedName');
+    is($attribute->value, 'UpdatedValue');
+};
+
+
 ## delete using id
 {
     ok($provider->delete(4));
@@ -720,4 +835,155 @@ isa_ok($provider, 'Mango::Provider::Products');
     ok($product->destroy);
     is($provider->search->count, 1);
     is($provider->get_by_id(1), undef);
+};
+
+
+## search throws exception when tag isn't a tag object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            tags => [bless({}, 'Junk')]
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Tag/i, 'not a Mango::Tag');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## add_attribute throws exception when product isn't a product object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_attributes(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+## add_attribute throws exception when attribute isn't a attribute object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_attributes($product, bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Attribute/i, 'not a Mango::Attribute');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## search_attribute throws exception when product isn't a product object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search_attributes(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete_attribute throws exception when product isn't a product object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete_attributes(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## add_tag throws exception when product isn't a product object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_tags(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## add_tag throws exception when tag isn't a tag object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_tags($product, bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Tag/i, 'not a Mango::Tag');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## add_tag adds nothing if name is undef
+{
+    my $product = $provider->search->first;
+
+    is($product->tags->count, 5);
+    $product->add_tag('');
+    is($product->tags->count, 5);
+};
+
+
+## search_tags throws exception when product isn't a product object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search_tags(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };

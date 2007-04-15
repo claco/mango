@@ -35,27 +35,35 @@ sub search {
     if (my $tags = delete $filter->{'tags'}) {
         my $count;
 
-        foreach my $tag (@{$tags}) {
-            last unless @{$tags};
+        if (@{$tags}) {
+            foreach my $tag (@{$tags}) {
+                if (Scalar::Util::blessed $tag) {
+                    if ($tag->isa('Mango::Tag')) {
+                        $tag = $tag->name;
+                    } else {
+                        throw Mango::Exception('NOT_A_TAG');
+                    };
+                };
 
-            if (Scalar::Util::blessed $tag && $tag->isa('Mango::Tag')) {
-                $tag = $tag->name;
+                if (!$count) {
+                    $count = 1;
+                    $filter->{'tag.name'} = $tag;
+                } else {
+                    $filter->{'tag_' . $count . '.name'} = $tag;
+                };
+                $count++
             };
 
-            if (!$count) {
-                $count = 1;
-                $filter->{'tag.name'} = $tag;
+            $options->{'distinct'} = 1;
+            if (defined $options->{'join'}) {
+                if (!ref $options->{'join'} || ref $options->{'join'} eq 'HASH') {
+                    $options->{'join'} = [$options->{'join'}];
+                };
             } else {
-                $filter->{'tag_' . $count . '.name'} = $tag;
+                $options->{'join'} = [];
             };
-            $count++
+            push @{$options->{'join'}}, map {{'map_product_tag' => 'tag'}} @{$tags};
         };
-
-        $options->{'distinct'} = 1;
-        if (!defined $options->{'join'}) {
-            $options->{'join'} = [];
-        };
-        push @{$options->{'join'}}, map {{'map_product_tag' => 'tag'}} @{$tags};
     };
 
     return $self->SUPER::search($filter, $options);
@@ -88,11 +96,23 @@ sub add_attributes {
     my $resultset = $self->schema->resultset($self->attribute_source_name);
     my @added;
 
-    foreach my $attribute (@data) {
-        if (Scalar::Util::blessed $attribute && $attribute->isa('Mango::Attribute')) {
-            $attribute = {%{$attribute->data}};
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
         };
-        $attribute->{'product_id'} = Scalar::Util::blessed($product) ? $product->id : $product;
+    };
+
+    foreach my $attribute (@data) {
+        if (Scalar::Util::blessed $attribute) {
+            if ($attribute->isa('Mango::Attribute')) {
+                $attribute = {%{$attribute->data}};
+            } else {
+                throw Mango::Exception('NOT_A_ATTRIBUTE');
+            };
+        };
+        $attribute->{'product_id'} = $product;
 
         push @added, $self->attribute_class->new({
             provider => $self,
@@ -110,7 +130,15 @@ sub search_attributes {
     $filter ||= {};
     $options ||= {};
 
-    $filter->{'product_id'} = Scalar::Util::blessed($product) ? $product->id : $product;
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
+        };
+    };
+
+    $filter->{'product_id'} = $product;
 
     my $resultset = $self->schema->resultset($self->attribute_source_name)->search(
         $filter, $options
@@ -134,17 +162,22 @@ sub search_attributes {
 };
 
 sub delete_attributes {
-    my ($self, $product, $filter, $options) = @_;
+    my ($self, $product, $filter) = @_;
     my $resultset = $self->schema->resultset($self->attribute_source_name);
 
     $filter ||= {};
-    $options ||= {};
 
-    $filter->{'product_id'} = Scalar::Util::blessed($product) ? $product->id : $product;
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
+        };
+    };
 
-    return $resultset->search(
-        $filter, $options
-    )->delete_all;
+    $filter->{'product_id'} = $product;
+
+    return $resultset->search($filter)->delete_all;
 };
 
 sub update_attribute {
@@ -167,9 +200,21 @@ sub add_tags {
     my $resultset = $self->schema->resultset($self->tag_source_name);
     my @added;
 
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
+        };
+    };
+
     foreach my $tag (@data) {
-        if (Scalar::Util::blessed $tag && $tag->isa('Mango::Tag')) {
-            $tag = {%{$tag->data}};
+        if (Scalar::Util::blessed $tag) {
+            if ($tag->isa('Mango::Tag')) {
+                $tag = {%{$tag->data}};
+            } else {
+                throw Mango::Exception('NOT_A_TAG');
+            };
         } elsif (!ref $tag) {
             $tag = {name => $tag};
         };
@@ -178,7 +223,7 @@ sub add_tags {
 
         my $newtag = $resultset->find_or_create($tag);
         $newtag->related_resultset('map_product_tag')->find_or_create({
-            product_id => Scalar::Util::blessed($product) ? $product->id : $product,
+            product_id => $product,
             tag_id => $newtag->id
         });
         push @added, $self->tag_class->new({
@@ -196,8 +241,16 @@ sub search_tags {
     $filter ||= {};
     $options ||= {};
 
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
+        };
+    };
+
     $filter->{'products'} = {
-        'id' => Scalar::Util::blessed($product) ? $product->id : $product
+        'id' => $product
     };
 
     return $self->tags($filter, $options);

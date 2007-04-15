@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
+    use Mango::Exception ();
     use Scalar::Util ();
 };
 __PACKAGE__->result_class('Mango::Role');
@@ -15,13 +16,21 @@ __PACKAGE__->source_name('Roles');
 sub add_users {
     my ($self, $role, @users) = @_;
 
-    if (Scalar::Util::blessed($role) && $role->isa('Mango::Role')) {
-        $role = $role->id;
+    if (Scalar::Util::blessed($role)) {
+        if ($role->isa('Mango::Role')) {
+            $role = $role->id;
+        } else {
+            throw Mango::Exception('NOT_A_ROLE');
+        };
     };
 
     foreach my $user (@users) {
-        if (Scalar::Util::blessed($user) && $user->isa('Mango::User')) {
-            $user = $user->id;
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $user = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
         };
 
         $self->schema->resultset('UsersRoles')->create({
@@ -36,15 +45,29 @@ sub add_users {
 sub remove_users {
     my ($self, $role, @users) = @_;
 
-    if (Scalar::Util::blessed($role) && $role->isa('Mango::Role')) {
-        $role = $role->id;
+    if (Scalar::Util::blessed($role)) {
+        if ($role->isa('Mango::Role')) {
+            $role = $role->id;
+        } else {
+            throw Mango::Exception('NOT_A_ROLE');
+        };
     };
 
+    my @ids;
+    foreach my $user (@users) {
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                push @ids, $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            push @ids, $user;
+        };
+    };
     $self->schema->resultset('UsersRoles')->search({
         role_id => $role,
-        user_id => [map {
-            Scalar::Util::blessed($_) ? $_->id : $_
-        } @users]
+        user_id => \@ids
     })->delete;
 };
 
@@ -57,7 +80,11 @@ sub search {
     if (my $user = delete $filter->{'user'}) {
         $filter->{'user.id'} = Scalar::Util::blessed($user) ? $user->id : $user;
         $options->{'distinct'} = 1;
-        if (!defined $options->{'join'}) {
+        if (defined $options->{'join'}) {
+            if (!ref $options->{'join'} || ref $options->{'join'} eq 'HASH') {
+                $options->{'join'} = [$options->{'join'}];
+            };
+        } else {
             $options->{'join'} = [];
         };
         push @{$options->{'join'}}, {'map_user_role' => 'user'};

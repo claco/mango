@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 104;
+        plan tests => 143;
     };
 
     use_ok('Mango::Provider::Roles');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Role');
     use_ok('Mango::User');
 };
@@ -121,19 +122,24 @@ isa_ok($provider, 'Mango::Provider::Roles');
 };
 
 
-## search as list
+## search as list (with order_by)
 {
-    my @roles = $provider->search;
+    my @roles = $provider->search(undef, {order_by => 'id desc'});
     is($#roles, 1);
 
-    for (1..2) {
-        my $role = $roles[$_-1];
-        isa_ok($role, 'Mango::Role');
-        is($role->id, $_);
-        is($role->name, "role$_");
-        is($role->description, "Role$_");
-        is($role->created, '2004-07-04T12:00:00');
-    };
+    my $role = $roles[0];
+    isa_ok($role, 'Mango::Role');
+    is($role->id, 2);
+    is($role->name, 'role2');
+    is($role->description, 'Role2');
+    is($role->created, '2004-07-04T12:00:00');
+
+    $role = $roles[1];
+    isa_ok($role, 'Mango::Role');
+    is($role->id, 1);
+    is($role->name, 'role1');
+    is($role->description, 'Role1');
+    is($role->created, '2004-07-04T12:00:00');
 };
 
 
@@ -148,6 +154,57 @@ isa_ok($provider, 'Mango::Provider::Roles');
     is($role->id, 2);
     is($role->name, 'role2');
     is($role->description, 'Role2');
+    is($role->created, '2004-07-04T12:00:00');
+};
+
+
+## search w/existing join (as array) and user
+{
+    my $roles = $provider->search({user => 2}, {
+        join => ['map_user_role']
+    });
+    isa_ok($roles, 'Mango::Iterator');
+    is($roles->count, 1);
+
+    my $role = $roles->next;
+    isa_ok($role, 'Mango::Role');
+    is($role->id, 1);
+    is($role->name, 'role1');
+    is($role->description, 'Role1');
+    is($role->created, '2004-07-04T12:00:00');
+};
+
+
+## search w/existing join (as string) and user
+{
+    my $roles = $provider->search({user => 2}, {
+        join => 'map_user_role'
+    });
+    isa_ok($roles, 'Mango::Iterator');
+    is($roles->count, 1);
+
+    my $role = $roles->next;
+    isa_ok($role, 'Mango::Role');
+    is($role->id, 1);
+    is($role->name, 'role1');
+    is($role->description, 'Role1');
+    is($role->created, '2004-07-04T12:00:00');
+};
+
+
+## search w/existing join (as hash) and user
+{
+    my $roles = $provider->search({user => 2}, {
+        join => {'map_user_role' => 'user'}
+    });
+    isa_ok($roles, 'Mango::Iterator');
+    is($roles->count, 1);
+
+    my $role = $roles->next;
+    isa_ok($role, 'Mango::Role');
+    is($role->id, 1);
+    is($role->name, 'role1');
+    is($role->description, 'Role1');
     is($role->created, '2004-07-04T12:00:00');
 };
 
@@ -301,4 +358,120 @@ isa_ok($provider, 'Mango::Provider::Roles');
     ok($role->destroy);
     is($provider->search->count, 0);
     is($provider->get_by_id(1), undef);
+};
+
+
+## add a role and add a user
+{
+    my $role = $provider->create({
+        name => 'New Role'
+    });
+
+    my $user = Mango::User->new({
+        data => {id => 2}
+    });
+
+    is($provider->search({user => 1})->count, 0);
+    $role->add_users(1);    
+    $provider->add_users($role->id, $user);
+
+    my $roles = $provider->search({user => 1});
+    is($roles->count, 1);
+    is($roles->first->name, 'New Role');
+
+    $roles = $provider->search({user => $user});
+    is($roles->count, 1);
+    is($roles->first->name, 'New Role');
+};
+
+
+## delete users from a role
+{
+    my $role = $provider->search({
+        name => 'New Role'
+    })->first;
+
+    my $user = Mango::User->new({
+        data => {id => 2}
+    });
+
+    is($provider->search({user => 1})->count, 1);
+    $role->remove_users(1);
+    is($provider->search({user => 1})->count, 0);
+
+    is($provider->search({user => $user})->count, 1);
+    $provider->remove_users($role->id, $user);
+    is($provider->search({user => $user})->count, 0);
+};
+
+
+## add_user throws exception when role isn't a role object
+{
+    my $role = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_users(bless({}, 'Junk'), 1);
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Role/i, 'not a Mango::Role');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## add_user throws exception when user isn't a user object
+{
+    my $role = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->add_users($role, bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## remove_user throws exception when role isn't a role object
+{
+    my $role = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->remove_users(bless({}, 'Junk'), 1);
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Role/i, 'not a Mango::Role');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## remove_user throws exception when user isn't a user object
+{
+    my $role = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->remove_users($role, bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };
