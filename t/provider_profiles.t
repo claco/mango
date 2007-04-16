@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 118;
+        plan tests => 122;
     };
 
     use_ok('Mango::Provider::Profiles');
@@ -409,6 +409,38 @@ isa_ok($provider, 'Mango::Provider::Profiles');
     } catch Mango::Exception with {
         pass('Argument exception thrown');
         like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when profile isn't a profile object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Profile/i, 'not a Mango::Profile');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## create without data/user goes boom
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/no user was specified/i, 'no user specified');
     } otherwise {
         fail('Other exception thrown');
     };

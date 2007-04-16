@@ -53,7 +53,7 @@ sub delete {
 sub resultset {
     my ($self, $resultset) = @_;
 
-    if ($resultset) {
+    if (defined $resultset) {
         $self->_resultset($resultset);
     } elsif (!$self->_resultset) {
         if (!$self->source_name) {

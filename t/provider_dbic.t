@@ -11,11 +11,13 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 48;
+        plan tests => 74;
     };
 
     use_ok('Mango::Provider::DBIC');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Object');
+    use_ok('Mango::Schema');
 };
 
 my $schema = Mango::Test->init_schema;
@@ -59,8 +61,25 @@ is($provider->result_class, 'Mango::Object');
     is($users->count, 1);
     my $user = $users->next;
     isa_ok($user, 'Mango::Object');
+    is($users->pager, undef);
     is($user->data->{'id'}, 2);
     is($user->data->{'username'}, 'test2');
+};
+
+
+## search into iterator with pager
+{
+    my $users = $provider->search(undef, {
+        rows => 1, page => 1
+    });
+    isa_ok($users, 'Mango::Iterator');
+    is($users->count, 1);
+    isa_ok($users->pager, 'Data::Page');
+    is($users->pager->last_page, 3);
+    my $user = $users->next;
+    isa_ok($user, 'Mango::Object');
+    is($user->data->{'id'}, 1);
+    is($user->data->{'username'}, 'test1');
 };
 
 
@@ -134,4 +153,111 @@ is($provider->result_class, 'Mango::Object');
     ok($provider->delete($object));
     is($provider->resultset->count, 2);
     is($provider->resultset->find(2), undef);
+};
+
+
+## delete w/hash
+{
+    is($provider->resultset->count, 2);
+    ok($provider->delete({ id => 3 }));
+    is($provider->resultset->count, 1);
+    is($provider->resultset->find(1), undef);
+};
+
+
+## search using cusotm resultset
+{
+    is($provider->resultset->count, 1);
+    $provider->create({
+        username => 'customusername',
+        password => 'custompassword'
+    });
+    is($provider->resultset->count, 2);
+
+    $provider->resultset(
+        $provider->schema->resultset('Users')->search_rs({
+            username => 'customusername'
+        })
+    );
+    is($provider->resultset->count, 1);
+};
+
+
+## resultset goes boom when source_name is junk
+{
+    $provider->_resultset(undef);
+    $provider->source_name('Junk');
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->resultset;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/source Junk not found/i, 'source not found');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## resultset goes boom when no source_name is defined
+{
+    $provider->_resultset(undef);
+    $provider->source_name(undef);
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->resultset;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/no schema_source/i, 'no schema_source');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## resultset goes boom when no source_name is defined
+{
+    $provider->_schema(undef);
+    $provider->source_name('Users');
+    $provider->schema_class(undef);
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->schema;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/no schema_class/i, 'no schema_class');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## set schema externally
+{
+    is($provider->_schema, undef);
+
+    $provider->schema(
+        Mango::Schema->connect
+    );
+
+    ok($provider->schema);
+};
+
+
+## last resort conneciton_info
+{
+    $provider->_schema(undef);
+    $provider->schema_class('Mango::Schema');
+    $provider->connection_info(undef);
+
+    ok($provider->schema);
 };

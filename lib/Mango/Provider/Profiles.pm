@@ -12,6 +12,7 @@ __PACKAGE__->source_name('Profiles');
 
 sub create {
     my ($self, $data) = @_;
+    $data ||= {};
 
     if (my $user = delete $data->{'user'}) {
         if (Scalar::Util::blessed($user)) {
@@ -25,6 +26,10 @@ sub create {
         };
     };
 
+    if (!$data->{'user_id'}) {
+        throw Mango::Exception('NO_USER_SPECIFIED');
+    };
+
     return $self->SUPER::create($data);
 };
 
@@ -32,7 +37,11 @@ sub delete {
     my ($self, $filter) = @_;
 
     if (Scalar::Util::blessed $filter) {
-        $filter = {id => $filter->id};
+        if ($filter->isa('Mango::Profile')) {
+            $filter = {id => $filter->id};
+        } else {
+            throw Mango::Exception('NOT_A_PROFILE');
+        };
     } elsif (ref $filter eq 'HASH') {
         if (my $user = delete $filter->{'user'}) {
             if (Scalar::Util::blessed($user)) {

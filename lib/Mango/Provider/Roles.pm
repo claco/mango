@@ -78,7 +78,16 @@ sub search {
     $options ||= {};
 
     if (my $user = delete $filter->{'user'}) {
-        $filter->{'user.id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $filter->{'user.id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $filter->{'user.id'} = $user;
+        };
+        
         $options->{'distinct'} = 1;
         if (defined $options->{'join'}) {
             if (!ref $options->{'join'} || ref $options->{'join'} eq 'HASH') {

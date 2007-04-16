@@ -130,6 +130,10 @@ Deletes the item matching the supplied filter from the current order.
         sku => 'ABC-123'
     });
 
+=head2 destroy
+
+Deletes the current item from the provider.
+
 =head2 items
 
 =over

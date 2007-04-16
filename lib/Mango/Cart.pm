@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Handel::Cart/;
+    use Mango::Exception ();
     use DateTime ();
 };
 
@@ -28,11 +29,11 @@ __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub type {
-    
+    throw Mango::Exception('METHOD_NOT_IMPLEMENTED');
 };
 
 sub save {
-    
+    throw Mango::Exception('METHOD_NOT_IMPLEMENTED');
 };
 
 sub update {
@@ -130,6 +131,10 @@ Deletes the item matching the supplied filter from the current cart.
     $cart->delete({
         sku => 'ABC-123'
     });
+
+=head2 destroy
+
+Deletes the current item from the provider.
 
 =head2 items
 

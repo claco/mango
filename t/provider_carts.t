@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 90;
+        plan tests => 114;
     };
 
     use_ok('Mango::Provider::Carts');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Cart');
     use_ok('Mango::User');
 };
@@ -187,6 +188,54 @@ isa_ok($provider, 'Mango::Provider::Carts');
 };
 
 
+## create with user object
+{
+    my $user = Mango::User->new({
+        data => {id => 23}
+    });
+    my $current = DateTime->now;
+    my $cart = $provider->create({
+        user => $user,
+        created  => DateTime->now
+    });
+    isa_ok($cart, 'Mango::Cart');
+    is($cart->id, 5);
+    is($cart->user_id, 23);
+    cmp_ok($cart->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 5);
+
+    my $item = $cart->add({
+        sku => 'ABC-123'
+    });
+    $item->sku('FOO');
+    $item->update;
+    is($cart->items->first->sku, 'FOO');
+
+    $provider->delete({
+        user => 23
+    });
+};
+
+
+## create with user id
+{
+    my $current = DateTime->now;
+    my $cart = $provider->create({
+        user => 24,
+        created  => DateTime->now
+    });
+    isa_ok($cart, 'Mango::Cart');
+    is($cart->id, 5);
+    is($cart->user_id, 24);
+    cmp_ok($cart->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 5);
+
+    $provider->delete({
+        user => Mango::User->new({data=>{id => 24}})
+    });
+};
+
+
 ## update directly
 {
     my $date = DateTime->new(
@@ -277,4 +326,108 @@ isa_ok($provider, 'Mango::Provider::Carts');
     ok($cart->destroy);
     is($provider->search->count, 0);
     is($provider->get_by_id(1), undef);
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when cart isn't a cart object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Cart/i, 'not a Mango::Cart');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## cart type not implemented
+{
+    my $cart = $provider->create;
+    try {
+        local $ENV{'LANG'} = 'en';
+        $cart->type;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not implemented/i, 'not implemented');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## cart save not implemented
+{
+    my $cart = $provider->create;
+    try {
+        local $ENV{'LANG'} = 'en';
+        $cart->save;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not implemented/i, 'not implemented');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };

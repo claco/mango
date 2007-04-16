@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
+    use DateTime ();
 };
 
 __PACKAGE__->load_components(qw/

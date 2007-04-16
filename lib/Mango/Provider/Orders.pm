@@ -28,7 +28,19 @@ sub create {
     my $data = shift || {};
 
     if (my $user = delete $data->{'user'}) {
-        $data->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $data->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $data->{'user_id'} = $user;
+        };
+    };
+
+    if (!$data->{'user_id'}) {
+        throw Mango::Exception('NO_USER_SPECIFIED');
     };
 
     return $self->storage->create($data, @_);
@@ -39,7 +51,15 @@ sub search {
     my $filter = shift || {};
 
     if (my $user = delete $filter->{'user'}) {
-        $filter->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if (Scalar::Util::blessed $user) {
+            if ($user->isa('Mango::User')) {
+                $filter->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $filter->{'user_id'} = $user;
+        };
     };
 
     return $self->storage->search($filter, @_);
@@ -56,14 +76,24 @@ sub delete {
     my $filter = shift;
 
     if (Scalar::Util::blessed $filter) {
-        $filter = {id => $filter->id};
-    } elsif (ref $filter eq 'HASH') {
-        $filter ||= {};
-
-        if (my $user = delete $filter->{'user'}) {
-            $filter->{'user_id'} = Scalar::Util::blessed($user) ? $user->id : $user;
+        if ($filter->isa('Mango::Order')) {
+            $filter = {id => $filter->id};
+        } else {
+            throw Mango::Exception('NOT_A_ORDER');
         };
-    } elsif (ref $filter ne 'HASH') {
+    } elsif (ref $filter eq 'HASH') {
+        if (my $user = delete $filter->{'user'}) {
+            if (Scalar::Util::blessed $user) {
+                if ($user->isa('Mango::User')) {
+                    $filter->{'user_id'} = $user->id;
+                } else {
+                    throw Mango::Exception('NOT_A_USER');
+                };
+            } else {
+                $filter->{'user_id'} = $user;
+            };
+        };
+    } else {
         $filter = {id => $filter};
     };
 

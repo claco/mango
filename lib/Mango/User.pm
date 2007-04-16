@@ -41,6 +41,10 @@ Returns the date the user was created as a DateTime object.
 
     print $user->created;
 
+=head2 destroy
+
+Deletes the current item from the provider.
+
 =head2 updated
 
 Returns the date the user was last updated as a DateTime object.

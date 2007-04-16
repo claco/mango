@@ -21,6 +21,8 @@ BEGIN {
         'Unauthorized',
     UNAUTHORIZED_MESSAGE =>
         'The requested resource requires user authentication.',
+    UNHANDLED_EXCEPTION =>
+        'An unhandled error has occurred',
     VIRTUAL_METHOD =>
         'This method must be overriden!',
     METHOD_NOT_IMPLEMENTED =>
@@ -47,6 +49,16 @@ BEGIN {
         'The object is not a Mango::Attribute object',
     NOT_A_PRODUCT =>
         'The object is not a Mango::Product object',
+    NOT_A_ORDER =>
+        'The object is not a Mango::Order object',
+    NOT_A_CART =>
+        'The object is not a Mango::Cart object',
+    NOT_A_WISHLIST =>
+        'The object is not a Mango::Wishlist object',
+    NOT_A_PROFILE =>
+        'The object is not a Mango::Profile object',
+    NO_USER_SPECIFIED =>
+        'No user was specified',
 );
 
 1;

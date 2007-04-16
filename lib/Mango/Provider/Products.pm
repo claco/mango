@@ -257,16 +257,23 @@ sub search_tags {
 };
 
 sub delete_tags {
-    my ($self, $product, $filter, $options) = @_;
+    my ($self, $product, $filter) = @_;
     my $resultset = $self->schema->resultset($self->tag_source_name);
 
     $filter ||= {};
-    $options ||= {};
+
+    if (Scalar::Util::blessed($product)) {
+        if ($product->isa('Mango::Product')) {
+            $product = $product->id;
+        } else {
+            throw Mango::Exception('NOT_A_PRODUCT');
+        };
+    };
 
     return $resultset->search(
-        $filter, $options
+        $filter
     )->related_resultset('map_product_tag')->search({
-        'product_id' => Scalar::Util::blessed($product) ? $product->id : $product
+        'product_id' => $product
     })->delete_all;
 };
 

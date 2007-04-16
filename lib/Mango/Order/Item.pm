@@ -22,7 +22,9 @@ __PACKAGE__->storage->setup({
     default_values   => {
         price        => 0,
         quantity     => 1,
-        total        => 0
+        total        => 0,
+        created      => sub {DateTime->now},
+        updated      => sub {DateTime->now}
     }
 });
 __PACKAGE__->result_iterator_class('Mango::Iterator');

@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 143;
+        plan tests => 145;
     };
 
     use_ok('Mango::Provider::Roles');
@@ -40,9 +40,8 @@ isa_ok($provider, 'Mango::Provider::Roles');
 
 ## get by id w/object
 {
-    my $object = Mango::Object->new({
-       data => {id => 2} 
-    });
+    my $object = Mango::Object->new;
+    $object->data({id => 2});
     my $role = $provider->get_by_id($object);
     isa_ok($role, 'Mango::Role');
     is($role->id, 2);
@@ -466,6 +465,24 @@ isa_ok($provider, 'Mango::Provider::Roles');
     try {
         local $ENV{'LANG'} = 'en';
         $provider->remove_users($role, bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## search throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            user => bless({}, 'Junk')
+        });
 
         fail('no exception thrown');
     } catch Mango::Exception with {

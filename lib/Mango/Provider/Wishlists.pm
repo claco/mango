@@ -4,9 +4,101 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Provider::Carts/;
+    use base qw/Mango::Provider/;
+
+    __PACKAGE__->mk_group_accessors('simple', qw/storage/);
 };
 __PACKAGE__->result_class('Mango::Wishlist');
+
+sub setup {
+    my ($self, $args) = @_;
+    my $storage = $self->result_class->storage->clone;
+
+    $storage->setup($args);
+
+    $self->storage(
+        bless {storage => $storage}, $self->result_class
+    );
+
+    return;
+};
+
+sub create {
+    my $self = shift;
+    my $data = shift || {};
+
+    if (my $user = delete $data->{'user'}) {
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $data->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $data->{'user_id'} = $user;
+        };
+    };
+
+    if (!$data->{'user_id'}) {
+        throw Mango::Exception('NO_USER_SPECIFIED');
+    };
+
+    return $self->storage->create($data, @_);
+};
+
+sub search {
+    my $self = shift;
+    my $filter = shift || {};
+
+    if (my $user = delete $filter->{'user'}) {
+        if (Scalar::Util::blessed $user) {
+            if ($user->isa('Mango::User')) {
+                $filter->{'user_id'} = $user->id;
+            } else {
+                throw Mango::Exception('NOT_A_USER');
+            };
+        } else {
+            $filter->{'user_id'} = $user;
+        };
+    };
+
+    return $self->storage->search($filter, @_);
+};
+
+sub update {
+    my ($self, $object) = @_;
+
+    return $object->update;
+};
+
+sub delete {
+    my $self = shift;
+    my $filter = shift;
+
+    if (Scalar::Util::blessed $filter) {
+        if ($filter->isa('Mango::Wishlist')) {
+            $filter = {id => $filter->id};
+        } else {
+            throw Mango::Exception('NOT_A_WISHLIST');
+        };
+    } elsif (ref $filter eq 'HASH') {
+        if (my $user = delete $filter->{'user'}) {
+            if (Scalar::Util::blessed $user) {
+                if ($user->isa('Mango::User')) {
+                    $filter->{'user_id'} = $user->id;
+                } else {
+                    throw Mango::Exception('NOT_A_USER');
+                };
+            } else {
+                $filter->{'user_id'} = $user;
+            };
+        };
+    } else {
+        $filter = {id => $filter};
+    };
+
+    return $self->storage->destroy($filter, @_);
+};
 
 1;
 __END__

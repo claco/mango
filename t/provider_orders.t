@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 110;
+        plan tests => 136;
     };
 
     use_ok('Mango::Provider::Orders');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Order');
     use_ok('Mango::User');
 };
@@ -180,9 +181,12 @@ isa_ok($provider, 'Mango::Provider::Orders');
 
 ## create
 {
+    my $user = Mango::User->new({
+        data => {id => 3}
+    });
     my $current = DateTime->now;
     my $order = $provider->create({
-        user_id => 3
+        user => $user
     });
     isa_ok($order, 'Mango::Order');
     is($order->id, 4);
@@ -196,14 +200,29 @@ isa_ok($provider, 'Mango::Provider::Orders');
 {
     my $current = DateTime->now;
     my $order = $provider->create({
-        user_id => 1,
-        created  => DateTime->now
+        user => 1,
+        created => DateTime->now
     });
     isa_ok($order, 'Mango::Order');
     is($order->id, 5);
     is($order->user_id, 1);
     cmp_ok($order->created->epoch, '>=', $current->epoch);
     is($provider->search->count, 5);
+};
+
+
+## create w/key
+{
+    my $current = DateTime->now;
+    my $order = $provider->create({
+        user_id => 1
+    });
+    isa_ok($order, 'Mango::Order');
+    is($order->id, 6);
+    is($order->user_id, 1);
+    cmp_ok($order->created->epoch, '>=', $current->epoch);
+
+    $order->destroy;
 };
 
 
@@ -235,6 +254,16 @@ isa_ok($provider, 'Mango::Provider::Orders');
     is($order->user_id, 1);
     cmp_ok($updated->created->epoch, '=', $date->epoch);
     is($provider->search->count, 5);
+
+    is($order->count, 0);
+    my $item = $order->add({
+        sku => 'ABC-123'
+    });
+    is($order->count, 1);
+    $item->sku('FOO');
+    $item->update;
+
+    is($order->items->first->sku, 'FOO');
 };
 
 
@@ -297,4 +326,121 @@ isa_ok($provider, 'Mango::Provider::Orders');
     ok($order->destroy);
     is($provider->search->count, 1);
     is($provider->get_by_id(1), undef);
+};
+
+
+## delete using user id
+{
+    is($provider->search->count, 1);
+    $provider->create({
+        user => 23
+    });
+    is($provider->search->count, 2);
+    ok($provider->delete({
+        user => 23
+    }));
+    is($provider->search->count, 1);
+};
+
+
+## delete using user object
+{
+    my $user = Mango::User->new({
+        data => {id => 24}
+    });
+    is($provider->search->count, 1);
+    $provider->create({
+        user => $user
+    });
+    is($provider->search->count, 2);
+    ok($provider->delete({
+        user => $user
+    }));
+    is($provider->search->count, 1);
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when order isn't a order object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Order/i, 'not a Mango::Order');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## search throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## create without data/user goes boom
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/no user was specified/i, 'no user specified');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };

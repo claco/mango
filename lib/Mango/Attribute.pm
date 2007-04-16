@@ -12,12 +12,11 @@ BEGIN {
 
 sub destroy {
     my $self = shift;
-    my $filter = shift;
 
-    $filter ||= {};
-    $filter->{'id'} = $self->id;
-
-    return $self->provider->delete_attributes($self->product, $filter, @_);
+    return $self->provider->delete_attributes(
+        $self->product,
+        {id => $self->id}
+    );
 };
 
 sub update {
@@ -87,6 +86,10 @@ Gets/sets the name of the user.
 Gets/sets the value of the attribute.
 
     print $attribute->value;
+
+=head2 destroy
+
+Deletes the current item from the provider.
 
 =head2 update
 

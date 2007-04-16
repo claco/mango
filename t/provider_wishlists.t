@@ -11,10 +11,11 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 124;
+        plan tests => 150;
     };
 
     use_ok('Mango::Provider::Wishlists');
+    use_ok('Mango::Exception', ':try');
     use_ok('Mango::Wishlist');
     use_ok('Mango::User');
 };
@@ -208,6 +209,56 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 };
 
 
+## create with user object
+{
+    my $user = Mango::User->new({
+        data => {id => 23}
+    });
+    my $current = DateTime->now;
+    my $wishlist = $provider->create({
+        user => $user,
+        name => 'Wishlist23',
+        created  => DateTime->now
+    });
+    isa_ok($wishlist, 'Mango::Wishlist');
+    is($wishlist->id, 6);
+    is($wishlist->user_id, 23);
+    cmp_ok($wishlist->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 6);
+
+    my $item = $wishlist->add({
+        sku => 'ABC-123'
+    });
+    $item->sku('FOO');
+    $item->update;
+    is($wishlist->items->first->sku, 'FOO');
+
+    $provider->delete({
+        user => 23
+    });
+};
+
+
+## create with user id
+{
+    my $current = DateTime->now;
+    my $wishlist = $provider->create({
+        user => 24,
+        name => 'Wishlist24',
+        created  => DateTime->now
+    });
+    isa_ok($wishlist, 'Mango::Wishlist');
+    is($wishlist->id, 6);
+    is($wishlist->user_id, 24);
+    cmp_ok($wishlist->created->epoch, '>=', $current->epoch);
+    is($provider->search->count, 6);
+
+    $provider->delete({
+        user => Mango::User->new({data=>{id => 24}})
+    });
+};
+
+
 ## update directly
 {
     my $date = DateTime->new(
@@ -302,4 +353,128 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
     ok($wishlist->destroy);
     is($provider->search->count, 1);
     is($provider->get_by_id(1), undef);
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## create throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when user isn't a user object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete({
+            user => bless({}, 'Junk')
+        });
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::User/i, 'not a Mango::User');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete throws exception when cart isn't a cart object
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Wishlist/i, 'not a Mango::Wishlist');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## create without data/user goes boom
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->create;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/no user was specified/i, 'no user specified');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## wishlist type not implemented
+{
+    my $wishlist = $provider->create({
+        user => 1, name => 'Wishlist1'
+    });
+    try {
+        local $ENV{'LANG'} = 'en';
+        $wishlist->type;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not implemented/i, 'not implemented');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## wishlist save not implemented
+{
+    my $wishlist = $provider->create({
+        user => 1, name => 'Wishlist1'
+    });
+    try {
+        local $ENV{'LANG'} = 'en';
+        $wishlist->save;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not implemented/i, 'not implemented');
+    } otherwise {
+        fail('Other exception thrown');
+    };
 };

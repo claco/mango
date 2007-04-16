@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 368;
+        plan tests => 378;
     };
 
     use_ok('Mango::Provider::Products');
@@ -390,20 +390,22 @@ isa_ok($provider, 'Mango::Provider::Products');
         data => {id => 1}
     });
 
-    my $tags = $provider->search_tags($product->id);
+    my $tags = $provider->search_tags($product->id, undef, {
+        order_by => 'tag.id desc'
+    });
     isa_ok($tags, 'Mango::Iterator');
     is($tags->count, 2);
 
     my $tag = $tags->next;
     isa_ok($tag, 'Mango::Tag');
-    is($tag->id, 1);
-    is($tag->name, 'Tag1');
+    is($tag->id, 2);
+    is($tag->name, 'Tag2');
     is($tag->created, '2004-07-04T12:00:00');
 
     $tag = $tags->next;
     isa_ok($tag, 'Mango::Tag');
-    is($tag->id, 2);
-    is($tag->name, 'Tag2');
+    is($tag->id, 1);
+    is($tag->name, 'Tag1');
     is($tag->created, '2004-07-04T12:00:00');
 };
 
@@ -461,7 +463,37 @@ isa_ok($provider, 'Mango::Provider::Products');
 ## search all tags assigned to products with filter
 {
     my $tags = $provider->tags({
+        'tag.name' => 'Tag2'
+    });
+    isa_ok($tags, 'Mango::Iterator');
+    is($tags->count, 1);
+
+    my $tag = $tags->next;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag2');
+};
+
+
+## search all tags assigned to products with filter as list
+{
+    my @tags = $provider->tags({
         name => 'Tag2'
+    });
+    is(scalar @tags, 1);
+
+    my $tag = shift @tags;
+    isa_ok($tag, 'Mango::Tag');
+    is($tag->name, 'Tag2');
+};
+
+
+## search all tags assigned to products with filter using me. and products key
+{
+    my $tags = $provider->tags({
+        name => 'Tag2',
+        products => {
+            'me.id' => 1
+        }
     });
     isa_ok($tags, 'Mango::Iterator');
     is($tags->count, 1);
@@ -573,8 +605,9 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($attributes->count, 0);
 
     ok($product->delete_tags({
-        name => [qw/CreatedTag1 CreatedTag3/]
+        name => [qw/CreatedTag1/]
     }));
+    ok($provider->delete_tags($product->id, {name => 'CreatedTag3'}));
     $tags = $product->tags;
     isa_ok($tags, 'Mango::Iterator');
     is($tags->count, 2);
@@ -680,6 +713,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     isa_ok($attribute, 'Mango::Attribute');
     is($attribute->name, 'CreatedAttribute3');
     is($attribute->value, 'CreatedValue3');
+    $attribute->destroy;
 
     my @tags = $product->add_tags(qw/foo bar baz/);
     is(scalar @tags, 3);
@@ -978,6 +1012,24 @@ isa_ok($provider, 'Mango::Provider::Products');
     try {
         local $ENV{'LANG'} = 'en';
         $provider->search_tags(bless({}, 'Junk'));
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## delete_tags throws exception when product isn't a product object
+{
+    my $product = $provider->search->first;
+
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->delete_tags(bless({}, 'Junk'));
 
         fail('no exception thrown');
     } catch Mango::Exception with {

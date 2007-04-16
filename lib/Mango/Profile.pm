@@ -41,6 +41,10 @@ Returns the date the profile was created as a DateTime object.
 
     print $profile->created;
 
+=head2 destroy
+
+Deletes the current item from the provider.
+
 =head2 updated
 
 Returns the date the profile was last updated as a DateTime object.

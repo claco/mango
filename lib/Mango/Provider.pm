@@ -54,7 +54,7 @@ sub set_component_class {
         if (!Class::Inspector->loaded($value)) {
             eval "use $value"; ## no critic
 
-            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value) if $@;
+            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
         };
     };
 

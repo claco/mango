@@ -138,6 +138,10 @@ Mango::Iterator in scalar context.
         name => 'A%'
     });
 
+=head2 destroy
+
+Deletes the current item from the provider.
+
 =head2 delete_attributes
 
 =over

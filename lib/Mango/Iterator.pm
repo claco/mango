@@ -80,6 +80,10 @@ Creates a new Mango::Iterator based on the type of data passed into args.
         data => \@list
     });
 
+=head2 create_result
+
+Transforms Handel object into Mango object.
+
 =head1 SEE ALSO
 
 L<Handel::Iterator>
