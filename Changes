@@ -1,5 +1,9 @@
 This file documents the revision history for Perl extension Mango.
 
+0.01000_02 Web Apr 18 22:06:43 2007
+    - Make prereqs for DBIC/Handel real versions
+    - Added Build.PL to make mst a happy camper
+
 0.01000_01 Mon Apr 16 21:28:13 2007
     - initial revision. core modules only.
     - Thanks to Brian Cassidy (LTjake) for the junkstart RSS/Atom code.

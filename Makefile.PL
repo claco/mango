@@ -2,11 +2,11 @@ use inc::Module::Install;
 
 name 'Mango';
 license 'perl';
-all_from 'lib\Mango.pm';
-
 perl_version '5.008001';
-requires 'Handel' => '1.00';
-requires 'DBIx::Class' => '0.08';
+all_from 'lib/Mango.pm';
+
+requires 'Handel' => '0.99_18';
+requires 'DBIx::Class' => '0.07999_02';
 requires 'Class::Accessor::Grouped' => '0.03';
 requires 'DateTime';
 requires 'Error';
