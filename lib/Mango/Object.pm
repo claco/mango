@@ -5,40 +5,87 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
+    use Mango::Object::Meta;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/provider data/);
+    __PACKAGE__->mk_group_accessors('simple', qw/_meta_data _meta_object/);
     __PACKAGE__->mk_group_accessors('column', qw/id created updated/);
+    __PACKAGE__->mk_group_accessors('component_class', qw/meta_class/);
 };
-
+__PACKAGE__->meta_class('Mango::Object::Meta');
 
 sub new {
-    my ($class, $args) = @_;
+    my $class = shift;
+    my $self = bless(shift || {}, $class);
 
-    return bless $args || {}, $class;
+    if (my $meta = delete $self->{'meta'}) {
+        $self->_meta_data($meta);
+    };
+
+    return $self;
+};
+
+sub meta {
+    my $self = shift;
+
+    if (!$self->_meta_object) {
+        if (!$self->_meta_data) {
+            $self->_meta_data({});
+        };
+        $self->_meta_object(
+            $self->meta_class->new($self->_meta_data)
+        );
+    };
+
+    return $self->_meta_object;
 };
 
 sub get_column {
     my ($self, $column) = @_;
 
-    return $self->data->{$column};
+    return $self->{$column};
 };
 
 sub set_column {
     my ($self, $column, $value) = @_;
 
-    return $self->data->{$column} = $value;
+    return $self->{$column} = $value;
 };
 
 sub destroy {
     my $self = shift;
 
-    return $self->provider->delete($self);
+    return $self->meta->provider->delete($self);
 };
 
 sub update {
     my $self = shift;
 
-    return $self->provider->update($self);
+    return $self->meta->provider->update($self);
+};
+
+## these need to go into CAG so I can stop repeating myself when using CAG
+## in projects
+sub get_component_class {
+    my ($self, $field) = @_;
+
+    return $self->get_inherited($field);
+};
+
+sub set_component_class {
+    my ($self, $field, $value) = @_;
+
+    if ($value) {
+        require Class::Inspector;
+        if (!Class::Inspector->loaded($value)) {
+            eval "use $value"; ## no critic
+
+            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
+        };
+    };
+
+    $self->set_inherited($field, $value);
+
+    return;
 };
 
 1;
@@ -55,8 +102,9 @@ Mango::Object - Base class used for Mango result objects.
 
 =head1 DESCRIPTION
 
-Mango::Object is the base class for all result objects in Mango. It provides common
-methods exposed by all results like L</id>, L</created>, L</updated>, L</update>, etc.
+Mango::Object is the base class for all result objects in Mango. It provides
+common methods exposed by all results like L</id>, L</created>, L</updated>,
+L</update>, etc.
 
 =head1 CONSTRUCTOR
 
@@ -68,7 +116,26 @@ methods exposed by all results like L</id>, L</created>, L</updated>, L</update>
 
 =back
 
-Creates a new object, blessing C<args> into the current package.
+Creates a new object, assigned each name/value pair to columns of the same name.
+In addition to using the column names, the following special keys are available:
+
+=over
+
+=item meta
+
+This is a hash containing the meta data for the object being created:
+
+    my $object = Mango::Object->new({
+        col1 => 'foo',
+        col2 => 12,
+        meta => {
+            provider => $provider
+        }
+    });
+    
+    $object->meta->provider->delete(...);
+
+=back
 
 =head1 METHODS
 
@@ -77,10 +144,6 @@ Creates a new object, blessing C<args> into the current package.
 Returns the date and time in UTC the object was created as a DateTime object.
 
     print $object->created;
-
-=head2 data
-
-Hash containing the raw column data for the current object.
 
 =head2 destroy
 
@@ -105,9 +168,24 @@ Returns id of the current object.
 
     print $object->id;
 
-=head2 provider
+=head2 meta
 
-Gets/sets the provider which created the object.
+Returns the meta information for the current object. The default meta class is
+Mango::Object::Meta.
+
+    my $provider = $object->meta->provider;
+
+=head2 meta_class
+
+=over
+
+=item Arguments: $class
+
+=back
+
+Gets/sets the class to be used to handle meta data for objects.
+
+    Mango::Object->meta_class('MyMetaClass');
 
 =head2 set_column
 
@@ -117,7 +195,7 @@ Gets/sets the provider which created the object.
 
 =back
 
-Sets the value of the specified column in C<data>.
+Sets the value of the specified column.
 
     $object->set_column('foo', 'bar');
     # same as $object->foo('bar');
@@ -141,7 +219,7 @@ object.
 
 =head1 SEE ALSO
 
-L<Mango::Provider>
+L<Mango::Object::Meta>, L<Mango::Provider>
 
 =head1 AUTHOR
 

@@ -1,9 +1,9 @@
 $Id$
 
-Reverse Mango::Object. Move data out so new(\%data) is natural and move
-provider into a meta() of some sort.
-
-Make sure setting provider throws and exception when it isn't a
+Make sure setting provider throws an exception when it isn't a
 Mango::Provider instance or subclass.
+
+Make sure setting meta_class throws an exceptions when it isn't a
+Mango::Object::Meta instance or subclass
 
 Finish ditching indirect syntax when throwing exceptions.
