@@ -50,19 +50,22 @@ __END__
 
 =head1 NAME
 
-Mango::Iterator - Iterator for Mango results
+Mango::Iterator - Module representing a collection of results
 
 =head1 SYNOPSIS
 
     my $users = $provider->search;
+    
     while (my $user = $users->next) {
         print $user->id;
     };
 
 =head1 DESCRIPTION
 
-This module is simply a subclass of Handel::Iterator. See L<Handel::Iterator>
-for more information about what features and methods are supported.
+Mango::Iterator is a collection of results to be iterated or looped through.
+This module is a subclass of Handel::Iterator. See
+L<Handel::Iterator|Handel::Iterator> for more information about what features
+and methods are supported.
 
 =head1 CONSTRUCTOR
 
@@ -74,7 +77,7 @@ for more information about what features and methods are supported.
 
 =back
 
-Creates a new Mango::Iterator based on the type of data passed into args.
+Creates a new iterator based on the type of data passed into args.
 
     my $it = Mango::Iterator->new({
         data => \@list
@@ -82,7 +85,8 @@ Creates a new Mango::Iterator based on the type of data passed into args.
 
 =head2 create_result
 
-Transforms Handel object into Mango object.
+Transforms Handel based object into Mango objects.  For non Handel objects, the
+original object is just returned.
 
 =head1 SEE ALSO
 

@@ -1,5 +1,9 @@
 This file documents the revision history for Perl extension Mango.
 
+0.01000_03
+    - Updated/reviewed all pod
+    - Changed throwing exceptions away from indirect syntax
+
 0.01000_02 Web Apr 18 22:06:43 2007
     - Make prereqs for DBIC/Handel real versions
     - Added Build.PL to make mst a happy camper

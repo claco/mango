@@ -57,22 +57,41 @@ __END__
 
 =head1 NAME
 
-Mango::Cart::Item - Module representing an individual shopping cart item
+Mango::Cart::Item - Module representing an individual cart item
 
 =head1 SYNOPSIS
 
-    use Mango::Cart::Item;
-    
     my $items = $cart->items;
+    
     while (my $item = $items->next) {
         print $item->sku;
     };
 
 =head1 DESCRIPTION
 
-Mango::Cart::Item represent a part in the shopping cart to be ordered.
+Mango::Cart::Item represents an individual shopping cart item.
 
 =head1 METHODS
+
+=head2 created
+
+Returns the date and time in UTC the cart item was created as a DateTime
+object.
+
+    print $item->created;
+
+=head2 description
+
+=over
+
+=item Arguments: $description
+
+=back
+
+Gets/sets the description for the current cart item.
+
+    $item->description('Best Item Ever');
+    print $item->description;
 
 =head2 id
 
@@ -93,6 +112,21 @@ Gets/sets the sku (stock keeping unit/part number) for the cart item.
     $item->sku('ABC123');
     print $item->sku;
 
+=head2 price
+
+=over
+
+=item Arguments: $price
+
+=back
+
+Gets/sets the price for the current cart item. The price is returned as a
+L<Mango::Currency|Mango::Currency> object.
+
+    $item->price(12.95);
+    print $item->price;
+    print $item->price->format;
+
 =head2 quantity
 
 =over
@@ -106,46 +140,31 @@ Gets/sets the quantity, or the number of this item being purchased.
     $item->quantity(3);
     print $item->quantity;
 
-=head2 price
-
-=over
-
-=item Arguments: $price
-
-=back
-
-Gets/sets the price for the cart item. The price is returned as a stringified
-L<Mango::Currency|Mango::Currency> object.
-
-    $item->price(12.95);
-    print $item->price;
-    print $item->price->format;
-
 =head2 total
 
-Returns the total price for the cart item as a stringified
-L<Mango::Currency|Mango::Currency> object. This is really just
-quantity*total and is provided for convenience.
+Returns the total price for the cart item as a
+L<Mango::Currency|Mango::Currency> object. This is really just quantity*total
+and is provided for convenience.
 
     print $item->total;
     print $item->total->format;
 
-=head2 description
-
-=over
-
-=item Arguments: $description
-
-=back
-
-Gets/sets the description for the current cart item.
-
-    $item->description('Best Item Ever');
-    print $item->description;
-
 =head2 update
 
-Saves any changes made to the current item.
+Saves any changes made to the cart item back to the provider.
+
+    $item->quantity(2);
+    $item->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the cart item was last updated as a DateTime
+object.
+
+    print $item->updated;
 
 =head1 SEE ALSO
 

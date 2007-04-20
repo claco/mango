@@ -12,7 +12,7 @@ __END__
 
 =head1 NAME
 
-Mango::Currency - Currency class for Mango
+Mango::Currency - Module for currency formatting and conversion
 
 =head1 SYNOPSIS
 
@@ -20,8 +20,11 @@ Mango::Currency - Currency class for Mango
 
 =head1 DESCRIPTION
 
-Mango::Currency is returned for all inflated price columns in Mango. It is
-a subclass if Handel::Currency, which is a subclass of Data::Currency.
+Mango::Currency is a module for currency formatting and conversion.
+It is returned for all inflated price columns in Mango.
+
+Mango::Currency is a subclass of Handel::Currency, which is in turn a subclass
+of Data::Currency.
 
 =head1 SEE ALSO
 

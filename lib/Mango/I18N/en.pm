@@ -66,7 +66,24 @@ __END__
 
 =head1 NAME
 
-Mango::I18N::en_us - Mango Language Pack: US English
+Mango::I18N::en - Mango Language Pack: English
+
+=head1 SYNOPSIS
+
+    use Mango::I18N qw/translate/;
+    
+    {
+        local $ENV{'LANG'} = 'en';
+        print translate('Hello');
+    };
+
+=head1 DESCRIPTION
+
+Mango::I18N::en contains all of the messages used in Mango in English.
+
+=head1 SEE ALSO
+
+L<Mango::I18N>
 
 =head1 AUTHOR
 

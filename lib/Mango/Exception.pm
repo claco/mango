@@ -34,13 +34,13 @@ __END__
 
 =head1 NAME
 
-Mango::Exception - Exception classes used in Mango
+Mango::Exception - Module representing an exception or error condition
 
 =head1 SYNOPSIS
 
     use Mango::Exception;
     
-    throw Mango::Exception('Boom!');
+    Mango::Exception->throw('Boom!');
 
 =head1 DESCRIPTION
 
@@ -57,17 +57,17 @@ for Mango based exceptions.
 
 =back
 
-When creating or throwing a new exception, you can pass in either Error-style
+When creating or throwing a new exception, you can pass in Error-style
 arguments, or just a plain old message string.
 
-    throw Mango::Exception('Boom!');
-    throw Mango::Exception(-text => 'Boom!', -line => 27, ...);
+    Mango::Exception->throw('Boom!');
+    Mango::Exception->throw(-text => 'Boom!', -line => 27, ...);
 
 Any message passed in will automatically be translated using Mango::I18N.
 
 =head1 SEE ALSO
 
-L<Handel::Iterator>
+L<Mango::I18N>, L<Error>
 
 =head1 AUTHOR
 

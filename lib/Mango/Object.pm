@@ -56,7 +56,7 @@ Mango::Object - Base class used for Mango result objects.
 =head1 DESCRIPTION
 
 Mango::Object is the base class for all result objects in Mango. It provides common
-methods exposed by all results like C<id>, C<created>, C<updated>, C<update>, etc.
+methods exposed by all results like L</id>, L</created>, L</updated>, L</update>, etc.
 
 =head1 CONSTRUCTOR
 
@@ -72,39 +72,19 @@ Creates a new object, blessing C<args> into the current package.
 
 =head1 METHODS
 
-=head2 id
-
-Returns id of the current object.
-
-    print $object->id;
-
 =head2 created
 
-Returns the date the object was created as a DateTime object.
+Returns the date and time in UTC the object was created as a DateTime object.
 
     print $object->created;
 
-=head2 destroy
-
-Deletes the current item from the provider.
-
-=head2 updated
-
-Returns the date the object was last updated as a DateTime object.
-
-    print $object->updated;
-
-=head2 update
-
-Saves any changes to the object back to the provider.
-
-=head2 provider
-
-Gets/sets the provider which created the result.
-
 =head2 data
 
-The raw column data for the current object.
+Hash containing the raw column data for the current object.
+
+=head2 destroy
+
+Deletes the current object from the provider.
 
 =head2 get_column
 
@@ -114,10 +94,20 @@ The raw column data for the current object.
 
 =back
 
-Returns the value of the specified column from C<data>.
+Returns the value of the specified column from L</data>.
 
     print $object->get_column('foo');
     # same as $object->foo;
+
+=head2 id
+
+Returns id of the current object.
+
+    print $object->id;
+
+=head2 provider
+
+Gets/sets the provider which created the object.
 
 =head2 set_column
 
@@ -132,9 +122,26 @@ Sets the value of the specified column in C<data>.
     $object->set_column('foo', 'bar');
     # same as $object->foo('bar');
 
+=head2 update
+
+Saves any changes made to the object back to the provider.
+
+    $object->foo(2);
+    $object->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the object was last updated as a DateTime
+object.
+
+    print $object->updated;
+
 =head1 SEE ALSO
 
-L<Handel::Currency>, L<Data::Currency>
+L<Mango::Provider>
 
 =head1 AUTHOR
 

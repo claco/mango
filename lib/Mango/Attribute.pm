@@ -30,38 +30,41 @@ __END__
 
 =head1 NAME
 
-Mango::Attribute - A product attribute
+Mango::Attribute - Module representing a product attribute
 
 =head1 SYNOPSIS
 
     my $attributes = $product->attributes;
+    
     while (my $attribute = $attributes->next) {
-        print $attribute->name, $attribute->value;
+        print $attribute->name, ': ', $attribute->value;
     };
 
 =head1 DESCRIPTION
 
-Mango::Attribute represents a name/value pair about a specific product.
+Mango::Attribute represents an attribute (name/value pair) of an individual
+product.
 
 =head1 METHODS
 
-=head2 id
-
-Returns id of the current attribute.
-
-    print $attribute->id;
-
 =head2 created
 
-Returns the date the attribute was created as a DateTime object.
+Returns the date and time in UTC the attribute was created as a DateTime
+object.
 
     print $attribute->created;
 
-=head2 updated
+=head2 destroy
 
-Returns the date the attribute was last updated as a DateTime object.
+Deletes the current attribute from the product to which it is assigned.
 
-    print $attribute->updated;
+    $attribute->destroy;
+
+=head2 id
+
+Returns the id of the current attribute.
+
+    print $attribute->id;
 
 =head2 name
 
@@ -71,9 +74,26 @@ Returns the date the attribute was last updated as a DateTime object.
 
 =back
 
-Gets/sets the name of the user.
+Gets/sets the name of the current attribute.
 
     print $attribute->name;
+
+=head2 update
+
+Saves any changes made to the attribute back to the provider.
+
+    $attribute->value('Red');
+    $attribute->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the attribute was last updated as a DateTime
+object.
+
+    print $attribute->updated;
 
 =head2 value
 
@@ -83,21 +103,13 @@ Gets/sets the name of the user.
 
 =back
 
-Gets/sets the value of the attribute.
+Gets/sets the value of the current attribute.
 
     print $attribute->value;
 
-=head2 destroy
-
-Deletes the current item from the provider.
-
-=head2 update
-
-Saves any changes to the attribute back to the provider.
-
 =head1 SEE ALSO
 
-L<Mango::Object>, L<Mango::Product>, L<Mango::Provider::Products>
+L<Mango::Object>, L<Mango::Product>, L<Mango::Provider::Products>, L<DateTime>
 
 =head1 AUTHOR
 
