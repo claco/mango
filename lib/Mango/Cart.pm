@@ -41,14 +41,18 @@ sub save {
 sub user {
     my ($self, $user) = @_;
 
-    if (Scalar::Util::blessed $user) {
-        if ($user->isa('Mango::User')) {
-            $user = $user->id;
-        } else {
-            Mango::Exception->throw('NOT_A_USER');
+    if (defined $user) {
+        if (Scalar::Util::blessed $user) {
+            if ($user->isa('Mango::User')) {
+                $user = $user->id;
+            } else {
+                Mango::Exception->throw('NOT_A_USER');
+            };
         };
 
         $self->user_id($user);
+    } else {
+        Mango::Exception->throw('NO_USER_SPECIFIED');
     };
 };
 

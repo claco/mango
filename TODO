@@ -1,9 +1,1 @@
 $Id$
-
-Make sure setting provider throws an exception when it isn't a
-Mango::Provider instance or subclass.
-
-Make sure setting meta_class throws an exceptions when it isn't a
-Mango::Object::Meta instance or subclass
-
-Finish ditching indirect syntax when throwing exceptions.

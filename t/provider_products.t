@@ -11,7 +11,7 @@ BEGIN {
     if($@) {
         plan skip_all => 'DBD::SQLite not installed';
     } else {
-        plan tests => 378;
+        plan tests => 381
     };
 
     use_ok('Mango::Provider::Products');
@@ -401,6 +401,7 @@ isa_ok($provider, 'Mango::Provider::Products');
     is($tag->id, 2);
     is($tag->name, 'Tag2');
     is($tag->created, '2004-07-04T12:00:00');
+    is($tag->count, 0);
 
     $tag = $tags->next;
     isa_ok($tag, 'Mango::Tag');
@@ -1031,6 +1032,22 @@ isa_ok($provider, 'Mango::Provider::Products');
     } catch Mango::Exception with {
         pass('Argument exception thrown');
         like(shift, qr/not a Mango::Product/i, 'not a Mango::Product');
+    } otherwise {
+        fail('Other exception thrown');
+    };
+};
+
+
+## tag destroy throw exception
+{
+    try {
+        local $ENV{'LANG'} = 'en';
+        $provider->search->first->tags->first->destroy;
+
+        fail('no exception thrown');
+    } catch Mango::Exception with {
+        pass('Argument exception thrown');
+        like(shift, qr/not implemented/i, 'method not implemented');
     } otherwise {
         fail('Other exception thrown');
     };
