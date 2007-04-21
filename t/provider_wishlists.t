@@ -42,7 +42,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 ## get by id w/object
 {
     my $object = Mango::Object->new({
-       data => {id => 2} 
+       id => 2
     });
     my $wishlist = $provider->get_by_id($object);
     isa_ok($wishlist, 'Mango::Wishlist');
@@ -78,9 +78,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 ## get by user w/ object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 2
-        }
+        id => 2
     });
     my @wishlists = $provider->search({ user => $user });
     is(scalar @wishlists, 1);
@@ -212,7 +210,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
 ## create with user object
 {
     my $user = Mango::User->new({
-        data => {id => 23}
+        id => 23
     });
     my $current = DateTime->now;
     my $wishlist = $provider->create({
@@ -254,7 +252,7 @@ isa_ok($provider, 'Mango::Provider::Wishlists');
     is($provider->search->count, 6);
 
     $provider->delete({
-        user => Mango::User->new({data=>{id => 24}})
+        user => Mango::User->new({id => 24})
     });
 };
 

@@ -45,6 +45,19 @@ sub get_column {
     return $self->{$column};
 };
 
+sub get_columns {
+    my $self = shift;
+    my %columns;
+
+    foreach my $column (keys %{$self}) {
+        next if $column =~ /^_/;
+
+        $columns{$column} = $self->{$column};
+    };
+
+    return %columns;
+};
+
 sub set_column {
     my ($self, $column, $value) = @_;
 
@@ -79,7 +92,7 @@ sub set_component_class {
         if (!Class::Inspector->loaded($value)) {
             eval "use $value"; ## no critic
 
-            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
+            Mango::Exception->throw('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
         };
     };
 
@@ -162,6 +175,12 @@ Returns the value of the specified column from L</data>.
     print $object->get_column('foo');
     # same as $object->foo;
 
+=head2 get_columns
+
+Returns a hash of all columns as name/value pairs.
+
+    my %columns = $object->get_columns;
+
 =head2 id
 
 Returns id of the current object.
@@ -216,6 +235,37 @@ Returns the date and time in UTC the object was last updated as a DateTime
 object.
 
     print $object->updated;
+
+=head2 get_component_class
+
+=over
+
+=item Arguments: $name
+
+=back
+
+Gets the current class for the specified component name.
+
+    my $class = $self->get_component_class('result_class');
+
+There is no good reason to use this. Use the specific class accessors instead.
+
+=head2 set_component_class
+
+=over
+
+=item Arguments: $name, $value
+
+=back
+
+Sets the current class for the specified component name.
+
+    $self->set_component_class('result_class', 'MyItemClass');
+
+A L<Mango::Exception|Mango::Exception> exception will be thrown if the
+specified class can not be loaded.
+
+There is no good reason to use this. Use the specific class accessors instead.
 
 =head1 SEE ALSO
 

@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/provider/);
+    __PACKAGE__->mk_group_accessors('simple', qw/provider parent/);
 };
 
 sub new {
@@ -46,6 +46,16 @@ Creates a new meta object that uses the hash supplied to read/write its
 information.
 
 =head1 METHODS
+
+=head2 parent
+
+=over
+
+=item Arguments: $parent
+
+=back
+
+Gets/sets the parent object of the current object.
 
 =head2 provider
 

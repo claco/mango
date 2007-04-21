@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-Mango::User - A user object
+Mango::User - Module representing an individual user
 
 =head1 SYNOPSIS
 
@@ -25,29 +25,43 @@ Mango::User - A user object
 
 =head1 DESCRIPTION
 
-Mango::User represents a user returned from the user provider.
+Mango::User represents an individual user.
 
 =head1 METHODS
 
-=head2 id
-
-Returns id of the current user.
-
-    print $user->id;
-
 =head2 created
 
-Returns the date the user was created as a DateTime object.
+Returns the date and time in UTC the user was created as a DateTime
+object.
 
     print $user->created;
 
 =head2 destroy
 
-Deletes the current item from the provider.
+Deletes the current user.
+
+    $user->destroy;
+
+=head2 id
+
+Returns the id of the current user.
+
+    print $user->id;
+
+=head2 update
+
+Saves any changes made to the user back to the provider.
+
+    $user->password('Red');
+    $user->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
 
 =head2 updated
 
-Returns the date the user was last updated as a DateTime object.
+Returns the date and time in UTC the user was last updated as a DateTime
+object.
 
     print $user->updated;
 
@@ -59,7 +73,7 @@ Returns the date the user was last updated as a DateTime object.
 
 =back
 
-Gets/sets the username of the user.
+Gets/sets the username of the current user.
 
     print $user->username;
 
@@ -71,13 +85,9 @@ Gets/sets the username of the user.
 
 =back
 
-Gets/sets the password of the user.
+Gets/sets the password of the current user.
 
     print $user->password;
-
-=head2 update
-
-Saves any changes to the user back to the provider.
 
 =head1 SEE ALSO
 

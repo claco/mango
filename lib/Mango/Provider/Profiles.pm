@@ -19,7 +19,7 @@ sub create {
             if ($user->isa('Mango::User')) {
                 $data->{'user_id'} = $user->id;
             } else {
-                throw Mango::Exception('NOT_A_USER');
+                Mango::Exception->throw('NOT_A_USER');
             };
         } else {
             $data->{'user_id'} = $user;
@@ -27,7 +27,7 @@ sub create {
     };
 
     if (!$data->{'user_id'}) {
-        throw Mango::Exception('NO_USER_SPECIFIED');
+        Mango::Exception->throw('NO_USER_SPECIFIED');
     };
 
     return $self->SUPER::create($data);
@@ -40,7 +40,7 @@ sub delete {
         if ($filter->isa('Mango::Profile')) {
             $filter = {id => $filter->id};
         } else {
-            throw Mango::Exception('NOT_A_PROFILE');
+            Mango::Exception->throw('NOT_A_PROFILE');
         };
     } elsif (ref $filter eq 'HASH') {
         if (my $user = delete $filter->{'user'}) {
@@ -48,7 +48,7 @@ sub delete {
                 if ($user->isa('Mango::User')) {
                     $filter->{'user_id'} = $user->id;
                 } else {
-                    throw Mango::Exception('NOT_A_USER');
+                    Mango::Exception->throw('NOT_A_USER');
                 };
             } else {
                 $filter->{'user_id'} = $user;
@@ -72,7 +72,7 @@ sub search {
             if ($user->isa('Mango::User')) {
                 $filter->{'user_id'} = $user->id;
             } else {
-                throw Mango::Exception('NOT_A_USER');
+                Mango::Exception->throw('NOT_A_USER');
             };
         } else {
             $filter->{'user_id'} = $user;

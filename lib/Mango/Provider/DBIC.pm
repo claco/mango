@@ -33,8 +33,10 @@ sub create {
     my $result = $self->resultset->create($data);
 
     return $self->result_class->new({
-        provider => $self,
-        data => {$result->get_inflated_columns}
+        $result->get_inflated_columns,
+        meta => {
+            provider => $self
+        }
     });
 };
 
@@ -57,13 +59,13 @@ sub resultset {
         $self->_resultset($resultset);
     } elsif (!$self->_resultset) {
         if (!$self->source_name) {
-            throw Mango::Exception('SCHEMA_SOURCE_NOT_SPECIFIED');
+            Mango::Exception->throw('SCHEMA_SOURCE_NOT_SPECIFIED');
         };
 
         try {
             $self->_resultset($self->schema->resultset($self->source_name));
         } except {
-            throw Mango::Exception('SCHEMA_SOURCE_NOT_FOUND', $self->source_name);
+            Mango::Exception->throw('SCHEMA_SOURCE_NOT_FOUND', $self->source_name);
         };
     };
 
@@ -77,7 +79,7 @@ sub schema {
         $self->_schema($schema);
     } elsif (!$self->_schema) {
         if (!$self->schema_class) {
-            throw Mango::Exception('SCHEMA_CLASS_NOT_SPECIFIED');
+            Mango::Exception->throw('SCHEMA_CLASS_NOT_SPECIFIED');
         };
         $self->_schema(
             $self->schema_class->connect(@{$self->connection_info || []})
@@ -96,8 +98,10 @@ sub search {
     my $resultset = $self->resultset->search($filter, $options);
     my @results = map {
         $self->result_class->new({
-            provider => $self,
-            data => {$_->get_inflated_columns}
+            $_->get_inflated_columns,
+            meta => {
+                provider => $self
+            }
         })
     } $resultset->all;
 
@@ -119,7 +123,7 @@ sub update {
     $object->$updated_column(DateTime->now);
 
     return $self->resultset->find($object->id)->update(
-        {%{$object->data}}
+        {$object->get_columns}
     );
 };
 

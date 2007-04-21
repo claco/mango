@@ -39,7 +39,7 @@ isa_ok($provider, 'Mango::Provider::Users');
 ## get by id w/object
 {
     my $object = Mango::Object->new({
-       data => {id => 3} 
+       id => 3
     });
     my $user = $provider->get_by_id($object);
     isa_ok($user, 'Mango::User');
@@ -160,12 +160,10 @@ isa_ok($provider, 'Mango::Provider::Users');
     );
 
     my $user = Mango::User->new({
-        data => {
-            id => 5,
-            username => 'updateduser2',
-            password => 'updatedpassword2',
-            created  => $date
-        }
+        id => 5,
+        username => 'updateduser2',
+        password => 'updatedpassword2',
+        created  => $date
     });
 
     ok($provider->update($user));
@@ -194,12 +192,12 @@ isa_ok($provider, 'Mango::Provider::Users');
     );
 
     my $user = Mango::User->new({
-        provider => $provider,
-        data => {
-            id => 4,
-            username => 'updateduser1',
-            password => 'updatedpassword1',
-            created  => $date
+        id => 4,
+        username => 'updateduser1',
+        password => 'updatedpassword1',
+        created  => $date,
+        meta => {
+            provider => $provider
         }
     });
     ok($user->update);
@@ -233,9 +231,7 @@ isa_ok($provider, 'Mango::Provider::Users');
 ## delete using object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 3
-        }
+        id => 3
     });
     ok($provider->delete($user));
     is($provider->search->count, 2);
@@ -246,9 +242,9 @@ isa_ok($provider, 'Mango::Provider::Users');
 ## delete on result object
 {
     my $user = Mango::User->new({
-        provider => $provider,
-        data => {
-            id => 2
+        id => 2,
+        meta => {
+            provider => $provider
         }
     });
     ok($user->destroy);

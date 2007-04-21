@@ -83,6 +83,8 @@ Creates a new iterator based on the type of data passed into args.
         data => \@list
     });
 
+=head1 METHODS
+
 =head2 create_result
 
 Transforms Handel based object into Mango objects.  For non Handel objects, the

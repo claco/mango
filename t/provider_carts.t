@@ -40,7 +40,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
 ## get by id w/object
 {
     my $object = Mango::Object->new({
-       data => {id => 2} 
+       id => 2
     });
     my $cart = $provider->get_by_id($object);
     isa_ok($cart, 'Mango::Cart');
@@ -72,9 +72,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
 ## get by user w/ object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 1
-        }
+        id => 1
     });
     my @carts = $provider->search({ user => $user });
     is(scalar @carts, 1);
@@ -191,7 +189,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
 ## create with user object
 {
     my $user = Mango::User->new({
-        data => {id => 23}
+        id => 23
     });
     my $current = DateTime->now;
     my $cart = $provider->create({
@@ -231,7 +229,7 @@ isa_ok($provider, 'Mango::Provider::Carts');
     is($provider->search->count, 5);
 
     $provider->delete({
-        user => Mango::User->new({data=>{id => 24}})
+        user => Mango::User->new({id => 24})
     });
 };
 

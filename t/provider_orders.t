@@ -40,7 +40,7 @@ isa_ok($provider, 'Mango::Provider::Orders');
 ## get by id w/object
 {
     my $object = Mango::Object->new({
-       data => {id => 2} 
+       id => 2
     });
     my $order = $provider->get_by_id($object);
     isa_ok($order, 'Mango::Order');
@@ -78,9 +78,7 @@ isa_ok($provider, 'Mango::Provider::Orders');
 ## get by user w/ object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 1
-        }
+        id => 1
     });
     my @orders = $provider->search({ user => $user });
     is(scalar @orders, 2);
@@ -182,7 +180,7 @@ isa_ok($provider, 'Mango::Provider::Orders');
 ## create
 {
     my $user = Mango::User->new({
-        data => {id => 3}
+        id => 3
     });
     my $current = DateTime->now;
     my $order = $provider->create({
@@ -346,7 +344,7 @@ isa_ok($provider, 'Mango::Provider::Orders');
 ## delete using user object
 {
     my $user = Mango::User->new({
-        data => {id => 24}
+        id => 24
     });
     is($provider->search->count, 1);
     $provider->create({

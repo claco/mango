@@ -14,42 +14,31 @@ __END__
 
 =head1 NAME
 
-Mango::Profile - A user profile
+Mango::Profile - Module representing a user profile
 
 =head1 SYNOPSIS
 
     my $profile = $provider->search({ user => 23 });
-    print $user->created;
-    $user->first_name('Christopher');
-    $user->update;
+    print $profile->created;
+    $profile->first_name('Christopher');
+    $profile->update;
 
 =head1 DESCRIPTION
 
-Mango::Profile represents a profile returned from the profile provider.
+Mango::Profile represents a user profile containing user information.
 
 =head1 METHODS
 
-=head2 id
-
-Returns id of the current profile.
-
-    print $profile->id;
-
 =head2 created
 
-Returns the date the profile was created as a DateTime object.
+Returns the date and time in UTC the profile was created as a DateTime
+object.
 
     print $profile->created;
 
 =head2 destroy
 
-Deletes the current item from the provider.
-
-=head2 updated
-
-Returns the date the profile was last updated as a DateTime object.
-
-    print $profile->updated;
+Deletes the current profile.
 
 =head2 first_name
 
@@ -59,9 +48,15 @@ Returns the date the profile was last updated as a DateTime object.
 
 =back
 
-Gets/sets the first name of the user.
+Gets/sets the first name of the current profile.
 
     print $profile->first_name;
+
+=head2 id
+
+Returns the id of the current profile.
+
+    print $profile->id;
 
 =head2 last_name
 
@@ -71,13 +66,26 @@ Gets/sets the first name of the user.
 
 =back
 
-Gets/sets the last name of the user.
+Gets/sets the last name of the current profile.
 
     print $profile->last_name;
 
 =head2 update
 
-Saves any changes to the profile back to the provider.
+Saves any changes made to the profile back to the provider.
+
+    $profile->password('Red');
+    $profile->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the profile was last updated as a DateTime
+object.
+
+    print $profile->updated;
 
 =head1 SEE ALSO
 

@@ -24,13 +24,13 @@ sub new {
 sub create {
     my ($self, $data) = @_;
 
-    throw Mango::Exception('VIRTUAL_METHOD');
+    Mango::Exception->throw('VIRTUAL_METHOD');
 };
 
 sub delete {
     my ($self, $filter) = @_;
 
-    throw Mango::Exception('VIRTUAL_METHOD');
+    Mango::Exception->throw('VIRTUAL_METHOD');
 };
 
 sub get_by_id {
@@ -54,7 +54,7 @@ sub set_component_class {
         if (!Class::Inspector->loaded($value)) {
             eval "use $value"; ## no critic
 
-            throw Mango::Exception('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
+            Mango::Exception->throw('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
         };
     };
 
@@ -66,7 +66,7 @@ sub set_component_class {
 sub search {
     my ($self, $filter, $options) = @_;
 
-    throw Mango::Exception('VIRTUAL_METHOD');
+    Mango::Exception->throw('VIRTUAL_METHOD');
 };
 
 sub setup {
@@ -82,7 +82,7 @@ sub setup {
 sub update {
     my ($self, $object) = @_;
 
-    throw Mango::Exception('VIRTUAL_METHOD');
+    Mango::Exception->throw('VIRTUAL_METHOD');
 };
 
 1;
@@ -90,7 +90,7 @@ __END__
 
 =head1 NAME
 
-Mango::Provider - Provider base class
+Mango::Provider - Base class for all Mango providers
 
 =head1 SYNOPSIS
 
@@ -107,7 +107,7 @@ Mango::Provider - Provider base class
 
 =head1 DESCRIPTION
 
-Mango::Provider is a base abstract class for all providers used in Mango.
+Mango::Provider is a base class for all providers used in Mango.
 
 =head1 CONSTRUCTOR
 

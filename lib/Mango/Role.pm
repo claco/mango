@@ -14,7 +14,7 @@ BEGIN {
 sub add_users {
     my $self = shift;
 
-    return $self->provider->add_users($self, @_);
+    return $self->meta->provider->add_users($self, @_);
 }
 
 *remove_user = \&remove_users;
@@ -22,7 +22,7 @@ sub add_users {
 sub remove_users {
     my $self = shift;
 
-    return $self->provider->remove_users($self, @_);
+    return $self->meta->provider->remove_users($self, @_);
 };
 
 1;
@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-Mango::Role - A user role
+Mango::Role - Module representing a user role
 
 =head1 SYNOPSIS
 
@@ -44,6 +44,10 @@ Mango::Role - A user role
 Mango::Role represents a user role.
 
 =head1 METHODS
+
+=head2 add_user
+
+Sames as L</add_users>.
 
 =head2 add_users
 
@@ -59,43 +63,12 @@ Adds a list of users to the current role.
 
 See L<Mango::Provider::Roles/add_users> for more details.
 
-=head2 add_user
-
-Sames as C<add_users>.
-
-=head2 id
-
-Returns id of the current role.
-
-    print $role->id;
-
 =head2 created
 
-Returns the date the role was created as a DateTime object.
+Returns the date and time in UTC the role was created as a DateTime
+object.
 
     print $role->created;
-
-=head2 destroy
-
-Deletes the current item from the provider.
-
-=head2 updated
-
-Returns the date the role was last updated as a DateTime object.
-
-    print $role->updated;
-
-=head2 name
-
-=over
-
-=item Arguments: $name
-
-=back
-
-Gets/sets the name of the role.
-
-    print $role->name;
 
 =head2 description
 
@@ -105,9 +78,33 @@ Gets/sets the name of the role.
 
 =back
 
-Gets/sets the description of the attribute.
+Gets/sets the description of the current role.
 
     print $role->description;
+
+=head2 destroy
+
+Deletes the current role.
+
+    $role->destroy;
+
+=head2 id
+
+Returns the id of the current role.
+
+    print $role->id;
+
+=head2 name
+
+=over
+
+=item Arguments: $name
+
+=back
+
+Gets/sets the name of the current role.
+
+    print $role->name;
 
 =head2 remove_users
 
@@ -129,7 +126,20 @@ Sames as C<remove_users>.
 
 =head2 update
 
-Saves any changes to the role back to the provider.
+Saves any changes made to the role back to the provider.
+
+    $role->password('Red');
+    $role->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the role was last updated as a DateTime
+object.
+
+    print $role->updated;
 
 =head1 SEE ALSO
 

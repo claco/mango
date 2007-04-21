@@ -12,49 +12,49 @@ BEGIN {
 sub add_attribute {
     my $self = shift;
 
-    return $self->provider->add_attribute($self, @_);
+    return $self->meta->provider->add_attribute($self, @_);
 };
 
 sub add_attributes {
     my $self = shift;
 
-    return $self->provider->add_attributes($self, @_);
+    return $self->meta->provider->add_attributes($self, @_);
 };
 
 sub attributes {
     my $self = shift;
 
-    return $self->provider->search_attributes($self, @_);
+    return $self->meta->provider->search_attributes($self, @_);
 };
 
 sub delete_attributes {
     my $self = shift;
 
-    return $self->provider->delete_attributes($self, @_);
+    return $self->meta->provider->delete_attributes($self, @_);
 };
 
 sub add_tag {
     my $self = shift;
 
-    return $self->provider->add_tag($self, @_);
+    return $self->meta->provider->add_tag($self, @_);
 };
 
 sub add_tags {
     my $self = shift;
 
-    return $self->provider->add_tags($self, @_);
+    return $self->meta->provider->add_tags($self, @_);
 };
 
 sub tags {
     my $self = shift;
 
-    return $self->provider->search_tags($self, @_);
+    return $self->meta->provider->search_tags($self, @_);
 };
 
 sub delete_tags {
     my $self = shift;
 
-    return $self->provider->delete_tags($self, @_);
+    return $self->meta->provider->delete_tags($self, @_);
 };
 
 1;
@@ -62,7 +62,7 @@ __END__
 
 =head1 NAME
 
-Mango::Product - A product
+Mango::Product - Module representing a product
 
 =head1 SYNOPSIS
 
@@ -76,9 +76,13 @@ Mango::Product - A product
 
 =head1 DESCRIPTION
 
-Mango::Product represents a product returned from the products provider.
+Mango::Product represents a product to be sold.
 
 =head1 METHODS
+
+=head2 add_attribute
+
+Same as L</add_attributes>.
 
 =head2 add_attributes
 
@@ -88,17 +92,17 @@ Mango::Product represents a product returned from the products provider.
 
 =back
 
-Adds attribute to the product. C<atttributes> may be hashes containing
-name/value data, or Mango::Attribute objects;
+Adds an attribute to the current product. C<atttributes> may be hashes
+containing name/value data, or Mango::Attribute objects;
 
     $product->add_attributes(
         {name => 'Color', value => 'red'},
         $attributeobject
     );
 
-=head2 add_attribute
+=head2 add_tag
 
-Same as C<add_attributes>.
+Same as L</add_tag>.
 
 =head2 add_tags
 
@@ -108,16 +112,13 @@ Same as C<add_attributes>.
 
 =back
 
-Adds tags to the product. C<tags> may be tag strings, or Mango::Tag objects;
+Adds tags to the current product. C<tags> may be tag strings, or Mango::Tag
+objects:
 
     $product->add_tags(
         'computers',
         $tagobject
     );
-
-=head2 add_tag
-
-Same as C<add_tag>.
 
 =head2 attributes
 
@@ -127,7 +128,7 @@ Same as C<add_tag>.
 
 =back
 
-Returns a list of attributes for the product in list context, or a
+Returns a list of attributes for the current product in list context, or a
 Mango::Iterator in scalar context.
 
     my @attributes = $product->attributes({
@@ -138,9 +139,16 @@ Mango::Iterator in scalar context.
         name => 'A%'
     });
 
-=head2 destroy
+=head2 created
 
-Deletes the current item from the provider.
+Returns the date and time in UTC the product was created as a DateTime
+object.
+
+    print $profile->created;
+
+=head2 delete_attribute
+
+Sames as L</delete_attributes>.
 
 =head2 delete_attributes
 
@@ -150,45 +158,51 @@ Deletes the current item from the provider.
 
 =back
 
-Deletes attributes for the product matching the supplied filter..
+Deletes attributes from the current product matching the supplied filter..
 
     $product->delete_attributes({
         name => 'Color'
     });
 
-=head2 delete_attribute
+=head2 delete_tag
 
-Sames as C<delete_attributes>.
+Sames as L</delete_tags>.
 
-=head2 id
-
-Returns id of the current product.
-
-    print $product->id;
-
-=head2 created
-
-Returns the date the product was created as a DateTime object.
-
-    print $product->created;
-
-=head2 updated
-
-Returns the date the product was last updated as a DateTime object.
-
-    print $product->updated;
-
-=head2 sku
+=head2 delete_tags
 
 =over
 
-=item Arguments: $sku
+=item Arguments: $filter
 
 =back
 
-Gets/sets the sku/part number of the product.
+Deletes tags from the current product matching the supplied filter..
 
-    print $product->sku;
+    $product->delete_tags({
+        'computer'
+    });
+
+=head2 description
+
+=over
+
+=item Arguments: $description
+
+=back
+
+Gets/sets the description of the current product.
+
+    print $product->description;
+
+=head2 destroy
+
+Deletes the current profile.
+
+=head2 id
+
+Returns the id of the current product.
+
+    print $product->id;
 
 =head2 name
 
@@ -198,9 +212,9 @@ Gets/sets the sku/part number of the product.
 
 =back
 
-Gets/sets the name of the product.
+Gets/sets the name of the current product.
 
-    print $product->description;
+    print $product->name;
 
 =head2 price
 
@@ -210,9 +224,22 @@ Gets/sets the name of the product.
 
 =back
 
-Gets/sets the price of the product.
+Gets/sets the price of the current product. The price is returned as a
+L<Mango::Currency|Mango::Currency> object.
 
     print $product->price;
+
+=head2 sku
+
+=over
+
+=item Arguments: $sku
+
+=back
+
+Gets/sets the sku/part number of the current product.
+
+    print $product->sku;
 
 =head2 tags
 
@@ -222,7 +249,7 @@ Gets/sets the price of the product.
 
 =back
 
-Returns a list of tags for the product in list context, or a
+Returns a list of tags for the current product in list context, or a
 Mango::Iterator in scalar context.
 
     my @tags = $product->tags({
@@ -233,27 +260,22 @@ Mango::Iterator in scalar context.
         name => 'A%'
     });
 
-=head2 delete_tags
-
-=over
-
-=item Arguments: $filter
-
-=back
-
-Deletes tags from the product matching the supplied filter..
-
-    $product->delete_tags({
-        'computer'
-    });
-
-=head2 delete_tag
-
-Sames as C<delete_tags>.
-
 =head2 update
 
-Saves any changes to the profile back to the provider.
+Saves any changes made to the product back to the provider.
+
+    $product->password('Red');
+    $product->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the product was last updated as a DateTime
+object.
+
+    print $product->updated;
 
 =head1 SEE ALSO
 

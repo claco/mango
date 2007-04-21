@@ -41,7 +41,7 @@ sub search {
                     if ($tag->isa('Mango::Tag')) {
                         $tag = $tag->name;
                     } else {
-                        throw Mango::Exception('NOT_A_TAG');
+                        Mango::Exception->throw('NOT_A_TAG');
                     };
                 };
 
@@ -100,24 +100,26 @@ sub add_attributes {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
     foreach my $attribute (@data) {
         if (Scalar::Util::blessed $attribute) {
             if ($attribute->isa('Mango::Attribute')) {
-                $attribute = {%{$attribute->data}};
+                $attribute = {$attribute->get_columns};
             } else {
-                throw Mango::Exception('NOT_A_ATTRIBUTE');
+                Mango::Exception->throw('NOT_A_ATTRIBUTE');
             };
         };
         $attribute->{'product_id'} = $product;
 
         push @added, $self->attribute_class->new({
-            provider => $self,
-            product => $product,
-            data => {$resultset->update_or_create($attribute, {key => 'product_attribute_name'})->get_inflated_columns}
+            $resultset->update_or_create($attribute, {key => 'product_attribute_name'})->get_inflated_columns,
+            meta => {
+                provider => $self,
+                parent => $product
+            }
         });
     };
 
@@ -134,7 +136,7 @@ sub search_attributes {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
@@ -145,9 +147,11 @@ sub search_attributes {
     );
     my @results = map {
         $self->attribute_class->new({
-            provider => $self,
-            product => $product,
-            data => {$_->get_inflated_columns}
+            $_->get_inflated_columns,
+            meta => {
+                provider => $self,
+                parent => $product
+            }
         })
     } $resultset->all;
 
@@ -171,7 +175,7 @@ sub delete_attributes {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
@@ -185,7 +189,7 @@ sub update_attribute {
     my $resultset = $self->schema->resultset($self->attribute_source_name);
 
     return $resultset->find($attribute->id)->update(
-        {%{$attribute->data}}
+        {$attribute->get_columns}
     );
 };
 
@@ -204,16 +208,16 @@ sub add_tags {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
     foreach my $tag (@data) {
         if (Scalar::Util::blessed $tag) {
             if ($tag->isa('Mango::Tag')) {
-                $tag = {%{$tag->data}};
+                $tag = {$tag->get_columns};
             } else {
-                throw Mango::Exception('NOT_A_TAG');
+                Mango::Exception->throw('NOT_A_TAG');
             };
         } elsif (!ref $tag) {
             $tag = {name => $tag};
@@ -227,8 +231,11 @@ sub add_tags {
             tag_id => $newtag->id
         });
         push @added, $self->tag_class->new({
-            provider => $self,
-            data => {$newtag->get_inflated_columns}
+            $newtag->get_inflated_columns,
+            meta => {
+                provider => $self,
+                parent => $product
+            }
         });
     };
 
@@ -245,7 +252,7 @@ sub search_tags {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
@@ -266,7 +273,7 @@ sub delete_tags {
         if ($product->isa('Mango::Product')) {
             $product = $product->id;
         } else {
-            throw Mango::Exception('NOT_A_PRODUCT');
+            Mango::Exception->throw('NOT_A_PRODUCT');
         };
     };
 
@@ -296,8 +303,10 @@ sub tags {
 
     my @results = map {
         $self->tag_class->new({
-            provider => $self,
-            data => {$_->get_inflated_columns}
+            $_->get_inflated_columns,
+            meta => {
+                provider => $self
+            }
         })
     } $self->resultset->search(
         $pfilter

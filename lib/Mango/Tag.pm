@@ -5,8 +5,17 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Object/;
+    use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('column', qw/name count/);
+    __PACKAGE__->mk_group_accessors('column', qw/name/);
+};
+
+sub count {
+    return 0;
+};
+
+sub destroy {
+    Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
 };
 
 1;
@@ -14,11 +23,12 @@ __END__
 
 =head1 NAME
 
-Mango::Tag - A tag assigned to products
+Mango::Tag - Module representing a [folksonomy] tag
 
 =head1 SYNOPSIS
 
     my $tags = $product->tags;
+    
     while (my $tag = %tags->next) {
         print $tag->name;
     };
@@ -29,29 +39,28 @@ Mango::Tag represents a tag assigned to products.
 
 =head1 METHODS
 
-=head2 id
-
-Returns id of the current tag.
-
-    print $tag->id;
-
-=head2 created
-
-Returns the date the tag was created as a DateTime object.
-
-    print $tag->created;
-
-=head2 updated
-
-Returns the date the tag was last updated as a DateTime object.
-
-    print $tag->updated;
-
 =head2 count
 
 Returns the number of instances this tag.
 
+B<This is not currently implemented and always returns 0>.
+
+=head2 created
+
+Returns the date and time in UTC the tag was created as a DateTime
+object.
+
+    print $user->created;
+
+=head2 destroy
+
 B<This is not currently implemented>.
+
+=head2 id
+
+Returns the id of the current tag.
+
+    print $tag->id;
 
 =head2 name
 
@@ -61,9 +70,16 @@ B<This is not currently implemented>.
 
 =back
 
-Gets/sets the name of the tag itself.
+Gets/sets the name of the current tag.
 
     print $tag->name;
+
+=head2 updated
+
+Returns the date and time in UTC the tag was last updated as a DateTime
+object.
+
+    print $user->updated;
 
 =head1 SEE ALSO
 

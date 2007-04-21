@@ -41,7 +41,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## get by id w/object
 {
     my $object = Mango::Object->new({
-       data => {id => 2} 
+       id => 2
     });
     my $profile = $provider->get_by_id($object);
     isa_ok($profile, 'Mango::Profile');
@@ -75,9 +75,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## get by user w/ object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 2
-        }
+        id => 2
     });
     my @profiles = $provider->search({ user => $user });
     is(scalar @profiles, 1);
@@ -211,12 +209,10 @@ isa_ok($provider, 'Mango::Provider::Profiles');
     );
 
     my $profile = Mango::Profile->new({
-        data => {
-            id => 4,
-            first_name => 'UpdatedFirst4',
-            last_name => 'UpdatedLast4',
-            created  => $date
-        }
+        id => 4,
+        first_name => 'UpdatedFirst4',
+        last_name => 'UpdatedLast4',
+        created  => $date
     });
 
     ok($provider->update($profile));
@@ -245,12 +241,12 @@ isa_ok($provider, 'Mango::Provider::Profiles');
     );
 
     my $profile = Mango::Profile->new({
-        provider => $provider,
-        data => {
-            id => 3,
-            first_name => 'UpdatedFirst3',
-            last_name => 'UpdatedLast3',
-            created  => $date
+        id => 3,
+        first_name => 'UpdatedFirst3',
+        last_name => 'UpdatedLast3',
+        created  => $date,
+        meta => {
+            provider => $provider
         }
     });
     ok($profile->update);
@@ -284,9 +280,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## delete using object
 {
     my $profile = Mango::Profile->new({
-        data => {
-            id => 2
-        }
+        id => 2
     });
     ok($provider->delete($profile));
     is($provider->search->count, 1);
@@ -297,9 +291,9 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## delete on result object
 {
     my $profile = Mango::Profile->new({
-        provider => $provider,
-        data => {
-            id => 1
+        id => 1,
+        meta => {
+            provider => $provider
         }
     });
     ok($profile->destroy);
@@ -311,9 +305,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## create/delete using user object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 3
-        }
+        id => 3
     });
 
     my $profile = $provider->create({
@@ -337,9 +329,7 @@ isa_ok($provider, 'Mango::Provider::Profiles');
 ## create/delete using user object in hash as id
 {
     my $user = Mango::User->new({
-        data => {
-            id => 4
-        }
+        id => 4
     });
 
     my $profile = $provider->create({

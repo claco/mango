@@ -41,7 +41,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 ## get by id w/object
 {
     my $object = Mango::Object->new;
-    $object->data({id => 2});
+    $object->id(2);
     my $role = $provider->get_by_id($object);
     isa_ok($role, 'Mango::Role');
     is($role->id, 2);
@@ -74,9 +74,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 ## get by user w/ object
 {
     my $user = Mango::User->new({
-        data => {
-            id => 1
-        }
+        id => 1
     });
     my @roles = $provider->search({ user => $user });
     is(scalar @roles, 2);
@@ -263,12 +261,10 @@ isa_ok($provider, 'Mango::Provider::Roles');
     );
 
     my $role = Mango::Role->new({
-        data => {
-            id => 4,
-            name => 'updatedrole4',
-            description => 'UpdatedRole4',
-            created  => $date
-        }
+        id => 4,
+        name => 'updatedrole4',
+        description => 'UpdatedRole4',
+        created  => $date
     });
 
     ok($provider->update($role));
@@ -297,12 +293,12 @@ isa_ok($provider, 'Mango::Provider::Roles');
     );
 
     my $role = Mango::Role->new({
-        provider => $provider,
-        data => {
-            id => 3,
-            name => 'updateduser3',
-            description => 'UpdatedDescription3',
-            created  => $date
+        id => 3,
+        name => 'updateduser3',
+        description => 'UpdatedDescription3',
+        created  => $date,
+        meta => {
+            provider => $provider
         }
     });
     ok($role->update);
@@ -336,9 +332,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
 ## delete using object
 {
     my $role = Mango::Role->new({
-        data => {
-            id => 2
-        }
+        id => 2
     });
     ok($provider->delete($role));
     is($provider->search->count, 1);
@@ -349,9 +343,9 @@ isa_ok($provider, 'Mango::Provider::Roles');
 ## delete on result object
 {
     my $role = Mango::Role->new({
-        provider => $provider,
-        data => {
-            id => 1
+        id => 1,
+        meta => {
+            provider => $provider
         }
     });
     ok($role->destroy);
@@ -367,7 +361,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
     });
 
     my $user = Mango::User->new({
-        data => {id => 2}
+        id => 2
     });
 
     is($provider->search({user => 1})->count, 0);
@@ -391,7 +385,7 @@ isa_ok($provider, 'Mango::Provider::Roles');
     })->first;
 
     my $user = Mango::User->new({
-        data => {id => 2}
+        id => 2
     });
 
     is($provider->search({user => 1})->count, 1);

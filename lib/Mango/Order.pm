@@ -55,7 +55,7 @@ __END__
 
 =head1 NAME
 
-Mango::Order - Module for maintaining order contents
+Mango::Order - Module representing an order
 
 =head1 SYNOPSIS
 
@@ -72,7 +72,7 @@ Mango::Order - Module for maintaining order contents
 
 =head1 DESCRIPTION
 
-Mango::Order is a component for maintaining simple order records.
+Mango::Order represents an order.
 
 =head1 METHODS
 
@@ -132,7 +132,7 @@ Deletes the item matching the supplied filter from the current order.
 
 =head2 destroy
 
-Deletes the current item from the provider.
+Deletes the current order and its items.
 
 =head2 items
 
@@ -713,7 +713,20 @@ Gets/sets the ship to email address
 
 =head2 update
 
-Saves any changes made to the current item.
+Saves any changes made to the order back to the provider.
+
+    $order->number(12345);
+    $order->update;
+
+Whenever L</update> is called, L</updated> is automatically set to the
+current time in UTC.
+
+=head2 updated
+
+Returns the date and time in UTC the order was last updated as a DateTime
+object.
+
+    print $order->updated;
 
 =head1 TEMPORARY COLUMNS
 

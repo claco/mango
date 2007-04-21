@@ -32,7 +32,7 @@ sub create {
             if ($user->isa('Mango::User')) {
                 $data->{'user_id'} = $user->id;
             } else {
-                throw Mango::Exception('NOT_A_USER');
+                Mango::Exception->throw('NOT_A_USER');
             };
         } else {
             $data->{'user_id'} = $user;
@@ -51,7 +51,7 @@ sub search {
             if ($user->isa('Mango::User')) {
                 $filter->{'user_id'} = $user->id;
             } else {
-                throw Mango::Exception('NOT_A_USER');
+                Mango::Exception->throw('NOT_A_USER');
             };
         } else {
             $filter->{'user_id'} = $user;
@@ -75,7 +75,7 @@ sub delete {
         if ($filter->isa('Mango::Cart')) {
             $filter = {id => $filter->id};
         } else {
-            throw Mango::Exception('NOT_A_CART');
+            Mango::Exception->throw('NOT_A_CART');
         };
     } elsif (ref $filter eq 'HASH') {
         if (my $user = delete $filter->{'user'}) {
@@ -83,7 +83,7 @@ sub delete {
                 if ($user->isa('Mango::User')) {
                     $filter->{'user_id'} = $user->id;
                 } else {
-                    throw Mango::Exception('NOT_A_USER');
+                    Mango::Exception->throw('NOT_A_USER');
                 };
             } else {
                 $filter->{'user_id'} = $user;

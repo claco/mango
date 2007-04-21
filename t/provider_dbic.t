@@ -50,8 +50,8 @@ is($provider->result_class, 'Mango::Object');
     is(scalar @users, 1);
     my $user = shift @users;
     isa_ok($user, 'Mango::Object');
-    is($user->data->{'id'}, 1);
-    is($user->data->{'username'}, 'test1');
+    is($user->{'id'}, 1);
+    is($user->{'username'}, 'test1');
 };
 
 ## search into iterator
@@ -62,8 +62,8 @@ is($provider->result_class, 'Mango::Object');
     my $user = $users->next;
     isa_ok($user, 'Mango::Object');
     is($users->pager, undef);
-    is($user->data->{'id'}, 2);
-    is($user->data->{'username'}, 'test2');
+    is($user->{'id'}, 2);
+    is($user->{'username'}, 'test2');
 };
 
 
@@ -78,8 +78,8 @@ is($provider->result_class, 'Mango::Object');
     is($users->pager->last_page, 3);
     my $user = $users->next;
     isa_ok($user, 'Mango::Object');
-    is($user->data->{'id'}, 1);
-    is($user->data->{'username'}, 'test1');
+    is($user->{'id'}, 1);
+    is($user->{'username'}, 'test1');
 };
 
 
@@ -87,20 +87,20 @@ is($provider->result_class, 'Mango::Object');
 {
     my @users = $provider->search({}, {order_by => 'id desc'});
     is(scalar @users, 3);
-    is($users[0]->data->{'id'}, 3);
-    is($users[1]->data->{'id'}, 2);
-    is($users[2]->data->{'id'}, 1);
+    is($users[0]->{'id'}, 3);
+    is($users[1]->{'id'}, 2);
+    is($users[2]->{'id'}, 1);
 };
 
 
 ## update
 {
     my $object = Mango::Object->new({
-        provider => $provider,
-        data => {
-            id => 1,
-            username => 'updateduser1',
-            password => 'updatedpassword1'
+        id => 1,
+        username => 'updateduser1',
+        password => 'updatedpassword1',
+        meta => {
+            provider => $provider
         }
     });
 
@@ -119,10 +119,10 @@ is($provider->result_class, 'Mango::Object');
         password => 'newpass'
     });
     isa_ok($object, 'Mango::Object');
-    is($object->data->{'id'}, 4);
-    is($object->data->{'username'}, 'newuser');
-    is($object->data->{'password'}, 'newpass');
-    isa_ok($object->data->{'created'}, 'DateTime');
+    is($object->{'id'}, 4);
+    is($object->{'username'}, 'newuser');
+    is($object->{'password'}, 'newpass');
+    isa_ok($object->{'created'}, 'DateTime');
 
     my $user = $provider->resultset->find(4);
     is($user->id, 4);
@@ -146,9 +146,7 @@ is($provider->result_class, 'Mango::Object');
     is($provider->resultset->count, 3);
 
     my $object = Mango::Object->new({
-        data => {
-            id => 2
-        }
+        id => 2
     });
     ok($provider->delete($object));
     is($provider->resultset->count, 2);

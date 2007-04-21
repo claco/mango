@@ -31,11 +31,11 @@ __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub type {
-    throw Mango::Exception('METHOD_NOT_IMPLEMENTED');
+    Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
 };
 
 sub save {
-    throw Mango::Exception('METHOD_NOT_IMPLEMENTED');
+    Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
 };
 
 sub user {
