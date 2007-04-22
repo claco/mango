@@ -1,9 +1,10 @@
 This file documents the revision history for Perl extension Mango.
 
-0.01000_03
+0.01000_03 Apr 20 18:20:11 2007
     - Updated/reviewed all pod
     - Changed throwing exceptions away from indirect syntax
     - Added Mango::Object::Meta to store non-column information
+    - Added Object->meta_class
     - Reworked tests/providers/objects to put data first, and other in meta
     - Added Object->get_columns
 

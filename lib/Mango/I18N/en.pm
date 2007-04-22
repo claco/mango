@@ -29,6 +29,8 @@ BEGIN {
         'Method not implemented!',
     COMPCLASS_NOT_LOADED =>
         'The component class [_1] [_2] could not be loaded: [_3]',
+    COMCLASS_NOT_SPECIFIED =>
+        'The component class [_1] was not specified',
     SCHEMA_SOURCE_NOT_SPECIFIED =>
         'No schema_source is specified!',
     SCHEMA_SOURCE_NOT_FOUND =>

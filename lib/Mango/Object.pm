@@ -21,6 +21,10 @@ sub new {
         $self->_meta_data($meta);
     };
 
+    if (my $meta_class = delete $self->{'meta_class'}) {
+        $self->meta_class($meta_class);
+    };
+
     return $self;
 };
 
@@ -94,9 +98,11 @@ sub set_component_class {
 
             Mango::Exception->throw('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
         };
-    };
 
-    $self->set_inherited($field, $value);
+        $self->set_inherited($field, $value);
+    } else {
+        Mango::Exception->throw('COMPCLASS_NOT_SPECIFIED', $field);
+    };
 
     return;
 };
@@ -147,6 +153,10 @@ This is a hash containing the meta data for the object being created:
     });
     
     $object->meta->provider->delete(...);
+
+=item meta_class
+
+See L</meta_class>.
 
 =back
 
@@ -205,6 +215,13 @@ Mango::Object::Meta.
 Gets/sets the class to be used to handle meta data for objects.
 
     Mango::Object->meta_class('MyMetaClass');
+
+This can also be set on a per object basis in the constructor:
+
+    my $object = Mango::Object->new({
+        meta => {...},
+        meta_class => 'MyMetaClass'
+    });
 
 =head2 set_column
 
