@@ -1,4 +1,4 @@
-# $Id: User.pm 1754 2007-03-05 02:45:36Z claco $
+# $Id$
 package Mango::Catalyst::Plugin::Authentication::User;
 use strict;
 use warnings;

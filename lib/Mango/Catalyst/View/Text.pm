@@ -1,4 +1,4 @@
-# $Id: Text.pm 1753 2007-03-05 02:44:39Z claco $
+# $Id$
 package Mango::Catalyst::View::Text;
 use strict;
 use warnings;

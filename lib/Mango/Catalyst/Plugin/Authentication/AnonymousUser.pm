@@ -1,4 +1,4 @@
-# $Id: AnonymousUser.pm 1668 2007-01-22 04:09:47Z claco $
+# $Id$
 package Mango::Catalyst::Plugin::Authentication::AnonymousUser;
 use strict;
 use warnings;
