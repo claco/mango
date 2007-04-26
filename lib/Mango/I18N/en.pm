@@ -61,6 +61,8 @@ BEGIN {
         'The object is not a Mango::Profile object',
     NO_USER_SPECIFIED =>
         'No user was specified',
+    MODEL_NOT_FOUND =>
+        'The model request [_1] could not be found',
 );
 
 1;
