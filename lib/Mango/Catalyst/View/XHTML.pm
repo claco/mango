@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::View::HTML/;
+    use base qw/Catalyst::View::TT/;
 };
 
 sub process {
@@ -21,7 +21,7 @@ __END__
 
 =head1 NAME
 
-Mango::Web::View::XHTML - Catalyst view class for Mango::Web
+Mango::Catalyst::View::XHTML - View class for XHTML output
 
 =head1 SYNOPSIS
 
@@ -29,8 +29,10 @@ Mango::Web::View::XHTML - Catalyst view class for Mango::Web
 
 =head1 DESCRIPTION
 
-Mango::Web::View::XHTML is the default Template Toolkit view for the Mango Web
-application.
+Mango::Catalyst::View::XHTML renders content using Catalyst::View::TT and
+serves it with the following content type:
+
+    application/xhtml+xml; charset=utf-8
 
 =head1 AUTHOR
 

@@ -1,4 +1,5 @@
-package Mango::Catalyst::Base::Feed;
+# $Id$
+package Mango::Catalyst::View::Feed;
 use strict;
 use warnings;
 
@@ -38,7 +39,7 @@ sub process {
    for my $item (@items) {
        next unless $item->can('as_entry');
        my $entry  = $item->as_entry($type);
-       
+
        $entry->link($c->uri_for('/cart', $entry->id));
        #$entry->link(
        #    $c->collection_uri_for(

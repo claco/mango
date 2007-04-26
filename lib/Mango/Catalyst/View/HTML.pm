@@ -21,16 +21,18 @@ __END__
 
 =head1 NAME
 
-Mango::Web::View::XHTML - Catalyst view class for Mango::Web
+Mango::Catalyst::View::HTML - View class for HTML output
 
 =head1 SYNOPSIS
 
-    $c->view('XHTML');
+    $c->view('HTML');
 
 =head1 DESCRIPTION
 
-Mango::Web::View::XHTML is the default Template Toolkit view for the Mango Web
-application.
+Mango::Catalyst::View::HTML renders content using Catalyst::View::TT and
+serves it with the following content type:
+
+    text/html; charset=utf-8
 
 =head1 AUTHOR
 

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::View::HTML/;
+    use base qw/Catalyst::View::TT/;
 };
 
 sub process {
@@ -18,25 +18,22 @@ sub process {
 
 =head1 NAME
 
-MyApp::View::Text - TT View for MyApp
+Mango::Catalyst::View::Text - View class for Text output
+
+=head1 SYNOPSIS
+
+    $c->view('Text');
 
 =head1 DESCRIPTION
 
-TT View for MyApp. 
+Mango::Catalyst::View::Text renders content using Catalyst::View::TT and
+serves it with the following content type:
+
+    text/plain; charset=utf-8
 
 =head1 AUTHOR
 
-=head1 SEE ALSO
-
-L<MyApp>
-
-A clever guy
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

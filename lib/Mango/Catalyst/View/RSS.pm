@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::View::RSS;
 use strict;
 use warnings;
@@ -15,4 +16,4 @@ sub process {
     return 1;
 };
 
-1; 
+1;
