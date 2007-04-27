@@ -9,7 +9,7 @@ BEGIN {
 
     use Mango::Exception ();
 };
-__PACKAGE__->mk_accessors(qw/_context _user _profile/);
+__PACKAGE__->mk_accessors(qw/_context _user _profile _cart/);
 
 sub new {
 	my ($class, $store, $user) = @_;
@@ -22,25 +22,25 @@ sub new {
 sub hash_algorithm {
     my $self = shift;
 
-    return $self->store->{'auth'}{'password_hash_type'};
+    return $self->_context->config->{'auth'}{'password_hash_type'};
 };
 
 sub password_pre_salt {
     my $self = shift;
 
-    return $self->store->{'auth'}{'password_pre_salt'};
+    return $self->_context->config->{'auth'}{'password_pre_salt'};
 };
 
 sub password_post_salt {
     my $self = shift;
 
-    return $self->store->{'auth'}{'password_post_salt'};
+    return $self->_context->config->{'auth'}{'password_post_salt'};
 };
 
 sub password_salt_len {
     my $self = shift;
 
-    return $self->store->{'auth'}{'password_salt_len'};
+    return $self->_context->config->{'auth'}{'password_salt_len'};
 };
 
 sub id {
@@ -55,7 +55,7 @@ sub id {
 
 sub password {
     my $self = shift;
-    my $password_field = $self->store->{'auth'}{'password_field'};
+    my $password_field = $self->_context->config->{'auth'}{'password_field'};
 
     return $self->user->$password_field;
 };
@@ -65,7 +65,7 @@ sub supported_features {
 
 	return {
         password => {
-            $self->store->{'auth'}{'password_type'} => 1,
+            $self->_context->config->{'auth'}{'password_type'} => 1,
 		},
         session => 1,
         roles => 1,
@@ -104,7 +104,8 @@ sub roles {
 
 sub profile {
     my $self = shift;
-    my $model = $self->_context->model($self->_context->config->{profiles}{mango}{model});
+    my $name = $self->_context->config->{profiles}{mango}{model};
+    my $model = $self->_context->model($name);
 
     Mango::Exception->throw('MODEL_NOT_FOUND') unless $model;
 
@@ -121,23 +122,27 @@ sub profile {
 
 sub cart {
     my $self = shift;
+    my $name = $self->_context->config->{carts}{mango}{model};
+    my $model = $self->_context->model($name);
     my $cart;
 
-    if (!$self->{'cart'}) {
-        if (my $cart_id = $self->store->context->session->{'__mango_cart_id'}) {
-            $cart = $self->store->cart_model->search({id => $cart_id})->first;
+    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+
+    if (!$self->_cart) {
+        if (my $cart_id = $self->_context->session->{'__mango_cart_id'}) {
+            $cart = $model->get_by_id($cart_id);
         };
 
         if (!$cart) {
-            $cart = $self->store->cart_model->create({});
-            $self->store->context->session->{'__mango_cart_id'} = $cart->id;
+            $cart = $model->create({});
+            $self->_context->session->{'__mango_cart_id'} = $cart->id;
         };
 
-        $self->{'cart'} = $cart;
-        $self->store->context->session_expires(1);
+        $self->_cart($cart);
+        $self->_context->session_expires(1);
     };
 
-    return $self->{'cart'};
+    return $self->_cart;
 };
 
 sub AUTOLOAD {

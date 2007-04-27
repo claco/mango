@@ -22,14 +22,17 @@ sub COMPONENT {
     if (!Class::Inspector->loaded($provider_class)) {
         eval "use $provider_class"; ## no critic;
         if ($@) {
-            throw Mango::Exception('PROVIDERCLASS_NOT_LOADED', $provider_class, $@);
+            Mango::Exception->throw('PROVIDERCLASS_NOT_LOADED', $provider_class, $@);
         };
     };
 
     $self->provider(
-        $provider_class->new({%{$self}})
+        $provider_class->new({
+            connection_info => $_[0]->config->{'connection_info'},
+            %{$self}
+        })
     );
-
+warn %{$self->provider};
     return $self;
 };
 
