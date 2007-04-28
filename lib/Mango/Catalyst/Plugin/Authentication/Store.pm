@@ -5,73 +5,87 @@ use warnings;
 our $VERSION = $Mango::VERSION;
 
 BEGIN {
-    use base qw/Class::Accessor::Grouped/;
+    use base qw/Class::Accessor::Fast/;
 
     use Mango ();
-    #use Mango::Catalyst::Plugin::Authentication::User;
-    #use Mango::Catalyst::Plugin::Authentication::CachedUser;
-    use Mango::Catalyst::Plugin::Authentication::AnonymousUser;
+    use Mango::Catalyst::Plugin::Authentication::User ();
+    use Mango::Catalyst::Plugin::Authentication::CachedUser ();
 };
+__PACKAGE__->mk_accessors(qw/config/);
 
 sub new {
-    my ($class, $config) = @_;
+    my ($class, $config, $app) = @_;
 
-    return bless {%{$config}}, $class;
+    $config->{'user_model'} ||= 'Users';
+    $config->{'user_field'} ||= 'username';
+    $config->{'password_field'} ||= 'password';
+    $config->{'password_type'} ||= 'clear';
+    $config->{'role_model'} ||= 'Roles';
+    $config->{'role_name_field'} ||= 'name';
+    $config->{'profile_model'} ||= 'Profiles';
+    $config->{'cart_model'} ||= 'Carts';
+
+    return bless {config => $config}, $class;
 };
 
-sub setup {
-    my $c = shift;
+sub find_user {
+    my ($self, $authinfo, $c) = @_;
+    my $user_field = $self->config->{'user_field'};
+    my $name = $self->config->{'user_model'};
+    my $model = $c->model($name);
 
-    $c->config->{authentication}{mango}{model} ||= 'Users';
-    $c->config->{authentication}{mango}{user_field} ||= 'username';
-    $c->config->{authentication}{mango}{password_field} ||= 'password';
-    $c->config->{authentication}{mango}{password_type} ||= 'clear';
-    $c->config->{authorization}{mango}{model} ||= 'Roles';
-    $c->config->{authorization}{mango}{role_name_field} ||= 'name';
-    $c->config->{profiles}{mango}{model} ||= 'Profiles';
-    $c->config->{carts}{mango}{model} ||= 'Carts';
+    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
 
-    $c->NEXT::setup(@_);
+    my $user = $model->search({
+        $user_field => $authinfo->{'username'}
+    })->first;
+
+    if ($user) {
+        return Mango::Catalyst::Plugin::Authentication::User->new($c, $self->config, $user);
+    } else {
+        return undef;
+    };
 };
 
-#sub find_user {
-    
-#};
+sub user_supports {
+    my $self = shift;
 
-#sub get_user {
-#    my ($self, $id) = @_;
-#    my $user = $self->user_model->search({$self->{'auth'}{'user_field'} => $id})->first;
-#
-#    return Catalyst::Plugin::Authentication::Store::Mango::User->new(
-#        $self,
-#        $user
-#    );
-#};
+    return Mango::Catalyst::Plugin::Authentication::Store::User->supports(@_);
+};
 
-#sub user_supports {
-#    my $self = shift;
-#
-#    return Catalyst::Plugin::Authentication::Store::Mango::User->supports(@_);
-#};
+sub for_session {
+    my ($self, $c, $user) = @_;
 
-#sub from_session {
-#    my ($self, $c, $id) = @_;
-#    my $roles = $c->session->{'__mango_user_roles'} || [];
-#
-#    my $user = bless {
-#        provider => $self->user_model->provider,
-#        data => {
-#            id => $c->session->{'__mango_user_id'},
-#            username => $id
-#        }
-#    }, $self->user_model->result_class;
-#
-#    return Catalyst::Plugin::Authentication::Store::Mango::CachedUser->new(
-#        $self,
-#        $user,
-#        $roles
-#    );
-#};
+    return {
+        user => {$user->get_columns},
+        profile => {$user->profile->get_columns},
+        roles => [$user->roles]
+    };
+};
+
+sub from_session {
+    my ($self, $c, $data) = @_;
+
+    ## restore user as user model result class
+    my $uname = $self->config->{'user_model'};
+    my $umodel = $c->model($uname);
+    Mango::Exception->throw('MODEL_NOT_FOUND', $uname) unless $umodel;
+    my $user = bless $data->{'user'}, $umodel->result_class;
+
+    ## restore profile as profile model result class
+    my $pname = $self->config->{'profile_model'};
+    my $pmodel = $c->model($pname);
+    Mango::Exception->throw('MODEL_NOT_FOUND', $pname) unless $pmodel;
+    my $profile = bless $data->{'profile'}, $pmodel->result_class;
+
+    my $restored = Mango::Catalyst::Plugin::Authentication::CachedUser->new(
+        $c, $self->config, $user
+    );
+
+    $restored->_profile($profile);
+
+    return $restored;
+};
 
 1;
 __END__

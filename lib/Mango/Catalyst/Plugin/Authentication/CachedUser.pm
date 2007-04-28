@@ -6,18 +6,12 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Plugin::Authentication::User/;
 };
-__PACKAGE__->mk_accessors(qw/password/);
-
-sub new {
-    my ($class, $store, $user, $roles) = @_;
-
-    return bless {store => $store, user => $user, roles => $roles}, $class;
-};
+__PACKAGE__->mk_accessors(qw/password _roles/);
 
 sub roles {
     my $self = shift;
 
-    return @{$self->{'roles'} || []};
+    return @{$self->_roles || []};
 };
 
 sub supported_features {

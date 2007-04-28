@@ -13,8 +13,9 @@ BEGIN {
 
 sub user {
     my $c = shift;
+    my $config = $c->config->{'authentication'}{'realms'}{'mango'}{'store'};
 
-    return $c->NEXT::user(@_) || Mango::Catalyst::Plugin::Authentication::AnonymousUser->new($c, @_);
+    return $c->NEXT::user(@_) || Mango::Catalyst::Plugin::Authentication::AnonymousUser->new($c, $config, @_);
 };
 
 1;

@@ -11,17 +11,22 @@ BEGIN {
 __PACKAGE__->mk_accessors(qw/password/);
 
 sub new {
-    my ($class, $c) = @_;
-    my $name = $c->config->{authentication}{mango}{model};
+    my ($class, $c, $config) = @_;
+    my $name = $config->{'user_model'};
     my $model = $c->model($name);
 
     Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
 
     my $user = $model->result_class->new({
+        id => '0E0',
         username => 'anonymous'
     });
 
-    return bless {_context => $c, _user => $user}, $class;
+    return bless {
+        config => $config,
+        _context => $c,
+        _user => $user
+    }, $class;
 };
 
 sub roles {
@@ -30,7 +35,7 @@ sub roles {
 
 sub profile {
     my $self = shift;
-    my $name = $self->_context->config->{profiles}{mango}{model};
+    my $name = $self->config->{'profile_model'};
     my $model = $self->_context->model($name);
 
     Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;

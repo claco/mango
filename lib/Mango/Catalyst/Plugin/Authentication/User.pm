@@ -2,52 +2,61 @@
 package Mango::Catalyst::Plugin::Authentication::User;
 use strict;
 use warnings;
-use overload '""' => sub {shift->id}, fallback => 1;
 
 BEGIN {
     use base qw/Catalyst::Plugin::Authentication::User Class::Accessor::Fast/;
 
     use Mango::Exception ();
 };
-__PACKAGE__->mk_accessors(qw/_context _user _profile _cart/);
+__PACKAGE__->mk_accessors(qw/config _context _cart _user _profile/);
 
 sub new {
-	my ($class, $store, $user) = @_;
+	my ($class, $c, $config, $user) = @_;
 
 	return unless $user;
 
-	return bless {user => $user}, $class;
+	return bless {config => $config, _user => $user, _context => $c}, $class;
+};
+
+sub get {
+    my ($self, $field) = @_;
+
+    my $object;
+    if ($object = $self->get_object and $object->can($field)) {
+        return $object->$field;
+    } else {
+        return undef;
+    };
+};
+
+sub get_object {
+    my $self = shift;
+
+    return $self->_user;
 };
 
 sub hash_algorithm {
     my $self = shift;
 
-    return $self->_context->config->{'auth'}{'password_hash_type'};
+    return $self->config->{'password_hash_type'};
 };
 
 sub password_pre_salt {
     my $self = shift;
 
-    return $self->_context->config->{'auth'}{'password_pre_salt'};
+    return $self->config->{'password_pre_salt'};
 };
 
 sub password_post_salt {
     my $self = shift;
 
-    return $self->_context->config->{'auth'}{'password_post_salt'};
+    return $self->config->{'password_post_salt'};
 };
 
 sub password_salt_len {
     my $self = shift;
 
-    return $self->_context->config->{'auth'}{'password_salt_len'};
-};
-
-sub id {
-    my $self = shift;
-    my $user_field = $self->_context->config->{authentication}{mango}{user_field};
-
-    return $self->_user->$user_field;
+    return $self->config->{'password_salt_len'};
 };
 
 *crypted_password = \&password;
@@ -55,9 +64,9 @@ sub id {
 
 sub password {
     my $self = shift;
-    my $password_field = $self->_context->config->{'auth'}{'password_field'};
+    my $password_field = $self->config->{'password_field'};
 
-    return $self->user->$password_field;
+    return $self->_user->$password_field;
 };
 
 sub supported_features {
@@ -65,7 +74,7 @@ sub supported_features {
 
 	return {
         password => {
-            $self->_context->config->{'auth'}{'password_type'} => 1,
+            $self->config->{'password_type'} => 1,
 		},
         session => 1,
         roles => 1,
@@ -74,28 +83,17 @@ sub supported_features {
 	};
 };
 
-sub for_session {
-    my $self = shift;
-
-    $self->store->context->session->{'__mango_user_roles'} = [$self->roles];
-    $self->store->context->session->{'__mango_user_id'} = $self->user->id;
-
-    return $self->id;
-};
-
 sub roles {
     my $self = shift;
+    my $name = $self->config->{'role_model'};
+    my $model = $self->_context->model($name);
 
-    unless ($self->store->{'authz'}) {
-        Catalyst::Exception->throw(
-            message => 'No authorization configuration defined'
-        );
-    };
+    Mango::Exception->throw('MODEL_NOT_FOUND') unless $model;
 
-    my $role_name_field = $self->store->{'authz'}{'role_name_field'};
+    my $role_name_field = $self->config->{'role_name_field'};
     my @roles;
 
-    foreach my $role ($self->store->role_model->get_by_user($self->user->id)) {
+    foreach my $role ($model->search({user => $self->_user->id})) {
         push @roles, $role->$role_name_field;
     };
 
@@ -104,16 +102,18 @@ sub roles {
 
 sub profile {
     my $self = shift;
-    my $name = $self->_context->config->{profiles}{mango}{model};
+    my $name = $self->config->{'profile_model'};
     my $model = $self->_context->model($name);
 
     Mango::Exception->throw('MODEL_NOT_FOUND') unless $model;
 
     if (!$self->_profile) {
+        my $profile =
+            $model->search({user => $self->_user})->first ||
+            $model->create({user => $self->_user});
+
         $self->_profile(
-            $model->search({
-                user => $self->_user
-            })
+            $profile
         );
     };
 
@@ -122,7 +122,7 @@ sub profile {
 
 sub cart {
     my $self = shift;
-    my $name = $self->_context->config->{carts}{mango}{model};
+    my $name = $self->config->{'cart_model'};
     my $model = $self->_context->model($name);
     my $cart;
 

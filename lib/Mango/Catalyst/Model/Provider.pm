@@ -16,7 +16,7 @@ sub COMPONENT {
     my $provider_class = delete $self->{'provider'};
 
     if (!$provider_class) {
-        throw Mango::Exception('PROVIDER_CLASS_NOT_SPECIFIED');
+        Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
     };
 
     if (!Class::Inspector->loaded($provider_class)) {
@@ -32,7 +32,7 @@ sub COMPONENT {
             %{$self}
         })
     );
-warn %{$self->provider};
+
     return $self;
 };
 
