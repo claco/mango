@@ -10,6 +10,7 @@ BEGIN {
     use Mango ();
     use Mango::Catalyst::Plugin::Authentication::User ();
     use Mango::Catalyst::Plugin::Authentication::CachedUser ();
+    use Mango::Catalyst::Plugin::Authentication::AnonymousUser ();
 };
 __PACKAGE__->mk_accessors(qw/config/);
 
@@ -17,9 +18,7 @@ sub new {
     my ($class, $config, $app) = @_;
 
     $config->{'user_model'} ||= 'Users';
-    $config->{'user_field'} ||= 'username';
-    $config->{'password_field'} ||= 'password';
-    $config->{'password_type'} ||= 'clear';
+    $config->{'user_name_field'} ||= 'username';
     $config->{'role_model'} ||= 'Roles';
     $config->{'role_name_field'} ||= 'name';
     $config->{'profile_model'} ||= 'Profiles';
@@ -28,20 +27,30 @@ sub new {
     return bless {config => $config}, $class;
 };
 
+sub anonymous_user {
+    my ($self, $c) = (shift, shift);
+
+    return Mango::Catalyst::Plugin::Authentication::AnonymousUser->new(
+        $c, $self->config, @_
+    );
+};
+
 sub find_user {
     my ($self, $authinfo, $c) = @_;
-    my $user_field = $self->config->{'user_field'};
+    my $user_name_field = $self->config->{'user_name_field'};
     my $name = $self->config->{'user_model'};
     my $model = $c->model($name);
 
     Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
 
     my $user = $model->search({
-        $user_field => $authinfo->{'username'}
+        $user_name_field => $authinfo->{'username'}
     })->first;
 
     if ($user) {
-        return Mango::Catalyst::Plugin::Authentication::User->new($c, $self->config, $user);
+        return Mango::Catalyst::Plugin::Authentication::User->new(
+            $c, $self->config, $user
+        );
     } else {
         return undef;
     };

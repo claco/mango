@@ -63,6 +63,10 @@ BEGIN {
         'No user was specified',
     MODEL_NOT_FOUND =>
         'The model requested [_1] could not be found',
+    REALM_NOT_FOUND =>
+        'The realm \'mango\' could not be found',
+    REALM_NOT_MANGO =>
+        'The default realm is not \'mango\'',
 );
 
 1;

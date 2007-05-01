@@ -35,47 +35,10 @@ sub get_object {
     return $self->_user;
 };
 
-sub hash_algorithm {
-    my $self = shift;
-
-    return $self->config->{'password_hash_type'};
-};
-
-sub password_pre_salt {
-    my $self = shift;
-
-    return $self->config->{'password_pre_salt'};
-};
-
-sub password_post_salt {
-    my $self = shift;
-
-    return $self->config->{'password_post_salt'};
-};
-
-sub password_salt_len {
-    my $self = shift;
-
-    return $self->config->{'password_salt_len'};
-};
-
-*crypted_password = \&password;
-*hashed_password = \&password;
-
-sub password {
-    my $self = shift;
-    my $password_field = $self->config->{'password_field'};
-
-    return $self->_user->$password_field;
-};
-
 sub supported_features {
     my $self = shift;
 
 	return {
-        password => {
-            $self->config->{'password_type'} => 1,
-		},
         session => 1,
         roles => 1,
         profiles => 1,
@@ -93,7 +56,7 @@ sub roles {
     my $role_name_field = $self->config->{'role_name_field'};
     my @roles;
 
-    foreach my $role ($model->search({user => $self->_user->id})) {
+    foreach my $role ($model->search({user => $self->_user})) {
         push @roles, $role->$role_name_field;
     };
 
