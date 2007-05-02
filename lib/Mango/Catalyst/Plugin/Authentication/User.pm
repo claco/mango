@@ -117,3 +117,119 @@ sub AUTOLOAD {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Plugin::Authentication::User - Custom Catalyst Authentication User
+
+=head1 SYNOPSIS
+
+    use Catalyst qw/
+        -Debug
+        ConfigLoader
+        +Mango::Catalyst::Plugin::Authentication
+        Static::Simple
+    /;
+    
+    my $user = $c->user;
+    print $user->cart->count;
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Plugin::Authentication::User is a custom authentication user
+that uses Mangos Catalyst models to present common user information. It is also
+the base class for CachedUser and AnonymousUser.
+
+Any unknown method calls are forwarded to the internal user object, which is
+an instance or subclass of Mango::User.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+There should never be any reason to create one of these yourself. :-)
+
+=head1 METHODS
+
+=head2 cart
+
+Returns a cart for the current user. If no cart exists, one
+will be created and assigned to the users current session. The same cart
+will be returned for a user before and after they are authenticated.
+
+    my $cart = $c->user->cart;
+    print $cart->count;
+    $cart->add(...);
+
+Normally, a Mango::Cart is returned. If you are using a custom cart model
+that has set its C<result_class> to a custom subclass of Mango::Cart, that
+class will be used instead.
+
+=head2 get
+
+=over
+
+=item Arguments: $field
+
+=back
+
+Returns the specified field from the underlying user object.
+
+    $user->get('username');
+    
+    #same as:
+    $user->username;
+
+See L<Catalyst::Plugin::Authentication> for the usage of this method.
+
+=head2 get_object
+
+Returns the underlying user object, which is a Mango::User object.
+
+See L<Catalyst::Plugin::Authentication> for the usage of this method.
+
+=head2 profile
+
+Returns a user profile for the current user. If no profile exists, one
+will be created and assigned to the current user.
+
+    my $profile = $c->user->profile;
+    print 'Welcome back ', $profile->first_name;
+
+Normally, a Mango::Profile is returned. If you are using a custom profile model
+that has set its C<result_class> to a custom subclass of Mango::Profile, that
+class will be used instead.
+
+=head2 roles
+
+Returns a list containing the names of all of the roles the current user
+belongs to. This method is used by L<Catalyst::Plugin::Authorization::Roles>.
+
+The roles will be loaded form the database every time they are requested.
+
+See L<Catalyst::Plugin::Authentication> for the usage of this method.
+
+=head2 support_features
+
+Returns an anonymous hash containing the following options:
+
+    session => 1,
+    roles => 1,
+    profiles => 1,
+    carts => 1
+
+=head1 SEE ALSO
+
+L<Catalyst::Plugin::Authentication>,
+L<Mango::User>, L<Mango::Profile>, L<Mango::Cart>,
+L<Mango::Catalyst::Plugin::Authentication::Store>
+L<Mango::Catalyst::Plugin::Authentication::User>
+L<Mango::Catalyst::Plugin::Authentication::CachedUser>
+L<Mango::Catalyst::Plugin::Authentication::AnonymousUser>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

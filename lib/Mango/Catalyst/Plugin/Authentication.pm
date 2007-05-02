@@ -99,6 +99,26 @@ about what the available configuration options mean.
 
 =head2 user
 
+Returns a Mango authentication user object for the current web user. If the
+current user isn't authenticated, an AnonymousUser object will be returned.
+If the user has just been authenticated, a User object will be returned. If
+the current user has already been authenticated, a CachedUser will be
+returned.
+
+    ## AnonymousUser pre auth
+    my $user = $c->user;
+    
+    ## User from auth
+    my $user = $c->authenticate(...);
+    
+    ## CachedUser after auth
+    my $user = $c->user;
+
+See the L<User|Mango::Catalyst::Plugin::Authentication::User>,
+L<CachedUser|Mango::Catalyst::Plugin::Authentication::CachedUser> and
+L<AnonymousUser|Mango::Catalyst::Plugin::Authentication::AnonymousUser>
+for more information about the difference between the different user classes.
+
 =head1 SEE ALSO
 
 L<Catalyst::Plugin::Authentication>,

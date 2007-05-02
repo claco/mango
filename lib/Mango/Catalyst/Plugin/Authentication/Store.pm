@@ -98,3 +98,127 @@ sub from_session {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Plugin::Authentication::Store - Custom Catalyst Authentication Store
+
+=head1 SYNOPSIS
+
+    use Catalyst qw/
+        -Debug
+        ConfigLoader
+        +Mango::Catalyst::Plugin::Authentication
+        Static::Simple
+    /;
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Plugin::Authentication::Store is a custom authentication store
+that uses Mangos Catalyst models to authenticate users.
+
+To use this store, simply add it to the appropriate realm configuration:
+
+    authentication:
+      default_realm: mango
+      realms:
+        mango:
+          credential:
+            class: Password
+            password_field: password
+            password_type: clear
+          store:
+            class: +Mango::Catalyst::Plugin::Authentication::Store
+            cart_model: Carts
+            profile_model: Profiles
+            role_model: Roles
+            user_model: Users
+
+=head1 CONFIGURATION
+
+The following configuration options are available when using this store:
+
+    authentication:
+      default_realm: mango
+      realms:
+        mango:
+          credential:
+            class: Password
+            password_field: password
+            password_type: clear
+          store:
+            class: +Mango::Catalyst::Plugin::Authentication::Store
+            cart_model: Carts
+            profile_model: Profiles
+            role_model: Roles
+            user_model: Users
+
+=head2 cart_model
+
+The name of the model used to fetch carts. This model can be any model
+that inherits from Mango::Catalyst::Model::Carts. The default model is
+<Carts>.
+
+=head2 profile_model
+
+The name of the model used to fetch profiles. This model can be any model
+that inherits from Mango::Catalyst::Model::Profiles. The default model is
+<Profiles>.
+
+=head2 role_model
+
+The name of the model used to fetch user roles. This model can be any model
+that inherits from Mango::Catalyst::Model::Roles. The default model is
+<Roles>.
+
+=head2 user_model
+
+The name of the model used to fetch users. This model can be any model
+that inherits from Mango::Catalyst::Model::Users. The default model is
+<Users>.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+See L<Catalyst::Plugin::Authentication> for more information about how
+custom stores are created and used.
+
+=head1 METHODS
+
+=head2 anonymous_user
+
+Returns an AnonymousUser object for the current user.
+
+=head2 find_user
+
+Returns a User object for the specified username.
+
+=head2 for_session
+
+Returns an anonymous hash containing the current users user, role and profile
+information to be saved into the current users session.
+
+=head2 from_session
+
+Returns a CachedUser object restored from the current users session containing
+user, profile and role information.
+
+=head2 user_supports
+
+Returns a hash containing the support features.
+
+=head1 SEE ALSO
+
+L<Catalyst::Plugin::Authentication>,
+L<Mango::Catalyst::Plugin::Authentication::Store>
+L<Mango::Catalyst::Plugin::Authentication::User>
+L<Mango::Catalyst::Plugin::Authentication::CachedUser>
+L<Mango::Catalyst::Plugin::Authentication::AnonymousUser>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

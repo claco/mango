@@ -63,4 +63,87 @@ sub supported_features {
 };
 
 1;
-__END__
+
+=head1 NAME
+
+Mango::Catalyst::Plugin::Authentication::AnonymousUser - Custom Catalyst Authentication Anonymous User
+
+=head1 SYNOPSIS
+
+    use Catalyst qw/
+        -Debug
+        ConfigLoader
+        +Mango::Catalyst::Plugin::Authentication
+        Static::Simple
+    /;
+    
+    my $user = $c->user;
+    print $user->cart->count;
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Plugin::Authentication::AnonymousUser is a custom user for
+users that haven't yet been authenticated, i.e. 'anonymous' users.
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+There should never be any reason to create one of these yourself. :-)
+
+=head1 METHODS
+
+=head2 cart
+
+Returns a cart for the current user. If no cart exists, one
+will be created and assigned to the users current session. The same cart
+will be returned for a user before and after they are authenticated.
+
+    my $cart = $c->user->cart;
+    print $cart->count;
+    $cart->add(...);
+
+Normally, a Mango::Cart is returned. If you are using a custom cart model
+that has set its C<result_class> to a cusotm subclass of Mango::Cart, that
+class will be used instead.
+
+=head2 profile
+
+Returns an anonymous profile for the current user. This profile is mostly
+empty except for the following fields:
+
+    first_name: Anonymous
+    last_name: User
+
+Normally, a Mango::Profile is returned. If you are using a custom profile model
+that has set its C<result_class> to a custom subclass of Mango::Profile, that
+class will be used instead.
+
+=head2 roles
+
+Returns an empty list.
+
+=head2 support_features
+
+Returns an anonymous hash containing the following options:
+
+    roles => 1,
+    profiles => 1,
+    carts => 1
+
+=head1 SEE ALSO
+
+L<Catalyst::Plugin::Authentication>,
+L<Mango::User>, L<Mango::Profile>, L<Mango::Cart>,
+L<Mango::Catalyst::Plugin::Authentication::Store>
+L<Mango::Catalyst::Plugin::Authentication::User>
+L<Mango::Catalyst::Plugin::Authentication::CachedUser>
+L<Mango::Catalyst::Plugin::Authentication::AnonymousUser>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+
