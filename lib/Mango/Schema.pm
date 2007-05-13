@@ -8,6 +8,16 @@ BEGIN {
 };
 __PACKAGE__->load_classes;
 
+sub connect {
+    my ($class, $dsn, $user, $password, $attr) = @_;
+
+    $attr ||= {
+        AutoCommit => 1
+    };
+
+    return $class->next::method($dsn, $user, $password, $attr);
+};
+
 1;
 __END__
 

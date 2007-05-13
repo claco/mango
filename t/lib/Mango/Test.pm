@@ -45,7 +45,7 @@ sub init_schema {
     mkdir($db_dir) unless -d $db_dir;
 
     my $dsn = 'dbi:SQLite:' . $db;
-    my $schema = Mango::Test::Schema->compose_namespace($namespace)->connect($dsn);
+    my $schema = Mango::Test::Schema->compose_namespace($namespace)->connect($dsn, undef, undef, {AutoCommit => 1});
     $schema->storage->on_connect_do([
         'PRAGMA synchronous = OFF',
         'PRAGMA temp_store = MEMORY'
