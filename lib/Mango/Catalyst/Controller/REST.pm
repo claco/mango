@@ -9,6 +9,7 @@ BEGIN {
 
 __PACKAGE__->config(
     serialize => {
+        'stash_key' => 'entity',
         'map'       => {
             'text/plain'            => [qw/View Text/],
             'text/html'             => [qw/View HTML/],
@@ -58,8 +59,8 @@ sub begin : Private {
     $c->request->content_type(
         $mimes->mimeTypeOf($view)
     ) if $view;
-    
-    $self->NEXT::begin($c); 
+
+    $self->NEXT::begin($c);
 };
 
 1;

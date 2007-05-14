@@ -16,6 +16,9 @@ sub process {
     return 1;
 };
 
+1;
+__END__
+
 =head1 NAME
 
 Mango::Catalyst::View::Text - View class for Text output

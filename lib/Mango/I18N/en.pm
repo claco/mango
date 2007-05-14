@@ -63,6 +63,8 @@ BEGIN {
         'No user was specified',
     MODEL_NOT_FOUND =>
         'The model requested [_1] could not be found',
+    FEED_NOT_FOUND =>
+        'No feed data was specified',
     REALM_NOT_FOUND =>
         'The realm \'mango\' could not be found',
     REALM_NOT_MANGO =>
@@ -79,7 +81,7 @@ Mango::I18N::en - Mango Language Pack: English
 =head1 SYNOPSIS
 
     use Mango::I18N qw/translate/;
-    
+
     {
         local $ENV{'LANG'} = 'en';
         print translate('Hello');

@@ -1,4 +1,7 @@
-use inc::Module::Install;
+# $Id$
+use strict;
+use warnings;
+use inc::Module::Install 0.65;
 
 name 'Mango';
 license 'perl';
