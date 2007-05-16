@@ -16,6 +16,7 @@ sub process {
     my $entity = $c->stash->{'entity'};
     my @entries;
 
+    Mango::Exception->throw('FEED_TYPE_NOT_SPECIFIED') unless $type;
     Mango::Exception->throw('FEED_NOT_FOUND') unless $entity;
 
     if (blessed $entity && $entity->can('as_feed')) {
@@ -43,6 +44,8 @@ sub process {
             !$feed->can($key);
     };
 
+    $feed->language($c->language) unless $feed->language;
+
     for my $entry (@entries) {
         if (blessed $entry && $entry->can('as_feed_entry')) {
             my $data = $entry->as_feed_entry($type);
@@ -64,7 +67,7 @@ sub process {
 
     $c->stash->{'feed'} = $feed;
 
-    $c->res->body($feed->as_xml);
+    $c->response->body($feed->as_xml);
 
     return 1;
 };

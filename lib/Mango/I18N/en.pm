@@ -65,6 +65,8 @@ BEGIN {
         'The model requested [_1] could not be found',
     FEED_NOT_FOUND =>
         'No feed data was specified',
+    FEED_TYPE_NOT_SPECIFIED =>
+        'No feed type was apsecified',
     REALM_NOT_FOUND =>
         'The realm \'mango\' could not be found',
     REALM_NOT_MANGO =>

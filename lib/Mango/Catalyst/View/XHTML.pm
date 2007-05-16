@@ -11,7 +11,7 @@ sub process {
     my ($self, $c) = (shift, shift);
 
     $self->NEXT::process($c, @_);
-    $c->res->content_type('application/xhtml+xml; charset=utf-8');
+    $c->response->content_type('application/xhtml+xml; charset=utf-8');
 
     return 1;
 };

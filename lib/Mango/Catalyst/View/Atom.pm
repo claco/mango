@@ -11,7 +11,7 @@ sub process {
     my($self, $c) = @_;
 
     $self->NEXT::process($c, 'Atom');
-    $c->res->content_type('application/atom+xml; charset=utf-8');
+    $c->response->content_type('application/atom+xml; charset=utf-8');
 
     return 1;
 };
