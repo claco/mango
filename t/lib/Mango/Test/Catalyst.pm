@@ -11,8 +11,8 @@ BEGIN {
 sub context {
     my $class = shift;
     my $args = shift || {};
-    my $config = $args->{config} || {};
-    my $stash = {};
+    my $config = $args->{'config'} || {};
+    my $stash = $args->{'stash'} || {};
 
     ## stupid UNIVERSAL::crap kills Template::Timer load
     require Test::MockObject;
@@ -29,7 +29,6 @@ sub context {
     #$config = { %{$config||{}},
     #            %{LoadFile('root/resources.yml')||{}}
     #          };
-
     $c->set_always('config', $config);
 
     # fake logging (doesn't do anything)
@@ -39,7 +38,8 @@ sub context {
     $c->set_always('debug', undef);
 
     ## Catalyst::Request
-    my $request = Test::MockObject->new;    
+    my $request = Test::MockObject->new;
+    $request->set_always('base', undef);
     $c->set_always('request', $request);
     $c->set_always('req', $request);
 
