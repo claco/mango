@@ -66,7 +66,11 @@ EOF
 
 my $RSS = <<EOF;
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:blogChannel="http://backend.userland.com/blogChannelModule">
+<rss version="2.0"
+ xmlns:dcterms="http://purl.org/rss/1.0/modules/dcterms/"
+ xmlns:blogChannel="http://backend.userland.com/blogChannelModule"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/"
+>
   <channel>
     <title>My Feed Title</title>
     <link>http://localhost/</link>
@@ -77,22 +81,26 @@ my $RSS = <<EOF;
     <webMaster>Christopher H. Laco</webMaster>
     <generator>Mango Feed View</generator>
     <item>
-        <title>Entry1</title>
-        <link>http://localhost/entries/12345</link>
-        <description>Entry1 Summary</description>
-        <author>Entry1 Author</author>
-        <category>computers</category>
-        <guid isPermaLink="true">http://localhost/entries/12345</guid>
-        <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
+      <title>Entry1</title>
+      <link>http://localhost/entries/12345</link>
+      <description>Entry1 Summary</description>
+      <author>Entry1 Author</author>
+      <category>computers</category>
+      <guid isPermaLink="true">http://localhost/entries/12345</guid>
+      <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
+      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
+      <content:encoded>Entry1 Content</content:encoded>
     </item>
     <item>
-        <title>Entry2</title>
-        <link>http://localhost/entries/6789</link>
-        <description>Entry2 Summary</description>
-        <author>Entry2 Author</author>
-        <category>tv</category>
-        <guid isPermaLink="true">http://localhost/entries/6789</guid>
-        <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
+      <title>Entry2</title>
+      <link>http://localhost/entries/6789</link>
+      <description>Entry2 Summary</description>
+      <author>Entry2 Author</author>
+      <category>tv</category>
+      <guid isPermaLink="true">http://localhost/entries/6789</guid>
+      <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
+      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
+      <content:encoded>Entry2 Content</content:encoded>
     </item>
   </channel>
 </rss>

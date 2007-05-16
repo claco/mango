@@ -15,7 +15,7 @@ BEGIN {
         plan tests => 5;
     };
 
-    use_ok('Mango::Catalyst::View::XHTML');
+    use_ok('Mango::Catalyst::View::Text');
 };
 
 my $temp = Directory::Scratch->new;
@@ -30,14 +30,14 @@ my $c = Mango::Test::Catalyst->context({
         template => $file->basename
     }
 });
-my $view = $c->view('XHTML');
-isa_ok($view, 'Mango::Catalyst::View::XHTML');
+my $view = $c->view('Text');
+isa_ok($view, 'Mango::Catalyst::View::Text');
 
 
 ## check the content type header
 {
     ok($view->process($c));
-    is($c->response->content_type, 'application/xhtml+xml; charset=utf-8');
+    is($c->response->content_type, 'text/plain; charset=utf-8');
 
     SKIP: {
         skip 'Test::LongString not installed', 1 unless eval 'require Test::LongString';

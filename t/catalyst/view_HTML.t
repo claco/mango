@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+
 BEGIN {
     use lib 't/lib';
     use Mango::Test;
@@ -15,7 +16,7 @@ BEGIN {
         plan tests => 5;
     };
 
-    use_ok('Mango::Catalyst::View::XHTML');
+    use_ok('Mango::Catalyst::View::HTML');
 };
 
 my $temp = Directory::Scratch->new;
@@ -30,14 +31,14 @@ my $c = Mango::Test::Catalyst->context({
         template => $file->basename
     }
 });
-my $view = $c->view('XHTML');
-isa_ok($view, 'Mango::Catalyst::View::XHTML');
+my $view = $c->view('HTML');
+isa_ok($view, 'Mango::Catalyst::View::HTML');
 
 
 ## check the content type header
 {
     ok($view->process($c));
-    is($c->response->content_type, 'application/xhtml+xml; charset=utf-8');
+    is($c->response->content_type, 'text/html; charset=utf-8');
 
     SKIP: {
         skip 'Test::LongString not installed', 1 unless eval 'require Test::LongString';
