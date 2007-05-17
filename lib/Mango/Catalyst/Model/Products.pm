@@ -8,7 +8,7 @@ BEGIN {
 };
 
 __PACKAGE__->config(
-    provider => 'Mango::Provider::Products'
+    provider_class => 'Mango::Provider::Products'
 );
 
 =head1 NAME

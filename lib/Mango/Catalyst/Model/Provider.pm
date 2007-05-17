@@ -8,12 +8,12 @@ BEGIN {
     use Class::Inspector ();
     use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('inherited', qw/provider/);
+    __PACKAGE__->mk_group_accessors('inherited', qw/provider_class provider/);
 };
 
 sub COMPONENT {
     my $self = shift->new(@_);
-    my $provider_class = delete $self->{'provider'};
+    my $provider_class = delete $self->{'provider_class'};
 
     if (!$provider_class) {
         Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
@@ -22,7 +22,7 @@ sub COMPONENT {
     if (!Class::Inspector->loaded($provider_class)) {
         eval "use $provider_class"; ## no critic;
         if ($@) {
-            Mango::Exception->throw('PROVIDERCLASS_NOT_LOADED', $provider_class, $@);
+            Mango::Exception->throw('PROVIDER_CLASS_NOT_LOADED', $provider_class, $@);
         };
     };
 
@@ -32,6 +32,7 @@ sub COMPONENT {
             %{$self}
         })
     );
+    $self->provider_class($provider_class);
 
     return $self;
 };

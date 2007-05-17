@@ -8,7 +8,7 @@ BEGIN {
 };
 
 __PACKAGE__->config(
-    provider => 'Mango::Provider::Wishlists'
+    provider_class => 'Mango::Provider::Wishlists'
 );
 
 =head1 NAME
