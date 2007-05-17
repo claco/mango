@@ -34,6 +34,16 @@ serves it with the following content type:
 
     text/html; charset=utf-8
 
+=head1 METHODS
+
+=head2 process
+
+Creates HTML content, writes it to the response body, and changes the content
+type. There is usually no reason to call this method directly. Forward to this
+view instead:
+
+    $c->forward($c->view('HTML'));
+
 =head1 AUTHOR
 
     Christopher H. Laco

@@ -89,6 +89,9 @@ Mango::Catalyst::View::Feed - View class for XML::Feed based feeds
 Mango::Catalyst::View::Feed renders a feed using XML::Feed and
 serves it with the appropriate content type.
 
+There is no real reason to use this view directly. Please use
+Mango::Catalyst::View::RSS or Mango::Catalyst::View::Atom instead.
+
 =head1 FEED DATA
 
 When this view is called, it will create a feed using the data in:
@@ -116,6 +119,25 @@ XML::Feed::Entry object and added to the feed.
 If C<entity> is an object and it supports the C<as_feed> method, the output
 from that will be used. C<as_feed> B<must> return a XML::Feed object or the
 same C<entity> hash described above.
+
+=head1 METHODS
+
+=head2 process
+
+=over
+
+=item Arguments: $c, $type
+
+C<type> can be either 'RSS' or 'Atom'.
+
+=back
+
+Creates an XML::Feed of the specific type, writes it to the response body,
+and changes the content type.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::View::RSS>, L<Mango::Catalyst::View::Atom>
 
 =head1 AUTHOR
 

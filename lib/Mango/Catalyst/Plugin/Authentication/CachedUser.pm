@@ -59,7 +59,7 @@ These roles are loaded from the current users session and cached locally.
 
 See L<Catalyst::Plugin::Authentication> for the usage of this method.
 
-=head2 support_features
+=head2 supported_features
 
 Returns an anonymous hash containing the following options:
 

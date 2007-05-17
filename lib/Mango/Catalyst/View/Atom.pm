@@ -34,6 +34,16 @@ serves it with the following content type:
 
     application/atom+xml; charset=utf-8
 
+=head1 METHODS
+
+=head2 process
+
+Creates an XML::Feed of the specific type, writes it to the response body,
+and changes the content type. There is usually no reason to call this method
+directly. Forward to this view instead:
+
+    $c->forward($c->view('Atom'));
+
 =head1 SEE ALSO
 
 L<Mango::Catalyst::View::Feed>

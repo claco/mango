@@ -115,7 +115,7 @@ Mango::Catalyst::Plugin::Authentication::Store - Custom Catalyst Authentication 
 =head1 DESCRIPTION
 
 Mango::Catalyst::Plugin::Authentication::Store is a custom authentication store
-that uses Mangos Catalyst models to authenticate users.
+that uses Mango Catalyst models to authenticate users.
 
 To use this store, simply add it to the appropriate realm configuration:
 

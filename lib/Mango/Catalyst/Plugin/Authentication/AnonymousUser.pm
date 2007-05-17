@@ -63,6 +63,7 @@ sub supported_features {
 };
 
 1;
+__END__
 
 =head1 NAME
 
@@ -104,7 +105,7 @@ will be returned for a user before and after they are authenticated.
     $cart->add(...);
 
 Normally, a Mango::Cart is returned. If you are using a custom cart model
-that has set its C<result_class> to a cusotm subclass of Mango::Cart, that
+that has set its C<result_class> to a custom subclass of Mango::Cart, that
 class will be used instead.
 
 =head2 profile
@@ -123,7 +124,7 @@ class will be used instead.
 
 Returns an empty list.
 
-=head2 support_features
+=head2 supported_features
 
 Returns an anonymous hash containing the following options:
 

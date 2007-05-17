@@ -11,23 +11,30 @@ __PACKAGE__->config(
     provider_class => 'Mango::Provider::Products'
 );
 
+1;
+__END__
+
 =head1 NAME
 
-Mango::Web::Model::Products - Catalyst Model
+Mango::Catalyst::Model::Products - Catalyst model for product information
 
 =head1 DESCRIPTION
 
-Catalyst Model.
+Mango::Catalyst::Model::Products provides glue between Mango::Provider::Products
+and Catalyst models. If you would like to use a different provider, simply set
+C<provider_class>:
+
+    __PACKAGE__->provider_class('OtherProductProvider');
+
+See the classes below for more information about configuring your models.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Provider>, L<Mango::Provider::Products>
 
 =head1 AUTHOR
 
-A clever guy
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
-
-1;
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

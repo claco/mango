@@ -73,7 +73,13 @@ sub setup {
     my ($self, $args) = @_;
 
     if (ref $args eq 'HASH') {
-        map {$self->$_($args->{$_})} keys %{$args};
+        map {
+            if ($self->can($_)) {
+                $self->$_($args->{$_})
+            } else {
+                $self->{$_}  = $args->{$_};
+            }
+        } keys %{$args};
     };
 
     return;

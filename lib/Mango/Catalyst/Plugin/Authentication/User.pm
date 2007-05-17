@@ -137,7 +137,7 @@ Mango::Catalyst::Plugin::Authentication::User - Custom Catalyst Authentication U
 =head1 DESCRIPTION
 
 Mango::Catalyst::Plugin::Authentication::User is a custom authentication user
-that uses Mangos Catalyst models to present common user information. It is also
+that uses Mango Catalyst models to present common user information. It is also
 the base class for CachedUser and AnonymousUser.
 
 Any unknown method calls are forwarded to the internal user object, which is
@@ -209,7 +209,7 @@ The roles will be loaded form the database every time they are requested.
 
 See L<Catalyst::Plugin::Authentication> for the usage of this method.
 
-=head2 support_features
+=head2 supported_features
 
 Returns an anonymous hash containing the following options:
 
