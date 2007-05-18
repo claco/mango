@@ -43,6 +43,7 @@ sub profile {
     if (!$self->_profile) {
         $self->_profile(
             $model->result_class->new({
+                id => $self->_user->id,
                 first_name => 'Anonymous',
                 last_name => 'User'
             })
@@ -77,7 +78,7 @@ Mango::Catalyst::Plugin::Authentication::AnonymousUser - Custom Catalyst Authent
         +Mango::Catalyst::Plugin::Authentication
         Static::Simple
     /;
-    
+
     my $user = $c->user;
     print $user->cart->count;
 

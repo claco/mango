@@ -13,6 +13,7 @@ sub context {
     my $args = shift || {};
     my $config = $args->{'config'} || {};
     my $stash = $args->{'stash'} || {};
+    my $session = $args->{'session'} || {};
 
     ## stupid UNIVERSAL::crap kills Template::Timer load
     require Test::MockObject;
@@ -23,8 +24,9 @@ sub context {
     $c->mock('model', \&model);
     $c->mock('view', \&view);
     $c->mock('action', sub {return shift->config->{'action'}});
-
     $c->set_always('stash', $stash);
+    $c->set_always('session', $session);
+    $c->set_always('session_expires', undef);
 
     #$config = { %{$config||{}},
     #            %{LoadFile('root/resources.yml')||{}}
@@ -75,7 +77,9 @@ sub component {
     $name = "Mango::Catalyst::$name";
 
     eval "require $name";
-    croak "error loading $name: $@" if $@;
+
+    # cat returns nothing for not found models
+    return if $@;
 
     my $component;
     eval {

@@ -40,7 +40,7 @@ BEGIN {
     PROVIDER_CLASS_NOT_SPECIFIED =>
         'No provider class is specified!',
     PROVIDER_CLASS_NOT_LOADED =>
-        'The provider [_1] could not be loaded: [_2]!',
+        "The provider '[_1]' could not be loaded: [_2]!",
     NOT_A_ROLE =>
         'The object is not a Mango::Role object',
     NOT_A_USER =>
@@ -62,7 +62,7 @@ BEGIN {
     NO_USER_SPECIFIED =>
         'No user was specified',
     MODEL_NOT_FOUND =>
-        'The model requested [_1] could not be found',
+        "The model requested '[_1]' could not be found",
     FEED_NOT_FOUND =>
         'No feed data was specified',
     FEED_TYPE_NOT_SPECIFIED =>
