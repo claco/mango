@@ -17,15 +17,13 @@ BEGIN {
 {
     my $c = Mango::Test::Catalyst->context({
         config => {
-            connection_info => [
-                Mango::Test->init_schema->dsn,
-                undef,
-                undef,
-                {AutoCommit => 1}
-            ]
+
         }
     });
     my $model = $c->model('Roles');
+
+    ## use faster test schema
+    $model->schema(Mango::Test->init_schema);
     isa_ok($model, 'Mango::Catalyst::Model::Roles');
     isa_ok($model->provider, 'Mango::Provider::Roles');
     is($model->provider_class, 'Mango::Provider::Roles');

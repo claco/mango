@@ -22,8 +22,10 @@ BEGIN {
 
 my $schema = Mango::Test->init_schema;
 my $provider = Mango::Provider::Wishlists->new({
-    connection_info => [$schema->dsn]
+    #connection_info => [$schema->dsn]
 });
+## use faster test schema
+$provider->storage->storage->schema_instance($schema);
 isa_ok($provider, 'Mango::Provider::Wishlists');
 
 

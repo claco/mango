@@ -24,7 +24,9 @@ BEGIN {
 
 my $schema = Mango::Test->init_schema;
 my $provider = Mango::Provider::Products->new({
-    connection_info => [$schema->dsn]
+    #connection_info => [$schema->dsn]
+    #use faster test schema
+    schema => $schema
 });
 isa_ok($provider, 'Mango::Provider::Products');
 

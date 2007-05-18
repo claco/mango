@@ -22,7 +22,7 @@ BEGIN {
 
 my $schema = Mango::Test->init_schema;
 my $provider = Mango::Provider::DBIC->new({
-    connection_info => [$schema->dsn],
+    #connection_info => [$schema->dsn]
 });
 isa_ok($provider, 'Mango::Provider::DBIC');
 
@@ -34,6 +34,9 @@ is($provider->schema_class, 'Mango::Schema');
 
 $provider->schema_class('Mango::Test::Schema');
 is($provider->schema_class, 'Mango::Test::Schema');
+
+#use faster test schema
+$provider->schema($schema);
 isa_ok($provider->schema, 'Mango::Test::Schema');
 
 $provider->source_name('Users');
