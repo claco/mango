@@ -35,10 +35,15 @@ sub provider {
     if ($provider) {
         $self->_provider($provider);
     } elsif (!$self->_provider) {
+
+        ## hack for Handel Storage setup
+        ## should fix this
+        my %config = %{$self};
+        delete $config{'_provider_class'};
+        delete $config{'_provider'};
+
         $self->_provider(
-            $self->provider_class->new({
-                %{$self}
-            })
+            $self->provider_class->new(\%config)
         );
         $self->_provider_class(blessed $provider);
     };
@@ -54,17 +59,18 @@ sub COMPONENT {
         Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
     };
 
-    #if (!Class::Inspector->loaded($provider_class)) {
-    #    eval "use $provider_class"; ## no critic;
-    #    if ($@) {
-    #        Mango::Exception->throw('PROVIDER_CLASS_NOT_LOADED', $provider_class, $@);
-    #    };
-    #};
     $self->provider_class($provider_class);
+
+    ## hack for Handel Storage setup
+    ## should fix this
+    my %config = %{$self};
+    delete $config{'_provider_class'};
+    delete $config{'_provider'};
+
     $self->provider(
         $provider_class->new({
             connection_info => $_[0]->config->{'connection_info'},
-            %{$self}
+            %config
         })
     );
 

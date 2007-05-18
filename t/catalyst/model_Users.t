@@ -15,11 +15,7 @@ BEGIN {
 
 ## make sure it acts like a provider and talks to the db
 {
-    my $c = Mango::Test::Catalyst->context({
-        config => {
-
-        }
-    });
+    my $c = Mango::Test::Catalyst->context;
     my $model = $c->model('Users');
 
     ## use faster test schema

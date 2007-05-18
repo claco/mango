@@ -5,6 +5,8 @@ use warnings;
 
 BEGIN {
     use base qw/DBIx::Class::Schema/;
+
+    use Mango::Exception ();
 };
 __PACKAGE__->load_classes;
 
@@ -15,7 +17,15 @@ sub connect {
         AutoCommit => 1
     };
 
-    return $class->next::method($dsn, $user, $password, $attr);
+    my $schema = $class->next::method($dsn, $user, $password, $attr);
+
+    $schema->exception_action(
+        sub {
+            Mango::Exception->throw(shift);
+        }
+    );
+
+    return $schema;
 };
 
 1;
@@ -34,6 +44,19 @@ Mango::Schema - Schema class for Mango
 =head1 DESCRIPTION
 
 Mango::Schema is the schema classes used to interact with the database.
+
+=head1 METHODS
+
+=head2 connect
+
+=over
+
+=item Arguments: $dsn, $user, $password, \%attr
+
+=back
+
+Creates a new schema instance and uses Mango::Exception to catch all
+db related errors.
 
 =head1 AUTHOR
 
