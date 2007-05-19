@@ -65,6 +65,9 @@ sub user_supports {
 sub for_session {
     my ($self, $c, $user) = @_;
 
+    ## don't store the password
+    $user->password(undef);
+
     return {
         user => {$user->get_columns},
         profile => {$user->profile->get_columns},
@@ -90,8 +93,10 @@ sub from_session {
     my $restored = Mango::Catalyst::Plugin::Authentication::CachedUser->new(
         $c, $self->config, $user
     );
-
     $restored->_profile($profile);
+
+    ## restore role information
+    $restored->_roles($data->{'roles'});
 
     return $restored;
 };

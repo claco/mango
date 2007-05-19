@@ -51,7 +51,7 @@ sub roles {
     my $name = $self->config->{'role_model'};
     my $model = $self->_context->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND') unless $model;
+    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
 
     my $role_name_field = $self->config->{'role_name_field'};
     my @roles;
@@ -68,7 +68,7 @@ sub profile {
     my $name = $self->config->{'profile_model'};
     my $model = $self->_context->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND') unless $model;
+    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
 
     if (!$self->_profile) {
         my $profile =

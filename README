@@ -1,1 +1,31 @@
-Run script/mango_setup_server.pl to test the application.
+NAME
+    Mango - An ecommerce solution using Catalyst, Handel and DBIx::Class
+
+DESCRIPTION
+    Mango is an ecommerce solution built using Catalyst, Handel and
+    DBIx::Class. It is built using DBIx::Class for the database interaction
+    and Handel for the shopping cart/wishlist/order/checkout logic.
+
+    WARNING: This is an alpha release containing core modules only. No
+    Catalyst or web bits are included at this time.
+
+SOURCE
+    You can get the latest source from the Subversion repository located at
+    <http://svn.mangoframework.com/CPAN/Mango/trunk>.
+
+WEBSITE
+    Keep an eye on the website [<http://mangoframework.com/blog/>] for the
+    latest news and releases.
+
+CONTACT
+    If you need help or have any questions, stop by #mango@irc.perl.org or
+    email me at claco@chrislaco.com.
+
+SEE ALSO
+    Handel, DBIx::Class
+
+AUTHOR
+        Christopher H. Laco
+        CPAN ID: CLACO
+        claco@chrislaco.com
+        http://today.icantfocus.com/blog/

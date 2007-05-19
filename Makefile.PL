@@ -34,5 +34,9 @@ clean_files "t/var";
 
 install_script glob('script/*.pl');
 
+eval {
+    system 'pod2text lib/Mango.pm > README';
+};
+
 auto_install;
 WriteAll;
