@@ -42,8 +42,12 @@ sub context {
     ## Catalyst::Request
     my $request = Test::MockObject->new;
     $request->set_always('base', undef);
+    $request->mock('header', sub {
+        return $config->{'request'}->{$_[1]};
+    });
     $c->set_always('request', $request);
     $c->set_always('req', $request);
+
 
     ## Catalyst::Response
     my $response = Test::MockObject->new;
