@@ -13,7 +13,7 @@ BEGIN {
     use_ok('Mango::Exception', ':try');
 };
 
-my $c = Mango::Test::Catalyst->context;
+my $c = Mango::Test::Catalyst->new;
 my $view = $c->view('RSS');
 isa_ok($view, 'Mango::Catalyst::View::RSS');
 

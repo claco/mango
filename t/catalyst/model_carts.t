@@ -15,7 +15,7 @@ BEGIN {
 
 ## make sure it acts like a provider and talks to the db
 {
-    my $c = Mango::Test::Catalyst->context;
+    my $c = Mango::Test::Catalyst->new;
     my $model = $c->model('Carts');
 
     ## use faster test schema

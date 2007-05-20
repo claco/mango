@@ -18,7 +18,7 @@ BEGIN {
     try {
         local $ENV{'LANG'} = 'en';
 
-        Mango::Test::Catalyst->context->model('Provider');
+        Mango::Test::Catalyst->new->model('Provider');
 
         fail('no exception thrown');
     } catch Mango::Exception with {
@@ -39,7 +39,7 @@ BEGIN {
     try {
         local $ENV{'LANG'} = 'en';
 
-        Mango::Test::Catalyst->context->model('Provider');
+        Mango::Test::Catalyst->new->model('Provider');
 
         fail('no exception thrown');
     } catch Mango::Exception with {
@@ -57,7 +57,7 @@ BEGIN {
         provider_class => 'Mango::Provider::DBIC'
     );
 
-    my $c = Mango::Test::Catalyst->context({
+    my $c = Mango::Test::Catalyst->new({
         config => {
             connection_info => ['dsn', 'user', 'password']
         }
@@ -77,7 +77,7 @@ BEGIN {
         connection_info => ['dsnx', 'userx', 'passwordx']
     );
 
-    my $c = Mango::Test::Catalyst->context({
+    my $c = Mango::Test::Catalyst->new({
         config => {
             connection_info => ['dsn', 'user', 'password']
         }

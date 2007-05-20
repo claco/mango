@@ -13,7 +13,7 @@ BEGIN {
     use_ok('Mango::Exception', ':try');
 };
 
-my $c = Mango::Test::Catalyst->context;
+my $c = Mango::Test::Catalyst->new;
 my $view = $c->view('Feed');
 isa_ok($view, 'Mango::Catalyst::View::Feed');
 
@@ -365,7 +365,8 @@ EOF
 
     };
 
-    $c->set_series('language', 'ru');
+    no warnings 'once';
+    *Mango::Test::Catalyst::language = sub{'ru'};
 
     ok($view->process($c, 'Atom'));
 

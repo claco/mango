@@ -22,7 +22,7 @@ my $temp = Directory::Scratch->new;
 my $dir  = $temp->base;
 my $file = $temp->touch('default', 'foo');
 
-my $c = Mango::Test::Catalyst->context({
+my $c = Mango::Test::Catalyst->new({
     config => {
         root => $dir->stringify
     },

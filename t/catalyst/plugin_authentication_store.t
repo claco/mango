@@ -15,12 +15,9 @@ BEGIN {
     use_ok('Mango::Exception', ':try');
 };
 
-my $c = Mango::Test::Catalyst->context({
+my $c = Mango::Test::Catalyst->new({
     config => {
         connection_info => [Mango::Test->init_schema->dsn]
-    },
-    stash => {
-
     }
 });
 

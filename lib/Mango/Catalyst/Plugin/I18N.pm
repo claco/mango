@@ -64,7 +64,7 @@ sub languages {
     };
 
     return $c->{languages};
-}
+};
 
 *loc = \&localize;
 
@@ -88,7 +88,7 @@ sub localize {
     };
 
     return $c->{'__mango_i18n_handle'}->maketext($text, @_);
-}
+};
 
 1;
 __END__
