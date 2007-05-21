@@ -3,7 +3,6 @@ package Mango::Catalyst::Plugin::I18N;
 use strict;
 use warnings;
 our $VERSION = $Mango::VERSION;
-our $LC;
 
 BEGIN {
     use Mango ();
@@ -22,9 +21,11 @@ sub setup {
     my $custom = $self->config->{'i18n_class'} || "$class\:\:I18N";
 
     if (eval "require $custom") {
-        $LC = $custom;
+        $self->config->{'i18n_class'} = $custom;
     } elsif (eval "require $class\:\:L10N") {
-        $LC = "$self::L10N";
+        $self->config->{'i18n_class'} = "$class\:\:L10N";
+    } else {
+        delete $self->config->{'i18n_class'};
     };
 };
 
@@ -37,7 +38,7 @@ sub language {
         $c->languages($language);
     };
 
-    my $class = $LC || 'Mango::I18N';
+    my $class = $c->config->{'i18n_class'} || 'Mango::I18N';
     my $lang = ref $class->get_handle(@{$c->languages});
     $lang =~ s/.*:://;
 
@@ -50,7 +51,7 @@ sub languages {
     my ($c, $languages) = @_;
 
     if ($languages) {
-        $c->{'languages'} = ref($languages) eq 'ARRAY' ? $languages : [ split(/,/, $languages) ];
+        $c->{'languages'} = ref($languages) eq 'ARRAY' ? $languages : [ split(/,\s*/, $languages) ];
         delete $c->{'__mango_i18n_handle'};
     } else {
         $c->{languages} ||= [
@@ -72,9 +73,9 @@ sub localize {
     my ($c, $text) = (shift, shift);
     my $changed;
 
-    if ($LC) {
+    if ($c->config->{'i18n_class'}) {
         if (!$c->{'__mango_app_i18_handle'}) {
-            $c->{'__mango_app_i18_handle'} = $LC->get_handle(@{$c->languages});
+            $c->{'__mango_app_i18_handle'} = $c->config->{'i18n_class'}->get_handle(@{$c->languages});
         };
 
         my $loc = $c->{'__mango_app_i18_handle'}->maketext($text, @_);
@@ -164,6 +165,10 @@ Same as L</localize>.
 Localizes the given text using the first available localization class
 (i18n_class, $appname::I18N, $appname::L10N). If the text appears unchanged,
 Mango::I18N will be called to localize the text as a last resort.
+
+=head2 setup
+
+Called by Catalyst when loading the plugin.
 
 =head1 SEE ALSO
 

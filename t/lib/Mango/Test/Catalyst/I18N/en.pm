@@ -10,7 +10,7 @@ BEGIN {
 };
 
 %Lexicon = (
-    Test => 'Test Catalyst English Language',
+    Test => 'Test Catalyst I18N English Language',
 );
 
 1;
