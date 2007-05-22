@@ -33,6 +33,7 @@ tests('t/*.t t/*/*.t');
 clean_files "t/var";
 
 install_script glob('script/*.pl');
+install_share;
 
 eval {
     system 'pod2text lib/Mango.pm > README';
