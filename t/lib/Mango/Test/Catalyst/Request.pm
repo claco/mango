@@ -5,10 +5,14 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
-    __PACKAGE__->mk_group_accessors('simple', qw/action base/);
+    __PACKAGE__->mk_group_accessors('simple', qw/action base content_type/);
 };
 
 sub header {
+    return shift->{$_[0]};
+};
+
+sub param {
     return shift->{$_[0]};
 };
 

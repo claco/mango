@@ -54,7 +54,7 @@ $mimes->addType(
 
 sub begin : Private {
     my ($self, $c) = @_;
-    my $view = $c->req->param('view') || 'html';
+    my $view = $c->request->param('view') || 'html';
 
     $c->request->content_type(
         $mimes->mimeTypeOf($view)

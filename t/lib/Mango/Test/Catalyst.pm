@@ -61,7 +61,7 @@ sub session {
 };
 
 sub session_expires {
-    
+
 };
 
 sub log {
@@ -72,7 +72,7 @@ sub log {
 };
 
 sub debug {
-    
+
 };
 
 sub component {
@@ -95,6 +95,12 @@ sub component {
     croak "didn't get a model: $@" if $@ || !$component;
 
     return $component;
+};
+
+sub controller {
+    my ($self, $name) = @_;
+
+    return $self->component("Controller::$name");
 };
 
 sub model {
