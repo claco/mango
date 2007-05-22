@@ -18,12 +18,6 @@ BEGIN {
         _resultset
         _schema
     /);
-
-    *DBIx::Class::Row::get_inflated_columns = sub {
-        my $self = shift;
-
-        return map {$_ => $self->$_} $self->columns;
-    };
 };
 __PACKAGE__->schema_class('Mango::Schema');
 __PACKAGE__->updated_column('updated');
