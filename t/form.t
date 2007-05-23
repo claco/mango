@@ -6,6 +6,7 @@ use warnings;
 BEGIN {
     use lib 't/lib';
     use Mango::Test tests => 9;
+    use Mango::Test::Catalyst::Request;
     use Path::Class::File;
 
     use_ok('Mango::Form');
@@ -16,7 +17,7 @@ BEGIN {
 {
     my $form = Mango::Form->new;
     isa_ok($form, 'Mango::Form');
-    isa_ok($form->form, 'CGI::FormBuilder');
+    isa_ok($form->_form, 'CGI::FormBuilder');
     isa_ok($form->validator, 'FormValidator::Simple');
     is_deeply($form->profile, []);
     is_deeply($form->messages, {});
@@ -25,10 +26,43 @@ BEGIN {
 
 ## use a real form
 {
+    local $ENV{'LANG'} = 'en';
+
     my $form = Mango::Form->new({
         source => Path::Class::File->new(qw/share forms admin products create.yml/)->stringify
     });
     isa_ok($form, 'Mango::Form');
-    isa_ok($form->form, 'CGI::FormBuilder');
+    isa_ok($form->_form, 'CGI::FormBuilder');
     isa_ok($form->validator, 'FormValidator::Simple');
+
+    ## all blank
+    $form->params(Mango::Test::Catalyst::Request->new);
+    my $results = $form->validate;
+    ok(!$results->success);
+    my $errors = $results->errors;
+    is_deeply($errors, [
+        'SKU_NOT_BLANK',
+        'NAME_NOT_BLANK',
+        'DESCRIPTION_NOT_BLANK',
+        'PRICE_NOT_BLANK'
+    ]);
+
+    ## too longs
+    $form->params(Mango::Test::Catalyst::Request->new({
+        sku => 'ABC-DEFGHJIKLMNOPQRSTUVWXYZ',
+        name => 'Over twenty five characters',
+        description => 'This description is over one hundred
+            characters to anger the profile. If it does not work
+            then thas is too bad',
+        price => 1.234
+    }));
+    $results = $form->validate;
+    ok(!$results->success);
+    $errors = $results->errors;
+    is_deeply($errors, [
+        'SKU_LENGTH',
+        'NAME_LENGTH',
+        'DESCRIPTION_LENGTH',
+        'PRICE_DECIMAL'
+    ]);
 };

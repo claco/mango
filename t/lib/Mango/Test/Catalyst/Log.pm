@@ -8,4 +8,10 @@ BEGIN {
     __PACKAGE__->mk_group_accessors('simple', qw/debug/);
 };
 
+sub new {
+    my $class = shift;
+
+    bless shift || {}, $class;
+};
+
 1;

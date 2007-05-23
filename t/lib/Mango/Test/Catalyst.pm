@@ -37,7 +37,7 @@ sub stash {
 sub request {
     my $self = shift;
     $self->{'_request'} ||=
-        bless $self->{'request'}, 'Mango::Test::Catalyst::Request';
+        Mango::Test::Catalyst::Request->new($self->{'request'});
 
     return $self->{'_request'};
 };
@@ -47,7 +47,7 @@ sub request {
 sub response {
     my $self = shift;
     $self->{'_response'} ||=
-        bless $self->{'response'}, 'Mango::Test::Catalyst::Response';
+        Mango::Test::Catalyst::Response->new($self->{'response'});
 
     return $self->{'_response'};
 };
@@ -55,7 +55,7 @@ sub response {
 sub session {
     my $self = shift;
     $self->{'_session'} ||=
-        bless $self->{'session'}, 'Mango::Test::Catalyst::Session';
+        Mango::Test::Catalyst::Session->new($self->{'session'});
 
     return $self->{'_session'};
 };
@@ -66,7 +66,7 @@ sub session_expires {
 
 sub log {
     my $self = shift;
-    $self->{'_log'} ||= bless {}, 'Mango::Test::Catalyst::Log';
+    $self->{'_log'} ||= Mango::Test::Catalyst::Log->new;
 
     return $self->{'_log'};
 };

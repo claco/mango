@@ -82,7 +82,6 @@ sub COMPONENT {
         $self->profiles->{$action} = $profile;
         $self->messages->{$action} = $messages;
     };
-
     $self->validator->set_messages($self->messages);
 
     return $self;
