@@ -14,7 +14,7 @@ fields:
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
-        - PRODUCT_UNIQUE
+        - UNIQUE
   - name:
       type: text
       size: 25

@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 9;
+    use Mango::Test tests => 17;
     use Mango::Test::Catalyst::Request;
     use Path::Class::File;
 
@@ -61,8 +61,39 @@ BEGIN {
     $errors = $results->errors;
     is_deeply($errors, [
         'SKU_LENGTH',
+        'SKU_UNIQUE',
         'NAME_LENGTH',
         'DESCRIPTION_LENGTH',
         'PRICE_DECIMAL'
+    ]);
+
+    ## not unique
+    $form->params(Mango::Test::Catalyst::Request->new({
+        sku => 'ABC-123',
+        name => 'Name',
+        description => 'Description',
+        price => 1.23
+    }));
+    $results = $form->validate;
+    ok(!$results->success);
+    $errors = $results->errors;
+    is_deeply($errors, [
+        'SKU_UNIQUE'
+    ]);
+
+
+    ## unique w/ custom sub
+    $form->params(Mango::Test::Catalyst::Request->new({
+        sku => 'ABC-123',
+        name => 'Name',
+        description => 'Description',
+        price => 1.23
+    }));
+    $form->unique('sku', sub {1});
+    $results = $form->validate;
+    ok($results->success);
+    $errors = $results->errors;
+    is_deeply($errors, [
+
     ]);
 };
