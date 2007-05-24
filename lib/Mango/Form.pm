@@ -171,6 +171,10 @@ sub validate {
     });
 };
 
+sub submitted {
+    return shift->_form->submitted;
+};
+
 sub AUTOLOAD {
     my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
     return if $method =~ /(DESTROY)/;
@@ -199,7 +203,7 @@ FormValidator::Simple, all from a single configuration format.
 
 =head1 FORM FILE FORMAT
 
-The form file formt is YAML. The top level options are passed directly
+The form file format is YAML. The top level options are passed directly
 to CGI::FormBuilder. The collection of C<fields> are parsed out into
 FormBuilder field specs and sent to FormBuilder. The C<constraints> are
 FormValidator::Simple contraint names.
@@ -432,6 +436,14 @@ directly. Forward to this view instead:
 
     $c->forward($c->view('Atom'));
 
+=head2 submitted
+
+Returns true if the form has been submitted.
+
+    if ($form->submitted) {
+        ...
+    };
+
 =head2 unique
 
 =over
@@ -447,6 +459,19 @@ is unique or not.
     $form->unique('field', sub {
         my ($self, $field, $value) = @_;
         ...unique magic...
+    };
+
+=head2 validate
+
+Validates the current for values against the constraints and returns
+a Mango::Form::Results instance.
+
+    my $results = $form->validate;
+    if ($results->success) {
+        ...save to db...
+    } else {
+        my $errors = $results->errors;
+        ...
     };
 
 =head2 values
