@@ -5,6 +5,7 @@ use warnings;
 
 BEGIN {
     use Carp;
+    use Catalyst;
     use Mango::Test::Catalyst::Request;
     use Mango::Test::Catalyst::Response;
     use Mango::Test::Catalyst::Log;
@@ -23,6 +24,8 @@ sub new {
 
     return bless $args, $class;
 };
+
+*path_to = \&Catalyst::path_to;
 
 sub config {
     return shift->{'config'};

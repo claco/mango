@@ -12,6 +12,32 @@ BEGIN {
     __PACKAGE__->mk_group_accessors('inherited', qw/_provider_class _provider/);
 };
 
+sub COMPONENT {
+    my $self = shift->new(@_);
+    my $provider_class = delete $self->{'provider_class'};
+
+    if (!$provider_class) {
+        Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
+    };
+
+    $self->provider_class($provider_class);
+
+    ## hack for Handel Storage setup
+    ## should fix this
+    my %config = %{$self};
+    delete $config{'_provider_class'};
+    delete $config{'_provider'};
+
+    $self->provider(
+        $provider_class->new({
+            connection_info => $_[0]->config->{'connection_info'},
+            %config
+        })
+    );
+
+    return $self;
+};
+
 sub provider_class {
     my ($self, $provider_class) = @_;
 
@@ -49,32 +75,6 @@ sub provider {
     };
 
     return $self->_provider;
-};
-
-sub COMPONENT {
-    my $self = shift->new(@_);
-    my $provider_class = delete $self->{'provider_class'};
-
-    if (!$provider_class) {
-        Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
-    };
-
-    $self->provider_class($provider_class);
-
-    ## hack for Handel Storage setup
-    ## should fix this
-    my %config = %{$self};
-    delete $config{'_provider_class'};
-    delete $config{'_provider'};
-
-    $self->provider(
-        $provider_class->new({
-            connection_info => $_[0]->config->{'connection_info'},
-            %config
-        })
-    );
-
-    return $self;
 };
 
 sub AUTOLOAD {

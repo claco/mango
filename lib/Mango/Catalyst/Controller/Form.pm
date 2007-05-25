@@ -5,84 +5,44 @@ use warnings;
 BEGIN {
     use base qw/Catalyst::Controller Class::Accessor::Grouped/;
     use Catalyst::Utils ();
-    use CGI::FormBuilder ();
-    use CGI::FormBuilder::Source::YAML ();
-    use Clone ();
-    use FormValidator::Simple 0.17 ();
-    use YAML ();
     use Path::Class ();
     use File::Basename ();
+    use Scalar::Util qw/blessed/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/forms profiles messages validator/);
+    __PACKAGE__->mk_group_accessors('simple', qw/forms/);
+    __PACKAGE__->mk_group_accessors('component_class', qw/form_class/);
 };
 
 sub COMPONENT {
-    my ($self, $c) = (shift->NEXT::COMPONENT(@_), shift);
-    my $prefix = Catalyst::Utils::class2prefix(ref $self);
-    my @files = glob(
-        $c->path_to('root', 'forms', $prefix, '*.yml')
-    );
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    my $c = shift;
+    my $form_class = $self->{'form_class'} || 'Mango::Form';
 
     $self->forms({});
-    $self->profiles({});
-    $self->messages({});
-    $self->validator(FormValidator::Simple->new);
+    $self->form_class(
+        $self->{'form_class'} || 'Mango::Form'
+    );
+
+    my $prefix = Catalyst::Utils::class2prefix($class);
+    my $form_directory = $self->{'form_directory'} ||
+        $c->path_to('root', 'forms', $prefix);    
+    my @files = glob(
+        Path::Class::File->new($form_directory, '*.yml')
+    );
 
     foreach my $file (@files) {
         $c->log->debug("Loading Form '$file'");
 
         my $filename = Path::Class::file($file)->basename;
         my ($name, $directories, $suffix) = File::Basename::fileparse($filename, '.yml');
-        my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
-        my $config = YAML::LoadFile($file);
-        my $field_order = delete $config->{'field_order'};
-        my $fields = delete $config->{'fields'};
-        my $profile = [];
-        my $messages = {};
+        my $form = $self->form_class->new({
+            source => $file,
+            localizer => sub {$c->localize(@_)}
+        });
 
-        my $form = CGI::FormBuilder->new(
-            %{$config}
-        );
-
-        foreach (@{$fields}) {
-            my ($name, $field) = %{$_};
-            my $label = 'LABEL_' . uc $name;
-            my $constraints = delete $field->{'constraints'};
-            my $errors = delete $field->{'messages'};
-
-            $form->field($name, 
-                label => $label,
-                %{$field}
-            );
-
-            if ($constraints) {
-                my @constraints;
-                my @additional;
-
-                push @{$profile}, $name;
-                foreach my $constraint (@{$constraints}) {
-                    my ($cname, @args) = split /, ?/, $constraint;
-                    $cname = uc $cname;
-
-                    if ($cname eq 'SAME_AS') {
-                        my $mname = uc $name . '_' . $cname . '_' . uc $args[0];
-                        $messages->{$mname}->{'DUPLICATION'} = $mname;
-                        push @additional, {$mname => [$name, @args]}, ['DUPLICATION'];
-                    } else {
-                        $messages->{$name}->{$cname} = $errors->{$cname} || (uc $name . '_' . $cname);
-                        push @constraints, scalar @args ? [$cname, @args] : $cname;
-                    };
-                };
-                push @{$profile}, \@constraints, @additional;
-            };
-        };
-        $form->submit('LABEL_SUBMIT') unless $config->{'submit'};
-
-        $self->forms->{$action} = $form;
-        $self->profiles->{$action} = $profile;
-        $self->messages->{$action} = $messages;
+        $self->forms->{$name} = $form;
     };
-    $self->validator->set_messages($self->messages);
 
     return $self;
 };
