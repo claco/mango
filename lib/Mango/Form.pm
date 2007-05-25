@@ -185,7 +185,6 @@ sub AUTOLOAD {
 1;
 __END__
 
-
 =head1 NAME
 
 Mango::Form - Module representing an input form
@@ -206,7 +205,7 @@ FormValidator::Simple, all from a single configuration format.
 The form file format is YAML. The top level options are passed directly
 to CGI::FormBuilder. The collection of C<fields> are parsed out into
 FormBuilder field specs and sent to FormBuilder. The C<constraints> are
-FormValidator::Simple contraint names.
+FormValidator::Simple constraint names.
 
     ---
     name: form_name
@@ -250,13 +249,13 @@ FormValidator::Simple contraint names.
 
 =head2 constraints
 
-Each constaint in the constraints collection is the name of a
-FormValidator::Simple validaton coommand. You can pass options to that command
-by simply adding to that line seperated by commas.
+Each constraint in the constraints collection is the name of a
+FormValidator::Simple validation command. You can pass options to that command
+by simply adding to that line separated by commas.
 
 The C<UNIQUE> constraint is specific to Mango::Form. When specified, it will
-run the code reference associed with the current field. You can use a different
-field name by passing it as another option:
+run the code reference associated with the current field. You can use a
+different field name by passing it as another option:
 
     - sku:
         type: text
@@ -267,7 +266,7 @@ field name by passing it as another option:
           - LENGTH, 1, 25
           - UNIQUE, part_number
 
-By default, all UNIUE constraints will fail, unless you tell the form how to
+By default, all UNIQUE constraints will fail, unless you tell the form how to
 validate that field. You can do this by calling L</unique>:
 
     $form->unique('sku', sub {
@@ -284,8 +283,8 @@ SKU_NOT_BLANK. When the price failed the decimal check, PRICE_DECIMAL is
 returned, etc.
 
 You can override these defaults to use your own message key, or provide a
-complete text message itself using the C<messages> collection and asining the
-new messabge to the same constraint name:
+complete text message itself using the C<messages> collection and assigning the
+new message to the same constraint name:
 
     - sku:
         type: text
@@ -302,7 +301,7 @@ new messabge to the same constraint name:
 
 =head2 localization
 
-When runing by itself, messages and field labels are localized using
+When running by itself, messages and field labels are localized using
 Mango::I18N. While running under the Mango Catalyst controllers,
 $c->localize is used to localize the messages and labels, which will use
 MyApp::I18N or MyApp::L10N. You can also use your own localizer by passing
@@ -406,7 +405,7 @@ messages.
 
 =back
 
-Gets/sets the object to read params fromn. This can be a CGI object, the
+Gets/sets the object to read params from. This can be a CGI object, the
 Catalyst::Request object, or any other object that supports the param()
 method.
 
@@ -425,7 +424,7 @@ constraints and messages.
 
     $form->parse('/myform.yml');
 
-C<source> ben be either a string containing the configuration file name,
+C<source> can be either a string containing the configuration file name,
 or a hash reference containing the same data structure.
 
 =head2 process
@@ -500,8 +499,3 @@ L<Mango::Form::Results>, L<CGI::FormBuilder>, L<FormValidator::Simple>
     CPAN ID: CLACO
     claco@chrislaco.com
     http://today.icantfocus.com/blog/
-
-
-
-
-
