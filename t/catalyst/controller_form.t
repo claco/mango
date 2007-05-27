@@ -5,14 +5,20 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 15;
+    use Mango::Test tests => 19;
     use Mango::Test::Catalyst;
     use File::Spec::Functions qw/catdir catfile/;
     use File::Path qw/mkpath/;
     use File::Copy qw/copy/;
+    use URI;
+    use Scalar::Util qw/refaddr/;
 
     use_ok('Mango::Catalyst::Controller::Form');
+    use_ok('Mango::Catalyst::Plugin::I18N');
     use_ok('Mango::Exception', ':try');
+
+    *Mango::Test::Catalyst::localize = \&Mango::Catalyst::Plugin::I18N::localize;
+    *Mango::Test::Catalyst::languages = \&Mango::Catalyst::Plugin::I18N::languages;
 };
 
 ## put a temp root in var and copy some forms
@@ -34,4 +40,45 @@ BEGIN {
         }
     });
     my $controller = $c->controller('Form');
+
+    ## edit
+    $c->request->uri(URI->new('http://foo/edit'));
+    my $form = $controller->form('edit');
+    isa_ok($form, 'Mango::Form');
+    is(refaddr $form, refaddr $controller->form('form/edit'));
+    is($form->action, 'http://foo/edit');
+    ok(!$form->submitted);
+
+    $c->request->{'_submitted_products_edit'} = 1;
+    ok($form->submitted);
+    my $results = $form->validate;
+    isa_ok($results, 'Mango::Form::Results');
+    ok(!$results->success);
+    is_deeply($results->errors, [
+        'ID_NOT_BLANK',
+        'SKU_NOT_BLANK',
+        'NAME_NOT_BLANK',
+        'DESCRIPTION_NOT_BLANK',
+        'PRICE_NOT_BLANK'
+    ]);
+
+    ## create
+    $c->request->uri(URI->new('http://foo/create'));
+    $form = $controller->form('create');
+    isa_ok($form, 'Mango::Form');
+    is(refaddr $form, refaddr $controller->form('form/create'));
+    is($form->action, 'http://foo/create');
+    ok(!$form->submitted);
+
+    $c->request->{'_submitted_products_create'} = 1;
+    ok($form->submitted);
+    $results = $form->validate;
+    isa_ok($results, 'Mango::Form::Results');
+    ok(!$results->success);
+    is_deeply($results->errors, [
+        'SKU_NOT_BLANK',
+        'NAME_NOT_BLANK',
+        'DESCRIPTION_NOT_BLANK',
+        'PRICE_NOT_BLANK'
+    ]);
 };

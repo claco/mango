@@ -41,6 +41,10 @@ sub field {
     return shift->_form->field(@_);
 };
 
+sub action {
+    return shift->_form->action(@_);
+};
+
 sub values {
     my ($self, $values) = @_;
 
@@ -48,7 +52,7 @@ sub values {
         $self->_form->values($values);
     };
 
-    return map {$_->name, $_->value} $self->_form->fields;
+    return map {$_->name, ($_->value || undef)} $self->_form->fields;
 };
 
 sub parse {
@@ -363,6 +367,16 @@ A hash reference containing the default form field values.
 =back
 
 =head1 METHODS
+
+=head2 action
+
+=over
+
+=item Arguments: $action
+
+=item
+
+Gets/sets the action for the current form.
 
 =head2 field
 

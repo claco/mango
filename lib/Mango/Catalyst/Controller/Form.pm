@@ -7,10 +7,20 @@ BEGIN {
     use Catalyst::Utils ();
     use Path::Class ();
     use File::Basename ();
-    use Scalar::Util qw/blessed/;
+    use Scalar::Util qw/blessed weaken/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/forms/);
+    __PACKAGE__->mk_group_accessors('simple', qw/forms context/);
     __PACKAGE__->mk_group_accessors('component_class', qw/form_class/);
+};
+
+sub ACCEPT_CONTEXT {
+    my $self = shift;
+    my ($c, @args) = @_;
+
+    weaken($c);
+    $self->context($c);
+
+    return $self;
 };
 
 sub COMPONENT {
@@ -36,71 +46,51 @@ sub COMPONENT {
 
         my $filename = Path::Class::file($file)->basename;
         my ($name, $directories, $suffix) = File::Basename::fileparse($filename, '.yml');
+        my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
         my $form = $self->form_class->new({
-            source => $file,
-            localizer => sub {$c->localize(@_)}
+            source => $file
         });
-
+        if ($form->action) {
+            $self->forms->{$form->action} = $form;
+        };
         $self->forms->{$name} = $form;
+        $self->forms->{$action} = $form;
     };
 
     return $self;
 };
 
-sub form : Private {
-    my ($self, $c, $action) = @_;
+sub form {
+    my ($self, $name) = @_;
+    my $c = $self->context;
 
-    if (!$c->stash->{'form'}) {
-        $action ||= $c->action;
+    $name ||= $c->action;
 
-        my $form = $self->forms->{$action};
+    if (my $form = $self->forms->{$name}) {
         $form->action($c->request->uri->as_string);
-        $form->{'params'} = $c->request;
+        $form->params($c->request);
+        $form->localizer(
+            sub {$c->localize(@_)}
+        );
 
-        $c->stash->{'form'} = $form;
-    };
-
-    return $c->stash->{'form'};
-};
-
-sub submitted : Private {
-    my ($self, $c) = @_;
-
-    #if ($c->request->method eq 'POST') {
-        return $c->forward('form')->submitted;
-    #} else {
-    #    return;
-    #};
-};
-
-sub validate : Private {
-    my ($self, $c, $form, $action) = @_;
-    $form   = $form   || $c->forward('form');
-    $action = $action || $c->action;
-
-    $self->validator->results->clear;
-
-    ## bah! why can't we just get $form->values?
-    my %values = map {$_->name, $_->value} $form->fields;
-    my $results = $self->validator->check(
-        \%values,
-        Clone::clone($self->profiles->{$action})
-    );
-
-    if ($results->success) {
-        return $results;
-    } else {
-        my $messages = $results->messages($action);
-        my @errors;
-
-        foreach my $message (@{$messages}) {
-            push @errors, $c->localize(split /, ?/, $message);
-        };
-
-        $c->stash->{'errors'} = \@errors;
+        return $form;
     };
 
     return;
+};
+
+sub submitted {
+    my $self = shift;
+    my $form = $self->form;
+
+    return $form ? $form->submitted : undef;
+};
+
+sub validate {
+    my $self = shift;
+    my $form = $self->form;
+
+    return $form ? $form->validate(@_) : undef;
 };
 
 1;

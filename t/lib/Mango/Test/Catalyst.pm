@@ -4,12 +4,16 @@ use strict;
 use warnings;
 
 BEGIN {
+    use base qw/Class::Accessor::Grouped/;
+
     use Carp;
     use Catalyst;
     use Mango::Test::Catalyst::Request;
     use Mango::Test::Catalyst::Response;
     use Mango::Test::Catalyst::Log;
     use Mango::Test::Catalyst::Session;
+
+    __PACKAGE__->mk_group_accessors('simple', qw/action/);
 };
 
 sub new {
@@ -95,7 +99,11 @@ sub component {
     eval {
         $component = $name->COMPONENT($context, $args->{args});
     };
-    croak "didn't get a model: $@" if $@ || !$component;
+    croak "didn't get a component: $@" if $@ || !$component;
+
+    if ($component->can('ACCEPT_CONTEXT')) {
+        return $component->ACCEPT_CONTEXT($context);
+    };
 
     return $component;
 };
