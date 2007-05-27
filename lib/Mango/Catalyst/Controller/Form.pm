@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Form;
 use strict;
 use warnings;
