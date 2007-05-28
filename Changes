@@ -1,6 +1,8 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Form->render now localizes field labels/submit
+
 0.01000_04 May 28 09:44:12 2007
     - Added Mango::Form/Results for form file config parsing/validation
     - Added base Catalyst Models/Views/Controllers/Plugins

@@ -51,11 +51,13 @@ sub COMPONENT {
     );
 
     foreach my $file (@files) {
-        $c->log->debug("Loading Form '$file'");
-
         my $filename = Path::Class::file($file)->basename;
         my ($name, $directories, $suffix) = File::Basename::fileparse($filename, '.yml');
         my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
+
+        $c->log->debug("Loading form '$file' as '$name'");
+        $c->log->debug("Form $filename attached to action '$action'");
+
         my $form = $self->form_class->new({
             source => $file
         });
