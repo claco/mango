@@ -3,7 +3,7 @@ package Mango;
 use strict;
 use warnings;
 
-our $VERSION = '0.01000_03';
+our $VERSION = '0.01000_04';
 
 1;
 __END__

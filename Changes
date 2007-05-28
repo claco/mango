@@ -1,4 +1,10 @@
+# $Id$
 This file documents the revision history for Perl extension Mango.
+
+0.01000_04 May 28 09:44:12 2007
+    - Added Mango::Form/Results for form file config parsing/validation
+    - Added base Catalyst Models/Views/Controllers/Plugins
+    - Added tests/pod for new Catalyst base modules
 
 0.01000_03 Apr 20 18:20:11 2007
     - Updated/reviewed all pod
