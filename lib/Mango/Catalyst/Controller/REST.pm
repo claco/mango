@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::REST;
 use strict;
 use warnings;
