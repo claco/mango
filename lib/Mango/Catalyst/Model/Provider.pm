@@ -14,13 +14,14 @@ BEGIN {
 
 sub COMPONENT {
     my $self = shift->new(@_);
-    my $provider_class = delete $self->{'provider_class'};
 
-    if (!$provider_class) {
-        Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
+    if (my $provider_class = delete $self->{'provider_class'}) {
+        $self->provider_class($provider_class);        
     };
 
-    $self->provider_class($provider_class);
+    if (!$self->provider_class) {
+        Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
+    };
 
     ## hack for Handel Storage setup
     ## should fix this
@@ -29,7 +30,7 @@ sub COMPONENT {
     delete $config{'_provider'};
 
     $self->provider(
-        $provider_class->new({
+        $self->provider_class->new({
             connection_info => $_[0]->config->{'connection_info'},
             %config
         })

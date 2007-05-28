@@ -374,7 +374,7 @@ A hash reference containing the default form field values.
 
 =item Arguments: $action
 
-=item
+=back
 
 Gets/sets the action for the current form.
 
