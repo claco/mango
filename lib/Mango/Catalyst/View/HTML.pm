@@ -3,15 +3,29 @@ package Mango::Catalyst::View::HTML;
 use strict;
 use warnings;
 
+
 BEGIN {
     use base qw/Catalyst::View::TT/;
+    use File::ShareDir ();
+    use Path::Class ()
 };
+
+__PACKAGE__->config(
+    WRAPPER => 'wrapper'
+);
+
+my $templates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'html');
 
 sub process {
     my ($self, $c) = (shift, shift);
 
+    @{$self->include_path} = (
+        $c->path_to('root', 'templates', 'tt', 'html'),
+        $templates
+    );
+
     $self->NEXT::process($c, @_);
-    $c->res->content_type('text/html; charset=utf-8');
+    $c->response->content_type('text/html; charset=utf-8');
 
     return 1;
 };

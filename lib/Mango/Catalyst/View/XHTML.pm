@@ -5,10 +5,26 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::View::TT/;
+    use File::ShareDir ();
+    use Path::Class ()
 };
+
+__PACKAGE__->config(
+    WRAPPER => 'wrapper'
+);
+
+my $htemplates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'html');
+my $xtemplates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'xhtml');
 
 sub process {
     my ($self, $c) = (shift, shift);
+
+    @{$self->include_path} = (
+        $c->path_to('root', 'templates', 'tt', 'xhtml'),
+        $c->path_to('root', 'templates', 'tt', 'html'),
+        $htemplates,
+        $xtemplates
+    );
 
     $self->NEXT::process($c, @_);
     $c->response->content_type('application/xhtml+xml; charset=utf-8');

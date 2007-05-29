@@ -84,6 +84,8 @@ sub form {
             sub {$c->localize(@_)}
         );
 
+        $c->stash->{'form'} = $form;
+
         return $form;
     };
 
@@ -99,9 +101,13 @@ sub submitted {
 
 sub validate {
     my $self = shift;
+    my $c = $self->context;
     my $form = $self->form;
+    my $results = $form->validate(@_);
 
-    return $form ? $form->validate(@_) : undef;
+    $c->stash('errors') = $results->errors;
+
+    return $results;
 };
 
 1;

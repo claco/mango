@@ -14,6 +14,7 @@ requires 'Class::Accessor::Grouped' => '0.03';
 requires 'Clone';
 requires 'FormValidator::Simple' => '0.17';
 requires 'CGI::FormBuilder';
+requires 'File::ShareDir';
 requires 'DateTime';
 requires 'Error';
 requires 'Locale::Maketext';
