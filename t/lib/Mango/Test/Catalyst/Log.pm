@@ -14,4 +14,10 @@ sub new {
     bless shift || {}, $class;
 };
 
+sub error {
+    my $self = shift;
+
+    die shift;
+};
+
 1;

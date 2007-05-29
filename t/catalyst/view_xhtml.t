@@ -19,12 +19,15 @@ BEGIN {
 };
 
 my $temp = Directory::Scratch->new;
-my $dir  = $temp->base;
-my $file = $temp->touch('default', 'foo');
+my $dir  = $temp->mkdir('templates/tt/xhtml');
+my $file = $temp->touch('templates/tt/xhtml/default', 'foo');
+$temp->touch('templates/tt/xhtml/wrapper', '[% content %]');
+$ENV{'MANGO_SHARE'} = $temp;
 
 my $c = Mango::Test::Catalyst->new({
     config => {
-        root => $dir->stringify
+        root => 't',
+        home => 't'
     },
     stash => {
         template => $file->basename

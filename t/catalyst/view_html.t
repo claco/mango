@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-
 BEGIN {
     use lib 't/lib';
     use Mango::Test;
@@ -20,17 +19,21 @@ BEGIN {
 };
 
 my $temp = Directory::Scratch->new;
-my $dir  = $temp->base;
-my $file = $temp->touch('default', 'foo');
+my $dir  = $temp->mkdir('templates/tt/html');
+my $file = $temp->touch('templates/tt/html/default', 'foo');
+$temp->touch('templates/tt/html/wrapper', '[% content %]');
+$ENV{'MANGO_SHARE'} = $temp;
 
 my $c = Mango::Test::Catalyst->new({
     config => {
-        root => $dir->stringify
+        home => 't',
+        root => 't'
     },
     stash => {
         template => $file->basename
     }
 });
+
 my $view = $c->view('HTML');
 isa_ok($view, 'Mango::Catalyst::View::HTML');
 

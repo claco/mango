@@ -3,7 +3,6 @@ package Mango::Catalyst::View::HTML;
 use strict;
 use warnings;
 
-
 BEGIN {
     use base qw/Catalyst::View::TT/;
     use File::ShareDir ();
@@ -14,13 +13,15 @@ __PACKAGE__->config(
     WRAPPER => 'wrapper'
 );
 
-my $templates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'html');
+my $share = File::ShareDir::dist_dir('Mango');
+my @path  = qw/templates tt html/;
 
 sub process {
     my ($self, $c) = (shift, shift);
+    my $templates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @path);
 
     @{$self->include_path} = (
-        $c->path_to('root', 'templates', 'tt', 'html'),
+        $c->path_to('root', @path),
         $templates
     );
 

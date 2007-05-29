@@ -13,17 +13,20 @@ __PACKAGE__->config(
     WRAPPER => 'wrapper'
 );
 
-my $htemplates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'html');
-my $xtemplates = Path::Class::Dir->new(File::ShareDir::dist_dir('Mango'), 'templates', 'tt', 'xhtml');
+my $share = File::ShareDir::dist_dir('Mango');
+my @hpath  = qw/templates tt html/;
+my @xpath  = qw/templates tt xhtml/;
 
 sub process {
     my ($self, $c) = (shift, shift);
+    my $htemplates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @hpath);
+    my $xtemplates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @xpath);
 
     @{$self->include_path} = (
-        $c->path_to('root', 'templates', 'tt', 'xhtml'),
-        $c->path_to('root', 'templates', 'tt', 'html'),
-        $htemplates,
-        $xtemplates
+        $c->path_to('root', @xpath),
+        $c->path_to('root', @hpath),
+        $xtemplates,
+        $htemplates
     );
 
     $self->NEXT::process($c, @_);
