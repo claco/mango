@@ -16,6 +16,26 @@ BEGIN {
 };
 __PACKAGE__->form_class('Mango::Form');
 
+sub _parse_Form_attr {
+    my ($self, $c, $name, $value) = @_;
+
+    if (my $form = $self->forms->{$value}) {
+        return Form => $form;
+    };
+
+    return;
+};
+
+sub _parse_FormFile_attr {
+    my ($self, $c, $name, $value) = @_;
+
+    if (my $form = $self->_load_form_from_file($c, $value)) {
+        return Form => $form;
+    };
+
+    return;
+};
+
 sub ACCEPT_CONTEXT {
     my $self = shift;
     my ($c, @args) = @_;
@@ -55,15 +75,12 @@ sub COMPONENT {
         my ($name, $directories, $suffix) = File::Basename::fileparse($filename, '.yml');
         my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
 
-        $c->log->debug("Loading form '$file' as '$name'");
-        $c->log->debug("Form $filename attached to action '$action'");
-
-        my $form = $self->form_class->new({
-            source => $file
-        });
+        my $form = $self->_load_form_from_file($c, $file);
         if ($form->action) {
             $self->forms->{$form->action} = $form;
         };
+
+        $c->log->debug("Form $filename attached to action '$action'");
         $self->forms->{$name} = $form;
         $self->forms->{$action} = $form;
     };
@@ -71,13 +88,32 @@ sub COMPONENT {
     return $self;
 };
 
+sub _load_form_from_file {
+    my ($self, $c, $file) = @_;
+
+    $c->log->debug("Loading form '$file'");
+
+    return $self->form_class->new({
+        source => $file
+    });
+};
+
 sub form {
     my ($self, $name) = @_;
     my $c = $self->context;
+    my $form;
 
     $name ||= $c->action;
 
-    if (my $form = $self->forms->{$name}) {
+    if (exists $c->action->attributes->{'Form'}) {
+        $form = $c->action->attributes->{'Form'}->[-1];
+    };
+
+    if (!$form) {
+        $form = $self->forms->{$name};
+    };
+
+    if ($form) {
         $form->action($c->request->uri->as_string);
         $form->params($c->request);
         $form->localizer(
@@ -186,6 +222,40 @@ class2prefix are loaded instead.
     );
 
 =back
+
+=head1 ATTRIBUTES
+
+The following method attribute are available:
+
+=head2 Form
+
+=over
+
+=item Arguments: $name
+
+=back
+
+Set the name of the form to use for the current method/action.
+
+    sub create : Form('myform') Local {
+        my $self = shift;
+        my $form = $self->form;  # returns myform.yml form
+    };
+
+=head2 FormFile
+
+=over
+
+=item Arguments: $file
+
+=back
+
+Sets the file name of the form to use for the current method/action.
+
+    sub create : FormFile('/path/to/myform.yml') Local {
+        my $self = shift;
+        my $form = $self->form;  # returns myform.yml form
+    };
 
 =head1 METHODS
 

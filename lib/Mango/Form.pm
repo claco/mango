@@ -463,13 +463,9 @@ constraints and messages.
 C<source> can be either a string containing the configuration file name,
 or a hash reference containing the same data structure.
 
-=head2 process
+=head2 render
 
-Creates an XML::Feed of the specific type, writes it to the response body,
-and changes the content type. There is usually no reason to call this method
-directly. Forward to this view instead:
-
-    $c->forward($c->view('Atom'));
+Returns the html source for the current form.
 
 =head2 submitted
 

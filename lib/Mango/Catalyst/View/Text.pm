@@ -49,6 +49,30 @@ serves it with the following content type:
 
     text/plain; charset=utf-8
 
+=head1 TEMPLATES
+
+When Mango is installed, its stock text templates are stored in:
+
+    %PERLINST%/site/lib/auto/Mango/templates/tt/text
+
+When templates are rendered, the following directories are used:
+
+    root/templates/tt/text
+    %PERLINST%/site/lib/auto/Mango/templates/tt/text
+
+You can override any default template by creating a template file of the same
+name in your local application template directory.
+
+If you want to use templates from a different shared directory, you can set
+$ENV{'MANGO_SHARE'}:
+
+    $ENV{'MANGO_SHARE'} = '/usr/local/share/Mango';
+
+Now, the template search path will be:
+
+    root/templates/tt/html
+    /usr/local/share/Mango/templates/tt/text
+
 =head1 METHODS
 
 =head2 process
