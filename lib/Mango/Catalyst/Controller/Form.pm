@@ -58,7 +58,7 @@ sub COMPONENT {
     $self->forms({});
 
     if (my $form_directory = $self->{'form_directory'}) {
-        $self->form_directory($form_directory);  
+        $self->form_directory($form_directory);
     };
     if (!$self->form_directory) {
         $self->form_directory(
@@ -157,7 +157,7 @@ Mango::Catalyst::Controller::Form - Catalyst controller for form based activity.
 
     package MyApp::Controller::Stuff;
     use base qw/Mango::Catalyst:Controller::Form/;
-    
+
     sub edit : Local {
         my ($self, $c) = @_;
         if ($self->submitted) {
@@ -181,24 +181,24 @@ For example:
 
     ## controller
     MyApp::Controller::Foo::Bar;
-    
+
     ## directory/files
     root/forms/foo/bar/create.yml
     root/forms/foo/bar/edit.yml
-    
+
     ## actions
     sub create : Local {
         $self->form; ## create.yml form
     };
-    
+
     sub edit : Local {
         $self->form; ## edit.yml form
     };
 
-IF you would like to load forms from a different directory, specify that
+If you would like to load forms from a different directory, specify that
 directory using the C<form_directory> configuration option below.
 
-head1 CONFIGURATION
+=head1 CONFIGURATION
 
 The following configuration options are used directly by this controller:
 

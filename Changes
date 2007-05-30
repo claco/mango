@@ -1,7 +1,10 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+0,01000_05 May 30 12:11:16 2007
     - Form->render now localizes field labels/submit
+    - Views now fall back to auto/Mango/templates
+    - Added Form/FormFile attributes to Form controller
 
 0.01000_04 May 28 09:44:12 2007
     - Added Mango::Form/Results for form file config parsing/validation

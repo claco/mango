@@ -12,6 +12,7 @@ BEGIN {
     use Mango::Test::Catalyst::Response;
     use Mango::Test::Catalyst::Log;
     use Mango::Test::Catalyst::Session;
+    use Mango::Test::Catalyst::Action;
 
     __PACKAGE__->mk_group_accessors('simple', qw/action/);
 };
@@ -25,6 +26,7 @@ sub new {
     $args->{'session'} ||= {};
     $args->{'request'} ||= {};
     $args->{'response'} ||= {};
+    $args->{'action'} = Mango::Test::Catalyst::Action->new;
 
     return bless $args, $class;
 };

@@ -85,7 +85,7 @@ BEGIN {
 
 
     ## action
-    $c->action('form/edit');
+    $c->action->reverse('form/edit');
     $c->request->uri(URI->new('http://foo/edit/new'));
     delete $c->request->{'_submitted_products_edit'};
     $form = $controller->form;
@@ -167,7 +167,7 @@ BEGIN {
 
 
     ## action
-    $c->action('form/edit');
+    $c->action->reverse('form/edit');
     $c->request->uri(URI->new('http://foo/edit/new'));
     delete $c->request->{'_submitted_products_edit'};
     $form = $controller->form;
