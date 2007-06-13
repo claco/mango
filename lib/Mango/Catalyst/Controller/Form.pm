@@ -4,13 +4,13 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Controller Class::Accessor::Grouped/;
+    use base qw/Catalyst::Component::ACCEPT_CONTEXT Catalyst::Controller Class::Accessor::Grouped/;
     use Catalyst::Utils ();
     use Path::Class ();
     use File::Basename ();
-    use Scalar::Util qw/blessed weaken/;
+    use Scalar::Util qw/blessed/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/forms context/);
+    __PACKAGE__->mk_group_accessors('simple', qw/forms/);
     __PACKAGE__->mk_group_accessors('inherited', qw/form_directory/);
     __PACKAGE__->mk_group_accessors('component_class', qw/form_class/);
 };
@@ -34,16 +34,6 @@ sub _parse_FormFile_attr {
     };
 
     return;
-};
-
-sub ACCEPT_CONTEXT {
-    my $self = shift;
-    my ($c, @args) = @_;
-
-    weaken($c);
-    $self->context($c);
-
-    return $self;
 };
 
 sub COMPONENT {
