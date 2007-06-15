@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Component::ACCEPT_CONTEXT Catalyst::Controller Class::Accessor::Grouped/;
+    use base qw/Catalyst::Controller Catalyst::Component::ACCEPT_CONTEXT Class::Accessor::Grouped/;
     use Catalyst::Utils ();
     use Path::Class ();
     use File::Basename ();
