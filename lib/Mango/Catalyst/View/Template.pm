@@ -17,10 +17,33 @@ __PACKAGE__->wrapper('wrapper');
 
 sub new {
     my $self = shift->NEXT::new(@_);
+    my $c = $_[0];
+    my $view = 'tt';
 
     $self->view_instance(
         $self->view_class->new(@_)
     );
+
+    if ($self->view_class =~ /^Catalyst::View::(.*)$/) {
+        $view = lc $1;
+        $view =~ s/\:\:/-/;
+    };
+
+    $self->template_paths([]);
+    foreach my $path (@{$self->root_paths}) {
+        $path = $c->path_to('root', $path);
+        $path =~ s/\%view/$view/g;
+
+        push @{$self->template_paths}, $path;
+    };
+    foreach my $path (@{$self->share_paths}) {
+        $path = Path::Class::Dir->new($self->share, $path);
+        $path =~ s/\%view/$view/g;
+
+        push @{$self->template_paths}, $path;
+    };
+
+    @{$self->view_instance->include_path} = (@{$self->template_paths});
 
     return $self;
 };
@@ -54,28 +77,6 @@ sub view_class {
 sub process {
     my $self = shift;
     my $c = $_[0];
-    my $view = 'tt';
-
-    if ($self->view_class =~ /^Catalyst::View::(.*)$/) {
-        $view = lc $1;
-        $view =~ s/\:\:/-/;
-    };
-
-    $self->template_paths([]);
-    foreach my $path (@{$self->root_paths}) {
-        $path = $c->path_to('root', $path);
-        $path =~ s/\%view/$view/g;
-
-        push @{$self->template_paths}, $path;
-    };
-    foreach my $path (@{$self->share_paths}) {
-        $path = Path::Class::Dir->new($self->share, $path);
-        $path =~ s/\%view/$view/g;
-
-        push @{$self->template_paths}, $path;
-    };
-
-    @{$self->view_instance->include_path} = (@{$self->template_paths});
 
     my $result = $self->view_instance->process(@_);
 
