@@ -57,6 +57,9 @@ Now, the template search path will be:
     root/templates/tt/html
     /usr/local/share/Mango/templates/tt/html
 
+See L<Mango::Catalyst::View::Template|Mango::Catalyst::View::Template> for more
+information on changing the location of templates.
+
 =head1 METHODS
 
 =head2 process
@@ -66,6 +69,10 @@ type. There is usually no reason to call this method directly. Forward to this
 view instead:
 
     $c->forward($c->view('HTML'));
+
+=head2 SEE ALSO
+
+L<Mango::Catalyst::View::Template>
 
 =head1 AUTHOR
 

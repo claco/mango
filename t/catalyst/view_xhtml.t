@@ -20,8 +20,8 @@ BEGIN {
 
 my $temp = Directory::Scratch->new;
 my $dir  = $temp->mkdir('templates/tt/xhtml');
-my $file = $temp->touch('templates/tt/xhtml/default', 'foo');
-$temp->touch('templates/tt/xhtml/wrapper', '[% content %]');
+my $file = $temp->touch('templates/tt/xhtml/default', 'xhtmlfoo');
+$temp->touch('templates/tt/xhtml/wrapper', 'xhtmlwrapper: [% content %]');
 $ENV{'MANGO_SHARE'} = $temp;
 
 my $c = Mango::Test::Catalyst->new({
@@ -45,6 +45,6 @@ isa_ok($view, 'Mango::Catalyst::View::XHTML');
     SKIP: {
         skip 'Test::LongString not installed', 1 unless eval 'require Test::LongString';
 
-        Test::LongString::is_string_nows($c->response->body, 'foo');
+        Test::LongString::is_string_nows($c->response->body, 'xhtmlwrapper:xhtmlfoo');
     };
 };
