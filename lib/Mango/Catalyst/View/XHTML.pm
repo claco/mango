@@ -4,36 +4,18 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::View::TT/;
-    use File::ShareDir ();
+    use base qw/Mango::Catalyst::View::Template/;
     use Path::Class ()
 };
-
-__PACKAGE__->config(
-    WRAPPER => 'wrapper'
-);
-
-my $share = File::ShareDir::dist_dir('Mango');
-my @hpath  = qw/templates tt html/;
-my @xpath  = qw/templates tt xhtml/;
-
-sub process {
-    my ($self, $c) = (shift, shift);
-    my $htemplates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @hpath);
-    my $xtemplates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @xpath);
-
-    @{$self->include_path} = (
-        $c->path_to('root', @xpath),
-        $c->path_to('root', @hpath),
-        $xtemplates,
-        $htemplates
-    );
-
-    $self->NEXT::process($c, @_);
-    $c->response->content_type('application/xhtml+xml; charset=utf-8');
-
-    return 1;
-};
+__PACKAGE__->share_paths([
+    Path::Class::Dir->new(qw/templates %view html/),
+    Path::Class::Dir->new(qw/templates %view xhtml/)
+]);
+__PACKAGE__->root_paths([
+    Path::Class::Dir->new(qw/templates %view html/),
+    Path::Class::Dir->new(qw/templates %view xhtml/)
+]);
+__PACKAGE__->content_type('application/xhtml+xml; charset=utf-8');
 
 1;
 __END__

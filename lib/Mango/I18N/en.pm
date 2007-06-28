@@ -41,6 +41,8 @@ BEGIN {
         'No provider class is specified!',
     PROVIDER_CLASS_NOT_LOADED =>
         "The provider '[_1]' could not be loaded: [_2]!",
+    VIEW_CLASS_NOT_LOADED =>
+        "The view '[_1]' could not be loaded: [_2]!",
     NOT_A_ROLE =>
         'The object is not a Mango::Role object',
     NOT_A_USER =>

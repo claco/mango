@@ -8,9 +8,9 @@ license 'perl';
 perl_version '5.008001';
 all_from 'lib/Mango.pm';
 
-requires 'Handel' => '0.99_18';
-requires 'DBIx::Class' => '0.07999_02';
-requires 'Class::Accessor::Grouped' => '0.03';
+requires 'Handel' => '1.00001';
+requires 'DBIx::Class' => '0.08002';
+requires 'Class::Accessor::Grouped' => '0.06000';
 requires 'Clone';
 requires 'FormValidator::Simple' => '0.17';
 requires 'CGI::FormBuilder';

@@ -4,32 +4,16 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::View::TT/;
-    use File::ShareDir ();
+    use base qw/Mango::Catalyst::View::Template/;
     use Path::Class ()
 };
-
-__PACKAGE__->config(
-    WRAPPER => 'wrapper'
-);
-
-my $share = File::ShareDir::dist_dir('Mango');
-my @path  = qw/templates tt text/;
-
-sub process {
-    my ($self, $c) = (shift, shift);
-    my $templates = Path::Class::Dir->new($ENV{'MANGO_SHARE'} || $share, @path);
-
-    @{$self->include_path} = (
-        $c->path_to('root', @path),
-        $templates
-    );
-
-    $self->NEXT::process($c, @_);
-    $c->response->content_type('text/plain; charset=utf-8');
-
-    return 1;
-};
+__PACKAGE__->share_paths([
+    Path::Class::Dir->new(qw/templates %view text/)
+]);
+__PACKAGE__->root_paths([
+    Path::Class::Dir->new(qw/templates %view text/)
+]);
+__PACKAGE__->content_type('text/plain; charset=utf-8');
 
 1;
 __END__
