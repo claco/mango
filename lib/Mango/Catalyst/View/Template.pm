@@ -12,7 +12,7 @@ BEGIN {
     __PACKAGE__->mk_group_accessors('simple', qw/view_instance/);
 };
 __PACKAGE__->view_class('Catalyst::View::TT');
-__PACKAGE__->share(File::ShareDir::dist_dir('Mango'));
+__PACKAGE__->share(eval {File::ShareDir::dist_dir('Mango') || $ENV{'MANGO_SHARE'}});
 __PACKAGE__->wrapper('wrapper');
 
 sub new {
