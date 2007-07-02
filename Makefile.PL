@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use inc::Module::Install 0.65;
+use File::Spec;
 
 name 'Mango';
 license 'perl';
@@ -40,13 +41,14 @@ catalyst;
 build_requires 'Directory::Scratch';
 
 tests('t/*.t t/*/*.t');
-clean_files "t/var";
+clean_files('t/var');
 
 install_script glob('script/*.pl');
 install_share;
 
 eval {
-    system 'pod2text lib/Mango.pm > README';
+    my $source = File::Spec->catfile('lib', 'Mango.pm');
+    system "pod2text $source > README";
 };
 
 auto_install;

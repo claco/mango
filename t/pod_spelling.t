@@ -193,3 +193,4 @@ DBIx-Class-current
 XPath
 xpath
 INI
+localizer
