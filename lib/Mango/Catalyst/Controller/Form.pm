@@ -52,7 +52,7 @@ sub COMPONENT {
     };
     if (!$self->form_directory) {
         $self->form_directory(
-            $c->path_to('root', 'forms', $prefix)
+            Path::Class::Dir->new(Mango->share, 'forms', $prefix)
         );
     };
 
@@ -131,7 +131,7 @@ sub validate {
     my $form = $self->form;
     my $results = $form->validate(@_);
 
-    $c->stash('errors') = $results->errors;
+    $c->stash->{'errors'} = $results->errors;
 
     return $results;
 };

@@ -3,7 +3,23 @@ package Mango;
 use strict;
 use warnings;
 
-our $VERSION = '0.01000_05';
+our $VERSION = '0.01000_06';
+
+BEGIN {
+    use base qw/Class::Accessor::Grouped/;
+    use File::ShareDir ();
+};
+__PACKAGE__->share(eval {File::ShareDir::dist_dir('Mango') || $ENV{'MANGO_SHARE'}});
+
+sub share {
+    my ($self, $share) = @_;
+
+    if ($share) {
+        $self->set_inherited('share', $share);
+    };
+
+    return $ENV{'MANGO_SHARE'} || $self->get_inherited('share');
+};
 
 1;
 __END__

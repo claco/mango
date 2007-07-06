@@ -1,0 +1,14 @@
+[% IF pager %]
+<div id="pager">
+	[% c.loc('LABEL_PAGE') %]:
+[% FOREACH page IN [pager.first_page..pager.last_page] %]
+	<div class="page">
+	[% IF page == pager.current_page %]
+		[% page %]
+	[% ELSE %]
+		<a href="[% c.request.uri_with({'page' => page}) %]">[% page %]</a>
+	[% END %]
+	</div>
+[% END %]
+</div>
+[% END %]

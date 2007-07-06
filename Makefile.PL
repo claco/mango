@@ -20,6 +20,7 @@ requires 'DateTime';
 requires 'Error';
 requires 'Locale::Maketext';
 requires 'Scalar::Util';
+requires 'Set::Scalar';
 requires 'Class::Inspector';
 requires 'Path::Class';
 requires 'I18N::LangTags';

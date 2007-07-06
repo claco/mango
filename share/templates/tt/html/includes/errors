@@ -1,0 +1,7 @@
+[% IF errors %]
+	<ul class="errors">
+	[% FOREACH error IN errors %]
+		<li>[% HTML.escape(error) %]</li>
+	[% END %]
+	</ul>
+[% END %]

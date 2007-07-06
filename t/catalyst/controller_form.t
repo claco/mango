@@ -11,6 +11,7 @@ BEGIN {
     use File::Path qw/mkpath rmtree/;
     use File::Copy qw/copy/;
     use URI;
+    use Cwd;
     use Scalar::Util qw/refaddr/;
 
     use_ok('Mango::Catalyst::Controller::Form');
@@ -22,6 +23,7 @@ BEGIN {
 };
 
 
+
 ## put a temp root in var and copy some forms
 {
     my $var = catdir('t', 'var');
@@ -30,6 +32,8 @@ BEGIN {
     mkpath($dir);
     copy(catfile(qw/share forms admin products create.yml/), $dir);
     copy(catfile(qw/share forms admin products edit.yml/), $dir);
+
+    $ENV{'MANGO_SHARE'} = catdir(Cwd::cwd, $var, 'root');
 };
 
 

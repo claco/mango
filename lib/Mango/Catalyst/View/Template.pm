@@ -5,14 +5,13 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::View Class::Accessor::Grouped/;
+    use Mango ();
     use Mango::Exception ();
-    use File::ShareDir ();
 
     __PACKAGE__->mk_group_accessors('inherited', qw/wrapper content_type share_paths root_paths template_paths/);
     __PACKAGE__->mk_group_accessors('simple', qw/view_instance/);
 };
 __PACKAGE__->view_class('Catalyst::View::TT');
-__PACKAGE__->share(eval {File::ShareDir::dist_dir('Mango') || $ENV{'MANGO_SHARE'}});
 __PACKAGE__->wrapper('wrapper');
 
 sub new {
@@ -44,7 +43,7 @@ sub new {
             push @{$self->template_paths}, $path;
         };
         foreach my $path (@{$self->share_paths}) {
-            $path = Path::Class::Dir->new($self->share, $path);
+            $path = Path::Class::Dir->new(Mango->share, $path);
             $path =~ s/\%view/$view/g;
 
             push @{$self->template_paths}, $path;
@@ -56,16 +55,6 @@ sub new {
     };
 
     return $self;
-};
-
-sub share {
-    my ($self, $share) = @_;
-
-    if ($share) {
-        $self->set_inherited('share', $share);
-    };
-
-    return $ENV{'MANGO_SHARE'} || $self->get_inherited('share');
 };
 
 sub view_class {
