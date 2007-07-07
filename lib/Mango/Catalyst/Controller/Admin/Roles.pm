@@ -14,8 +14,6 @@ sub _parse_PathPrefix_attr {
 
 sub index : Private {
     my ($self, $c) = @_;
-    $c->stash->{'template'} = 'admin/roles/index';
-
     my $page = $c->request->param('page') || 1;
     my $roles = $c->model('Roles')->search(undef, {
         page => $page,
@@ -55,7 +53,7 @@ sub create : Local {
         });
 
         $c->response->redirect(
-            $c->uri_for('/', $self->path_prefix, $role->id, 'edit')
+            $c->uri_for('/', $self->path_prefix, $role->id, 'edit/')
         );
     };
 };
