@@ -8,7 +8,7 @@ BEGIN {
     use Catalyst::Utils ();
 };
 
-sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) {
+sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/index') {
     my ($self, $c) = @_;
 
     my $product = $c->stash->{'product'};
@@ -20,6 +20,7 @@ sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) {
 
     $c->stash->{'attributes'} = $attributes;
     $c->stash->{'pager'} = $attributes->pager;
+    $c->stash->{'delete_form'} = Clone::clone($self->form('delete'));
 };
 
 sub load : PathPart('attributes') Chained('/admin/products/load') CaptureArgs(1) {
@@ -36,7 +37,7 @@ sub load : PathPart('attributes') Chained('/admin/products/load') CaptureArgs(1)
     };
 };
 
-sub create : PathPart('attributes/create') Chained('/admin/products/load') Args(0) {
+sub create : PathPart('attributes/create') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/create') {
     my ($self, $c) = @_;
     my $product = $c->stash->{'product'};
     my $form = $self->form;
@@ -59,7 +60,7 @@ sub create : PathPart('attributes/create') Chained('/admin/products/load') Args(
     };
 };
 
-sub edit : PathPart('edit') Chained('load') Args(0) {
+sub edit : PathPart('edit') Chained('load') Args(0) Template('admin/products/attributes/edit') {
     my ($self, $c) = @_;
     my $attribute = $c->stash->{'attribute'};
     my $form = $self->form;
@@ -90,6 +91,26 @@ sub edit : PathPart('edit') Chained('load') Args(0) {
         $attribute->name($form->field('name'));
         $attribute->value($form->field('value'));
         $attribute->update;
+    };
+};
+
+sub delete : Chained('load') PathPart Args(0) Template('admin/products/attributes/delete') {
+    my ($self, $c) = @_;
+    my $product = $c->stash->{'product'};
+    my $attribute = $c->stash->{'attribute'};
+    my $form = $self->form;
+
+    if ($self->submitted && $self->validate->success) {
+        if ($form->field('id') == $attribute->id) {
+
+            $attribute->destroy;
+
+            $c->response->redirect(
+                $c->uri_for('/admin/products', $product->id, 'attributes/')
+            );
+        } else {
+            $c->stash->{'errors'} = ['ID_MISTMATCH'];
+        };
     };
 };
 

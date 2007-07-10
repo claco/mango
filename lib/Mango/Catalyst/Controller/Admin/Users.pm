@@ -14,7 +14,7 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
-sub index : Private {
+sub index : Template('admin/users/index') {
     my ($self, $c) = @_;
     my $page = $c->request->param('page') || 1;
     my $users = $c->model('Users')->search(undef, {
@@ -44,7 +44,7 @@ sub load : Chained('/') PathPrefix CaptureArgs(1) {
     };
 };
 
-sub create : Local {
+sub create : Local Template('admin/users/create') {
     my ($self, $c) = @_;
     my $form = $self->form;
     my @roles = $c->model('Roles')->search;
@@ -79,7 +79,7 @@ sub create : Local {
     };
 };
 
-sub edit : Chained('load') PathPart Args(0) {
+sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
     my ($self, $c) = @_;
     my $user = $c->stash->{'user'};
     my $profile = $c->stash->{'profile'};
@@ -136,7 +136,7 @@ sub edit : Chained('load') PathPart Args(0) {
     };
 };
 
-sub delete : Chained('load') PathPart Args(0) {
+sub delete : Chained('load') PathPart Args(0) Template('admin/users/delete') {
     my ($self, $c) = @_;
     my $form = $self->form;
     my $user = $c->stash->{'user'};

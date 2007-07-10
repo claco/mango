@@ -77,6 +77,10 @@ sub process {
     my $self = shift;
     my $c = $_[0];
 
+    if ($c->action->attributes->{'Template'}) {
+        $c->stash->{'template'} ||= $c->action->attributes->{'Template'}->[0];
+    };
+
     my $result = $self->view_instance->process(@_);
 
     if ($self->content_type) {
@@ -117,6 +121,20 @@ and serves it with the C<content_type> specified.
 =back
 
 Creates a new view for use in Catalyst.
+
+=head1 ATTRIBUTES
+
+The following method attribute are available:
+
+=head2 Template
+
+=over
+
+=item Arguments: $template
+
+=back
+
+Sets the template to be used for the current action.
 
 =head1 METHODS
 

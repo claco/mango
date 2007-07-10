@@ -13,7 +13,7 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
-sub index : Private {
+sub index : Template('admin/products/index') {
     my ($self, $c) = @_;
     my $page = $c->request->param('page') || 1;
     my $products = $c->model('Products')->search(undef, {
@@ -38,7 +38,7 @@ sub load : Chained('/') PathPrefix CaptureArgs(1) {
     };
 };
 
-sub create : Local {
+sub create : Local Template('admin/products/create') {
     my ($self, $c) = @_;
     my $form = $self->form;
 
@@ -66,7 +66,7 @@ sub create : Local {
     };
 };
 
-sub edit : Chained('load') PathPart Args(0) {
+sub edit : Chained('load') PathPart Args(0) Template('admin/products/edit') {
     my ($self, $c) = @_;
     my $product = $c->stash->{'product'};
     my @tags = $product->tags;
@@ -123,7 +123,7 @@ sub edit : Chained('load') PathPart Args(0) {
     };
 };
 
-sub delete : Chained('load') PathPart Args(0) {
+sub delete : Chained('load') PathPart Args(0) Template('admin/products/delete') {
     my ($self, $c) = @_;
     my $form = $self->form;
     my $product = $c->stash->{'product'};
