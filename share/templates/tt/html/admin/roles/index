@@ -3,16 +3,23 @@
 
 <table border="1">
 	<tr>
+		<th></th>
 		<th>[% c.loc('LABEL_NAME') %]</th>
 		<th>[% c.loc('LABEL_DESCRIPTION') %]</th>
 		<th>[% c.loc('LABEL_CREATED') %]</th>
 		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
 	</tr>
 	<tr>
+		<td></td>
 		<td colspan="4"><a href="create/">[% c.loc('LABEL_NEW_ROLE') %]</a></td>
 	</tr>
 [% WHILE (role = roles.next) %]
 	<tr>
+		<td>
+			[% CALL delete_form.values(id => role.id) %]
+			[% CALL delete_form.action(role.id _ '/delete/') %]
+			[% delete_form.render %]
+		</td>
 		<td><a href="[% role.id %]/edit/">[% HTML.escape(role.name) %]</a></td>
 		<td>[% HTML.escape(role.description) %]</td>
 		<td>[% role.created %]</td>

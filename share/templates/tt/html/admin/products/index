@@ -3,16 +3,23 @@
 
 <table border="1">
 	<tr>
+		<th></th>
 		<th>[% c.loc('LABEL_NAME') %] ([% c.loc('LABEL_SKU') %])</th>
 		<th>[% c.loc('LABEL_DESCRIPTION') %]</th>
 		<th>[% c.loc('LABEL_CREATED') %]</th>
 		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
 	</tr>
 	<tr>
+		<td></td>
 		<td colspan="4"><a href="create/">[% c.loc('LABEL_NEW_PRODUCT') %]</a></td>
 	</tr>
 [% WHILE (product = products.next) %]
 	<tr>
+		<td>
+			[% CALL delete_form.values(id => product.id) %]
+			[% CALL delete_form.action(product.id _ '/delete/') %]
+			[% delete_form.render %]
+		</td>
 		<td><a href="[% product.id %]/edit/">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
 		<td>[% HTML.escape(product.description) %]</td>
 		<td>[% product.created %]</td>
