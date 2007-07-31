@@ -155,21 +155,6 @@ output.
 
 Renders content using the specified C<view_class> and sets the C<content_type>.
 
-=head2 share
-
-=over
-
-=item Arguments: $share_path
-
-=back
-
-Gets/sets the location of the Mango share directory where the default
-dist templates are stored.
-
-    print $self->share;
-
-If the C<ENV> variable C<MANGO_SHARE> is set, that will be returned instead.
-
 =head2 share_paths
 
 =over

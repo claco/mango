@@ -1,0 +1,16 @@
+=head1 NAME
+
+Mango::Manual - User guide and reference for Mango
+
+=head1 SECTIONS
+
+=head2 L<Mango::Manual::About|Mango::Manual::About>
+
+A few words about the Mango Framework.
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
