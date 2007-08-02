@@ -61,6 +61,8 @@ BEGIN {
         'The object is not a Mango::Wishlist object',
     NOT_A_PROFILE =>
         'The object is not a Mango::Profile object',
+    NOT_A_FORM =>
+        'The object is not a Mango::Form object',
     NO_USER_SPECIFIED =>
         'No user was specified',
     MODEL_NOT_FOUND =>
@@ -73,6 +75,8 @@ BEGIN {
         'The realm \'mango\' could not be found',
     REALM_NOT_MANGO =>
         'The default realm is not \'mango\'',
+    LOGIN_FAILED =>
+        'The username or password are incorrect.',
 );
 
 1;

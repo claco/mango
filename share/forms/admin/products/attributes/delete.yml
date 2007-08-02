@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: attributes_delete
 name: attributes_delete
 method: POST
 javascript: 0

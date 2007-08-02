@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: attributes_edit
 name: attributes_edit
 method: POST
 javascript: 0

@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: roles_delete
 name: roles_delete
 method: POST
 javascript: 0

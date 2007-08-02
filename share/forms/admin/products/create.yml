@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: products_create
 name: products_create
 method: POST
 javascript: 0

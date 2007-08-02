@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: roles_create
 name: roles_create
 method: POST
 javascript: 0

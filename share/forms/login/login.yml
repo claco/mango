@@ -1,25 +1,27 @@
 # $Id$
 ---
-id: attributes_create
-name: attributes_create
+id: login
+name: login
 method: POST
+action: /login/
 javascript: 0
 stylesheet: 1
 sticky: 1
-submit: LABEL_CREATE
+submit: LABEL_LOGIN
 fields:
-  - name:
+  - username:
       type: text
-      size: 25
+      size: 20
       maxlength: 25
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
-        - UNIQUE
-  - value:
-      type: text
-      size: 50
+  - password:
+      type: password
+      size: 20
       maxlength: 255
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 255
+  - return:
+      type: hidden

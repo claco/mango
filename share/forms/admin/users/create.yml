@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: users_create
 name: users_create
 method: POST
 javascript: 0

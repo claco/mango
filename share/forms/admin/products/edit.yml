@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: products_edit
 name: products_edit
 method: POST
 javascript: 0

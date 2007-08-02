@@ -1,3 +1,4 @@
+[% USE HTML -%]
 [% IF errors %]
 	<ul class="errors">
 	[% FOREACH error IN errors %]

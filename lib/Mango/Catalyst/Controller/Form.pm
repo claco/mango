@@ -83,9 +83,13 @@ sub _load_form_from_file {
 
     $c->log->debug("Loading form '$file'");
 
-    return $self->form_class->new({
+    my $form = $self->form_class->new({
         source => $file
     });
+
+    $c->add_form($form);
+
+    return $form;
 };
 
 sub form {

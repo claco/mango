@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: roles_edit
 name: roles_edit
 method: POST
 javascript: 0

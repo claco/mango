@@ -1,5 +1,6 @@
 # $Id$
 ---
+id: users_edit
 name: users_edit
 method: POST
 javascript: 0
