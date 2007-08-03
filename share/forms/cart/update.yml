@@ -1,0 +1,23 @@
+# $Id$
+---
+id: cart_update
+name: cart_update
+method: POST
+action: /cart/update/
+javascript: 0
+stylesheet: 1
+sticky: 1
+submit: LABEL_UPDATE
+fields:
+  - id:
+      type: hidden
+      constraints:
+        - NOT_BLANK
+        - UINT
+  - quantity:
+      type: text
+      size: 4
+      maxlength: 3
+      constraints:
+        - NOT_BLANK
+        - UINT
