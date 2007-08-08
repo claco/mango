@@ -16,17 +16,20 @@
 	<td align="left">[% HTML.escape(item.sku) %]</td>
 	<td align="left">[% HTML.escape(item.description) %]</td>
 	<td align="center">
-		[% c.forms('cart_update').render('values', [item.id, item.quantity], 'id', 'item_' _ item.id) %]
+		[% SET form = c.forms('cart_update') %]
+		[% CALL form.id(form.id _ '_' _ item.id) %]
+		[% form.field('name'=> 'quantity').label('fooo') %]
+		[% form.render('values', [item.id, item.quantity]) %]
 	</td>
 	<td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
 	<td align="right">[% HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
 	<td></td>
-            <form action="[% c.uri_for('/cart/delete/') %]" method="POST">
-                <input type="hidden" name="id" value="[% HTML.escape(item.id) %]">
-                <td>
-                    <input type="submit" value="Delete">
-                </td>
-            </form>
+	<td>
+		[% SET form = c.forms('cart_delete') %]
+		[% CALL form.id(form.id _ '_' _ item.id) %]
+		[% form.field('name'=> 'quantity').label('fooo') %]
+		[% form.render('values', [item.id, item.quantity]) %]
+	</td>
         </tr>
 	[% END %]
         <tr>

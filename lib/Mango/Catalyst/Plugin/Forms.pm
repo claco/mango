@@ -8,6 +8,7 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use Mango ();
     use Scalar::Util qw/blessed/;
+    use Clone();
 
     __PACKAGE__->mk_group_accessors('inherited', qw/_forms/);
 };
@@ -29,7 +30,7 @@ sub add_form {
 sub forms {
     my ($self, $name) = @_;
 
-    if (my $form = $self->_forms->{$name}) {
+    if (my $form = Clone::clone($self->_forms->{$name})) {
         $form->action($self->request->uri->as_string) unless $form->action;
         $form->params($self->request);
         $form->localizer(

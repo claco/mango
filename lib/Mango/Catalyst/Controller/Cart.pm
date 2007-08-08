@@ -40,19 +40,18 @@ sub clear : Local {
     $c->res->redirect($c->uri_for('/cart/'));
 };
 
-sub delete : Local {
+sub delete : Local Template('cart/index') {
     my ($self, $c) = @_;
+    my $form = $self->form;
 
-    if ($c->req->method eq 'POST') {
-        if ($c->forward('validate')) {
-            $c->user->cart->delete({
-                id => $c->req->params->{'id'}
-            });
+    if ($self->submitted && $self->validate->success) {
+        $c->user->cart->delete({
+            id => $form->field('id')
+        });
 
-            $c->res->redirect($c->uri_for('/cart/'));
-        };
-    } else {
-        $c->res->redirect($c->uri_for('/cart/'));
+        $c->res->redirect(
+            $c->uri_for('/', $self->path_prefix . '/')
+        );
     };
 
     return;

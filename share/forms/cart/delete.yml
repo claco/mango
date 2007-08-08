@@ -1,13 +1,13 @@
 # $Id$
 ---
-id: cart_update
-name: cart_update
+id: cart_delete
+name: cart_delete
 method: POST
-action: /cart/update/
+action: /cart/delete/
 javascript: 0
 stylesheet: 1
 sticky: 0
-submit: LABEL_UPDATE
+submit: LABEL_DELETE
 fields:
   - id:
       type: hidden
@@ -15,9 +15,7 @@ fields:
         - NOT_BLANK
         - UINT
   - quantity:
-      type: text
-      size: 4
-      maxlength: 3
+      type: hidden
       constraints:
         - NOT_BLANK
         - UINT
