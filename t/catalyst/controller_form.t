@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 51;
+    use Mango::Test tests => 44;
     use Mango::Test::Catalyst;
     use File::Spec::Functions qw/catdir catfile/;
     use File::Path qw/mkpath rmtree/;
@@ -15,11 +15,7 @@ BEGIN {
     use Scalar::Util qw/refaddr/;
 
     use_ok('Mango::Catalyst::Controller::Form');
-    use_ok('Mango::Catalyst::Plugin::I18N');
     use_ok('Mango::Exception', ':try');
-
-    *Mango::Test::Catalyst::localize = \&Mango::Catalyst::Plugin::I18N::localize;
-    *Mango::Test::Catalyst::languages = \&Mango::Catalyst::Plugin::I18N::languages;
 };
 
 
@@ -50,7 +46,6 @@ BEGIN {
     $c->request->uri(URI->new('http://foo/edit'));
     my $form = $controller->form('edit');
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/edit'));
     is($form->action, 'http://foo/edit');
     ok(!$form->submitted);
 
@@ -71,7 +66,6 @@ BEGIN {
     $c->request->uri(URI->new('http://foo/create'));
     $form = $controller->form('create');
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/create'));
     is($form->action, 'http://foo/create');
     ok(!$form->submitted);
 
@@ -94,7 +88,6 @@ BEGIN {
     delete $c->request->{'_submitted_products_edit'};
     $form = $controller->form;
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/edit'));
     is($form->action, 'http://foo/edit/new');
     ok(!$form->submitted);
 
@@ -132,7 +125,6 @@ BEGIN {
     $c->request->uri(URI->new('http://foo/edit'));
     my $form = $controller->form('edit');
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/edit'));
     is($form->action, 'http://foo/edit');
     ok(!$form->submitted);
 
@@ -153,7 +145,6 @@ BEGIN {
     $c->request->uri(URI->new('http://foo/create'));
     $form = $controller->form('create');
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/create'));
     is($form->action, 'http://foo/create');
     ok(!$form->submitted);
 
@@ -176,7 +167,6 @@ BEGIN {
     delete $c->request->{'_submitted_products_edit'};
     $form = $controller->form;
     isa_ok($form, 'Mango::Form');
-    is(refaddr $form, refaddr $controller->form('form/edit'));
     is($form->action, 'http://foo/edit/new');
     ok(!$form->submitted);
 

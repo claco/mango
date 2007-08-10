@@ -6,6 +6,10 @@ use warnings;
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
 
+    require Mango::Catalyst::Plugin::Forms;
+    require Mango::Catalyst::Plugin::I18N;
+    push @Mango::Test::Catalyst::ISA, qw/Mango::Catalyst::Plugin::Forms Mango::Catalyst::Plugin::I18N/;
+
     use Carp;
     use Catalyst;
     use Mango::Test::Catalyst::Request;

@@ -38,6 +38,22 @@ sub new {
     return $self;
 };
 
+sub clone {
+    my $self = shift;
+    my $localizer = $self->localizer;
+    my $params = $self->params;
+
+    $self->params(undef);
+    $self->localizer(undef);
+    
+    my $form = Clone::clone($self);
+    
+    $self->params($params);
+    $self->localizer($localizer);
+
+    return $form;
+};
+
 sub field {
     return shift->_form->field(@_);
 };
@@ -141,10 +157,10 @@ sub parse {
 };
 
 sub params {
-    my ($self, $object) = @_;
+    my $self = shift;
 
-    if ($object) {
-        $self->_form->{'params'} = $object;
+    if (@_) {
+        $self->_form->{'params'} = shift;
     };
 
     return $self->_form->{'params'};

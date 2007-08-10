@@ -20,4 +20,8 @@ sub error {
     die shift;
 };
 
+sub warn {
+    warn @_;
+};
+
 1;

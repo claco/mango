@@ -10,10 +10,6 @@ BEGIN {
     use Mango::Test::Catalyst;
 
     use_ok('Mango::Catalyst::Plugin::I18N');
-
-    no warnings 'once';
-    *Mango::Test::Catalyst::languages = \&Mango::Catalyst::Plugin::I18N::languages;
-    *Mango::Test::Catalyst::localize = \&Mango::Catalyst::Plugin::I18N::localize;
 };
 
 
