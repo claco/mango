@@ -4,7 +4,6 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Form/;
-    use Clone ();
     use Set::Scalar ();
 };
 
@@ -24,7 +23,7 @@ sub index : Template('admin/users/index') {
 
     $c->stash->{'users'} = $users;
     $c->stash->{'pager'} = $users->pager;
-    $c->stash->{'delete_form'} = Clone::clone($self->form('delete'));
+    $c->stash->{'delete_form'} = $self->form('delete');
 };
 
 sub load : Chained('/') PathPrefix CaptureArgs(1) {

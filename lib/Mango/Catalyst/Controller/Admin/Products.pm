@@ -23,7 +23,7 @@ sub index : Template('admin/products/index') {
 
     $c->stash->{'products'} = $products;
     $c->stash->{'pager'} = $products->pager;
-    $c->stash->{'delete_form'} = Clone::clone($self->form('delete'));
+    $c->stash->{'delete_form'} = $self->form('delete');
 };
 
 sub load : Chained('/') PathPrefix CaptureArgs(1) {

@@ -5,7 +5,6 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Form/;
     use Set::Scalar ();
-    use Catalyst::Utils ();
 };
 
 sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/index') {
@@ -20,7 +19,7 @@ sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Templ
 
     $c->stash->{'attributes'} = $attributes;
     $c->stash->{'pager'} = $attributes->pager;
-    $c->stash->{'delete_form'} = Clone::clone($self->form('delete'));
+    $c->stash->{'delete_form'} = $self->form('delete');
 };
 
 sub load : PathPart('attributes') Chained('/admin/products/load') CaptureArgs(1) {

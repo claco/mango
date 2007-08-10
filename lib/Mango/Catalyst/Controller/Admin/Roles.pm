@@ -22,7 +22,7 @@ sub index : Template('admin/roles/index') {
 
     $c->stash->{'roles'} = $roles;
     $c->stash->{'pager'} = $roles->pager;
-    $c->stash->{'delete_form'} = Clone::clone($self->form('delete'));
+    $c->stash->{'delete_form'} = $self->form('delete');
 };
 
 sub load : Chained('/') PathPrefix CaptureArgs(1) {
