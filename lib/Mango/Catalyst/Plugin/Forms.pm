@@ -30,7 +30,8 @@ sub add_form {
 sub forms {
     my ($self, $name) = @_;
 
-    if (my $form = Clone::clone($self->_forms->{$name})) {
+    if (my $form = $self->_forms->{$name}) {
+        $form = Clone::clone($form);
         $form->action($self->request->uri->as_string) unless $form->action;
         $form->params($self->request);
         $form->localizer(

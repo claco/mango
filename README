@@ -2,27 +2,26 @@ NAME
     Mango - An ecommerce solution using Catalyst, Handel and DBIx::Class
 
 DESCRIPTION
-    Mango is an ecommerce solution built using Catalyst, Handel and
-    DBIx::Class. It is built using DBIx::Class for the database interaction
-    and Handel for the shopping cart/wishlist/order/checkout logic.
+    This is a generic class containing the default configuration used by
+    other Mango classes.
 
-    WARNING: This is an alpha release containing core modules only. No
-    Catalyst or web bits are included at this time.
+    To learn more about what Mango is and how it works, take a look at the
+    manual.
 
-SOURCE
-    You can get the latest source from the Subversion repository located at
-    <http://svn.mangoframework.com/CPAN/Mango/trunk>.
+METHODS
+  share
+    Arguments: $share_path
 
-WEBSITE
-    Keep an eye on the website [<http://mangoframework.com/blog/>] for the
-    latest news and releases.
+    Gets/sets the location of the Mango share directory where the default
+    dist templates are stored.
 
-CONTACT
-    If you need help or have any questions, stop by #mango@irc.perl.org or
-    email me at claco@chrislaco.com.
+        print $self->share;
+
+    If the "ENV" variable "MANGO_SHARE" is set, that will be returned
+    instead.
 
 SEE ALSO
-    Handel, DBIx::Class
+    Mango::Manual
 
 AUTHOR
         Christopher H. Laco

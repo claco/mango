@@ -110,7 +110,9 @@ sub cart {
 
 sub AUTOLOAD {
     my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
-    return if $method =~ /(DESTROY|ACCEPT_CONTEXT|config)/;
+    if ($method =~ /(DESTROY|ACCEPT_CONTEXT|config)/) {
+        return;
+    };
 
     return shift->_user->$method(@_);
 };

@@ -1,1 +1,8 @@
-[% c.forms('login').render %]
+[% IF c.user_exists %]
+	<a href="[% c.uri_for('/logout/') %]">Logout</a>
+[% ELSE %]
+	[% c.forms('login').render %]
+[% END %]
+
+[% c.user_exists %]
+[% c.user.profile.first_name %]
