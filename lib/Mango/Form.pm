@@ -113,10 +113,10 @@ sub parse {
                 my ($cname, @args) = split /, ?/, $constraint;
                 $cname = uc $cname;
 
-                if ($cname eq 'SAME_AS') {
+                if ($cname =~ /(NOT_)?SAME_AS/) {
                     my $mname = uc $name . '_' . $cname . '_' . uc $args[0];
-                    $self->messages->{$mname}->{'DUPLICATION'} = $mname;
-                    push @additional, {$mname => [$name, @args]}, ['DUPLICATION'];
+                    $self->messages->{$mname}->{($1 || '') . 'DUPLICATION'} = $mname;
+                    push @additional, {$mname => [$name, @args]}, [($1 || '') . 'DUPLICATION'];
                 } else {
                     if ($cname eq 'UNIQUE' && !$self->unique($name)) {
                         push(@args, $name) unless scalar @args;
