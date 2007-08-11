@@ -108,7 +108,6 @@ sub form {
     };
 
     if ($form) {
-        $form = $form->clone;
         $form->action($c->request->uri->as_string);
         $form->params($c->request);
         $form->localizer(

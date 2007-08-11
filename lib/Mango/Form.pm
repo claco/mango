@@ -14,7 +14,7 @@ BEGIN {
     use Clone ();
     use YAML ();
 
-    __PACKAGE__->mk_group_accessors('simple', qw/labels messages profile validator _form localizer _unique/);
+    __PACKAGE__->mk_group_accessors('simple', qw/labels messages profile validator _form localizer _unique _exists/);
 };
 
 sub new {
@@ -28,7 +28,8 @@ sub new {
         profile => $args->{'profile'} || [],
         validator => $args->{'validator'} || FormValidator::Simple->new,
         localizer => $args->{'localizer'} || \&Mango::I18N::translate,
-        _unique => $args->{'unique'} || {}
+        _unique => $args->{'unique'} || {},
+        _exists => $args->{'exists'} || {}
     }, $class;
 
     $self->parse($source);
@@ -140,6 +141,12 @@ sub parse {
                             return FormValidator::Simple::Constants::FALSE;
                         });
                     };
+                    if ($cname eq 'EXISTS' && !$self->exists($name)) {
+                        push(@args, $name) unless scalar @args;
+                        $self->exists($name, sub {
+                            return FormValidator::Simple::Constants::FALSE;
+                        });
+                    };
                     $self->messages->{$name}->{$cname} = $errors->{$cname} || (uc $name . '_' . $cname);
                     push @constraints, scalar @args ? [$cname, @args] : $cname;
                 };
@@ -166,6 +173,16 @@ sub params {
     return $self->_form->{'params'};
 };
 
+sub exists {
+    my ($self, $field, $code) = @_;
+
+    if (ref $code eq 'CODE') {
+        $self->_exists->{$field} = $code;
+    };
+
+    return $self->_exists->{$field};
+};
+
 sub unique {
     my ($self, $field, $code) = @_;
 
@@ -187,6 +204,17 @@ sub validate {
         my $field = $args->[0];
 
         my $result = $self->unique($field)->($self, $field, $value);
+
+        return $result ?
+            FormValidator::Simple::Constants::TRUE :
+            FormValidator::Simple::Constants::FALSE;
+    };
+    local *FormValidator::Simple::Validator::EXISTS = sub {
+        my ($i, $params, $args) = @_;
+        my $value = $params->[0];
+        my $field = $args->[0];
+  
+        my $result = $self->exists($field)->($self, $field, $value);
 
         return $result ?
             FormValidator::Simple::Constants::TRUE :

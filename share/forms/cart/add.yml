@@ -1,0 +1,25 @@
+# $Id$
+---
+id: cart_add
+name: cart_add
+method: POST
+action: /cart/add/
+javascript: 0
+stylesheet: 1
+sticky: 0
+submit: LABEL_ADD_TO_CART
+fields:
+  - sku:
+      type: hidden
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 25
+        - EXISTS
+  - quantity:
+      type: text
+      size: 4
+      maxlength: 3
+      value: 1
+      constraints:
+        - NOT_BLANK
+        - UINT

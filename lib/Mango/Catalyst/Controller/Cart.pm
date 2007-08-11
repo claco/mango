@@ -16,28 +16,48 @@ sub begin : Private {
 
 sub index : Template('cart/index') {
     my ($self, $c) = @_;
+
+    return;
 };
 
-sub add : Local {
+sub add : Local Template('cart/index') {
     my ($self, $c) = @_;
+    my $form = $self->form;
+    my $product;
 
+    $form->exists('sku', sub {
+        $product = $c->model('Products')->get_by_sku($form->field('sku'));
 
-    if ($c->req->method eq 'POST') {
-        ## add magic to get from products model!!!
-        $c->user->cart->add($c->req->params);
+        return $product ? 1 : 0;
+    });
+
+    if ($self->submitted && $self->validate->success) {
+        $c->user->cart->add({
+            sku => $product->sku,
+            price => $product->price,
+            quantity => $form->field('quantity')
+        });
+
+        $c->res->redirect(
+            $c->uri_for('/', $self->path_prefix . '/')
+        );
     };
 
-    $c->res->redirect($c->uri_for('/cart/'));
+    return;
 };
 
-sub clear : Local {
+sub clear : Local Template('cart/index') {
     my ($self, $c) = @_;
 
     if ($c->req->method eq 'POST') {
         $c->user->cart->clear;
     };
 
-    $c->res->redirect($c->uri_for('/cart/'));
+    $c->res->redirect(
+        $c->uri_for('/', $self->path_prefix . '/')
+    );
+
+    return;
 };
 
 sub delete : Local Template('cart/index') {
