@@ -5,6 +5,12 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Form/;
     use Set::Scalar ();
+    use Mango ();
+    use Path::Class ();
+    
+    __PACKAGE__->form_directory(
+        Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'products', 'attributes')
+    );
 };
 
 sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/index') {

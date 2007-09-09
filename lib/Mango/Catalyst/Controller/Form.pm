@@ -20,6 +20,7 @@ sub _parse_Form_attr {
     my ($self, $c, $name, $value) = @_;
 
     if (my $form = $self->forms->{$value}) {
+        $form->action('/' . $self->path_prefix . '/');
         return Form => $form;
     };
 
@@ -66,8 +67,10 @@ sub COMPONENT {
         my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
 
         my $form = $self->_load_form_from_file($c, $file);
-        if ($form->action) {
+        if ($form->action !~ /server\.pl$/) {
             $self->forms->{$form->action} = $form;
+        } else {
+            $form->action("/$action/");
         };
 
         $c->log->debug("Form $filename attached to action '$action'");

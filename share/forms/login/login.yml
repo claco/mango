@@ -3,7 +3,6 @@
 id: login
 name: login
 method: POST
-action: /login/
 javascript: 0
 stylesheet: 1
 sticky: 1

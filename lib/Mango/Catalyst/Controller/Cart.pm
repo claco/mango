@@ -5,8 +5,13 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Form Mango::Catalyst::Controller::REST/;
     use Handel::Constants qw/:cart/;
+    use Mango ();
+    use Path::Class ();
+    
+    __PACKAGE__->form_directory(
+        Path::Class::Dir->new(Mango->share, 'forms', 'cart')
+    );
 };
-
 
 sub begin : Private {
     my ($self, $c) = @_;

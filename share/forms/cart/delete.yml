@@ -3,7 +3,6 @@
 id: cart_delete
 name: cart_delete
 method: POST
-action: /cart/delete/
 javascript: 0
 stylesheet: 1
 sticky: 0

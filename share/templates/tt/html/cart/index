@@ -18,7 +18,6 @@
 	<td align="center">
 		[% SET form = c.forms('cart_update') %]
 		[% CALL form.id(form.id _ '_' _ item.id) %]
-		[% form.field('name'=> 'quantity').label('fooo') %]
 		[% form.render('values', [item.id, item.quantity]) %]
 	</td>
 	<td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
@@ -27,7 +26,6 @@
 	<td>
 		[% SET form = c.forms('cart_delete') %]
 		[% CALL form.id(form.id _ '_' _ item.id) %]
-		[% form.field('name'=> 'quantity').label('fooo') %]
 		[% form.render('values', [item.id, item.quantity]) %]
 	</td>
         </tr>

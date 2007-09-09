@@ -4,6 +4,12 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Form/;
+    use Mango ();
+    use Path::Class ();
+    
+    __PACKAGE__->form_directory(
+        Path::Class::Dir->new(Mango->share, 'forms', 'login')
+    );
 };
 
 sub index : Form('login') Template('login/index') {
