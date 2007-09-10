@@ -1,0 +1,4 @@
+[% c.forms('cart_add').render('values', ['ABC-123']) %]
+
+
+[% c.forms('cart_add').render('values', ['NOEXISTO']) %]
