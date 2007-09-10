@@ -31,9 +31,7 @@ sub forms {
 
     if (my $form = $self->_forms->{$name}) {
         $form = $form->clone;
-        warn '---------', $form->action;
         $form->action($self->request->uri->as_string) unless $form->action;
-        warn '---------', $form->action;
         $form->params($self->request);
         $form->localizer(
             sub {$self->localize(@_)}

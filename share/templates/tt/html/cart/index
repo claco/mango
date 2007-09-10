@@ -40,19 +40,14 @@
         </tr>
         <tr>
             <td colspan="7" align="right">
-                <form action="[% c.uri_for('/cart/clear/') %]" method="POST">
-                    <input type="submit" value="Empty Cart">
-                </form>
+                [% c.forms('cart_clear').render %]
                 <form action="[% c.uri_for('/checkout/') %]" method="POST">
                     <input type="submit" value="Checkout">
                 </form>
             </td>
         </tr>
     </table>
-    <form action="[% c.uri_for('/cart/save/') %]" method="POST">
-        <input type="text" name="name">
-        <input type="submit" value="Save Cart">
-    </form>
+    [% c.forms('cart_save').render %]
     <p>
 	<a href="[% c.uri_for('.') %]?view=Atom">Atom</a> | <a href="[% c.uri_for('.') %]?view=RSS">RSS</a>
     </p>

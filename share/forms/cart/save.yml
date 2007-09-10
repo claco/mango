@@ -1,0 +1,17 @@
+# $Id$
+---
+id: cart_save
+name: cart_save
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 0
+submit: LABEL_SAVE
+fields:
+  - name:
+      type: text
+      size: 25
+      maxlength: 50
+      constraints:
+        - NOT_BLANK
+

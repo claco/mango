@@ -53,8 +53,9 @@ sub add : Local Template('cart/index') {
 
 sub clear : Local Template('cart/index') {
     my ($self, $c) = @_;
+    my $form = $self->form;
 
-    if ($c->req->method eq 'POST') {
+    if ($self->submitted && $self->validate->success) {
         $c->user->cart->clear;
     };
 
@@ -82,7 +83,7 @@ sub delete : Local Template('cart/index') {
     return;
 };
 
-sub restore : Local {
+sub restore : Local Template('cart/index') {
     my ($self, $c) = @_;
 
     if ($c->req->method eq 'POST') {
@@ -106,18 +107,30 @@ sub restore : Local {
     return;
 };
 
-sub save : Local {
+sub save : Local Template('cart/index') {
     my ($self, $c) = @_;
+    my $form = $self->form;
 
-    if ($c->req->method eq 'POST') {
-        if ($c->forward('validate')) {
-            $c->user->cart->name($c->req->param('name') || 'My Cart');
-            $c->user->cart->save;
+    if (!$c->user_exists) {
+        $c->stash->{'errors'} = [$c->localize('LOGIN_REQUIRED')];
+        $c->detach;
+    };
 
-            $c->res->redirect($c->uri_for('/cart/list/'));
+    if ($self->submitted && $self->validate->success) {
+        my $wishlist = $c->model('Wishlists')->create({
+            user => $c->user->get_object,
+            name => $form->field('name')
+        });
+
+        foreach my $item ($c->user->cart->items) {
+            $wishlist->add($item);
         };
-    } else {
-        $c->res->redirect($c->uri_for('/cart/'));
+
+        $c->user->cart->clear;
+
+        $c->res->redirect(
+            $c->uri_for('/', $self->path_prefix . '/')
+        );
     };
 
     return;
