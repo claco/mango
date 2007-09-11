@@ -1,0 +1,40 @@
+[% USE HTML %]
+[% INCLUDE includes/errors %]
+
+[% IF NOT wishlist %]
+	[% c.loc('WISHLIST_NOT_FOUND') %]
+[% ELSE %]
+    <h2>[% HTML.escape(wishlist.name) %]</h2>
+    [% IF wishlist.count %]
+        <table border="0" cellpadding="3" cellspacing="5">
+            <tr>
+                <th align="left">SKU</th>
+                <th align="left">Description</th>
+                <th align="center">Quantity</th>
+                <th align="right">Unit Price</th>
+                <th align="right">Total</th>
+                <th colspan="2"></th>
+            </tr>
+            [% FOREACH item = wishlist.items %]
+            <tr>
+            <td align="left">[% HTML.escape(item.sku) %]</td>
+            <td align="left">[% HTML.escape(item.description) %]</td>
+            <td align="center">[% HTML.escape(item.quantity) %]</td>
+            <td align="right">[%# HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
+            <td align="right">[%# HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
+            <td></td>
+            <td>
+                    [% SET form = c.forms('cart_delete') %]
+                    [% CALL form.id(form.id _ '_' _ item.id) %]
+                    [% form.render('values', [item.id, item.quantity]) %]
+            </td>
+            </tr>
+            [% END %]
+        </table>
+        <p>
+            <a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
+        </p>
+    [% ELSE %]
+        <p>This wishlist is empty.</p>
+    [% END %]
+[% END %]

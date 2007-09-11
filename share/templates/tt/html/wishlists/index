@@ -1,0 +1,8 @@
+[% USE HTML %]
+[% INCLUDE includes/errors %]
+
+[% WHILE (wishlist = wishlists.next) %]
+    <ul>
+        <li><a href="[% wishlist.id %]/details/">[% HTML.escape(wishlist.name) %]</a>
+    </ul>
+[% END %]

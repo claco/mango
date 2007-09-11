@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
-<project kpf_version="4" id="b72b9183-37e2-407e-9b95-ec64ccfca0e5" name="Mango.kpf">
+<project id="b72b9183-37e2-407e-9b95-ec64ccfca0e5" name="Mango.kpf" kpf_version="4">
 <preference-set idref="b72b9183-37e2-407e-9b95-ec64ccfca0e5">
   <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*;tmp*.html;.DS_Store;blib;inc;Makefile;var</string>
   <boolean id="import_recursive">1</boolean>

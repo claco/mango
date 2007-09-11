@@ -7,7 +7,7 @@ BEGIN {
     use Handel::Constants qw/:cart/;
     use Mango ();
     use Path::Class ();
-    
+
     __PACKAGE__->form_directory(
         Path::Class::Dir->new(Mango->share, 'forms', 'cart')
     );

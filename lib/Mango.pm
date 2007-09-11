@@ -3,7 +3,7 @@ package Mango;
 use strict;
 use warnings;
 
-our $VERSION = '0.01000_06';
+our $VERSION = '0.01000_07';
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
