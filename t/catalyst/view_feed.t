@@ -19,48 +19,48 @@ isa_ok($view, 'Mango::Catalyst::View::Feed');
 
 
 my $ATOM = <<EOF;
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xmlns:default="http://www.w3.org/1999/xhtml" xml:lang="en-US">
-  <link xmlns="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost/" type="text/html"/>
-  <rights xmlns="http://www.w3.org/2005/Atom">Copyright 2007</rights>
-  <author xmlns="http://www.w3.org/2005/Atom">
-    <name xmlns="http://www.w3.org/2005/Atom">Christopher H. Laco</name>
-  </author>
-  <subtitle xmlns="http://www.w3.org/2005/Atom">My Description</subtitle>
-  <updated xmlns="http://www.w3.org/2005/Atom">2003-07-19T12:13:14Z</updated>
-  <generator xmlns="http://www.w3.org/2005/Atom">Mango Feed View</generator>
-  <title xmlns="http://www.w3.org/2005/Atom">My Feed Title</title>
-  <entry xmlns="http://www.w3.org/2005/Atom" xmlns:default="http://www.w3.org/1999/xhtml">
-    <link xmlns="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost/entries/12345" type="text/html"/>
-    <summary xmlns="http://www.w3.org/2005/Atom">Entry1 Summary</summary>
-    <published xmlns="http://www.w3.org/2005/Atom">2002-07-19T12:13:14Z</published>
-    <content xmlns="http://www.w3.org/2005/Atom" xmlns:default="http://www.w3.org/1999/xhtml" type="xhtml">
-      <div xmlns="http://www.w3.org/1999/xhtml">Entry1 Content</div>
-    </content>
-    <id xmlns="http://www.w3.org/2005/Atom">12345</id>
-    <author xmlns="http://www.w3.org/2005/Atom">
-      <name xmlns="http://www.w3.org/2005/Atom">Entry1 Author</name>
-    </author>
-    <category xmlns="http://www.w3.org/2005/Atom" term="computers"/>
-    <title xmlns="http://www.w3.org/2005/Atom">Entry1</title>
-    <updated xmlns="http://www.w3.org/2005/Atom">2003-07-19T12:13:14Z</updated>
-  </entry>
-  <entry xmlns="http://www.w3.org/2005/Atom" xmlns:default="http://www.w3.org/1999/xhtml">
-    <link xmlns="http://www.w3.org/2005/Atom" rel="alternate" href="http://localhost/entries/6789" type="text/html"/>
-    <summary xmlns="http://www.w3.org/2005/Atom">Entry2 Summary</summary>
-    <published xmlns="http://www.w3.org/2005/Atom">2002-07-19T12:13:14Z</published>
-    <content xmlns="http://www.w3.org/2005/Atom" xmlns:default="http://www.w3.org/1999/xhtml" type="xhtml">
-      <div xmlns="http://www.w3.org/1999/xhtml">Entry2 Content</div>
-    </content>
-    <id xmlns="http://www.w3.org/2005/Atom">6789</id>
-    <author xmlns="http://www.w3.org/2005/Atom">
-      <name xmlns="http://www.w3.org/2005/Atom">Entry2 Author</name>
-    </author>
-    <category xmlns="http://www.w3.org/2005/Atom" term="tv"/>
-    <title xmlns="http://www.w3.org/2005/Atom">Entry2</title>
-    <updated xmlns="http://www.w3.org/2005/Atom">2003-07-19T12:13:14Z</updated>
-  </entry>
-</feed>
+ <?xml version="1.0" encoding="utf-8"?>
+ <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US">
+   <link rel="alternate" href="http://localhost/" type="text/html"/>
+   <rights>Copyright 2007</rights>
+   <author>
+     <name>Christopher H. Laco</name>
+   </author>
+   <subtitle>My Description</subtitle>
+   <updated>2003-07-19T12:13:14Z</updated>
+   <generator>Mango Feed View</generator>
+   <title>My Feed Title</title>
+   <entry>
+     <link rel="alternate" href="http://localhost/entries/12345" type="text/html"/>
+     <summary>Entry1 Summary</summary>
+     <published>2002-07-19T12:13:14Z</published>
+     <content type="xhtml">
+       <div xmlns="http://www.w3.org/1999/xhtml">Entry1 Content</div>
+     </content>
+     <id>12345</id>
+     <author>
+       <name>Entry1 Author</name>
+     </author>
+     <category term="computers"/>
+     <title>Entry1</title>
+     <updated>2003-07-19T12:13:14Z</updated>
+   </entry>
+   <entry>
+     <link rel="alternate" href="http://localhost/entries/6789" type="text/html"/>
+     <summary>Entry2 Summary</summary>
+     <published>2002-07-19T12:13:14Z</published>
+     <content type="xhtml">
+       <div xmlns="http://www.w3.org/1999/xhtml">Entry2 Content</div>
+     </content>
+     <id>6789</id>
+     <author>
+       <name>Entry2 Author</name>
+     </author>
+     <category term="tv"/>
+     <title>Entry2</title>
+     <updated>2003-07-19T12:13:14Z</updated>
+   </entry>
+ </feed>
 EOF
 
 
@@ -244,7 +244,6 @@ EOF
 
     SKIP: {
         skip 'Test::LongString not installed', 1 unless eval 'require Test::LongString';
-
         Test::LongString::is_string_nows($c->response->body, $ATOM);
     };
 };
