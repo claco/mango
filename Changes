@@ -1,6 +1,9 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added Catalyst::View::TT to PREREQ
+    - Fixed problem in tests with latest Error.pm
+
 0.01000_06 Sep 09 20:01:22 2007
     - Fixed Template->share when Mango has never been installed
     - Stripped action from yml forms, now get path_prefix on the fly

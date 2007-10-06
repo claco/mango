@@ -33,6 +33,7 @@ requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Action::REST' => '0.40';
 requires 'Catalyst::Plugin::Authentication' => '0.09999';
 requires 'Catalyst::Component::ACCEPT_CONTEXT' => '0.03';
+requires 'Catalyst::View::TT';
 requires 'XML::Feed' => '0.12';
 requires 'XML::Atom' => '0.25';
 requires 'XML::RSS' => '1.22';

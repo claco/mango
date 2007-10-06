@@ -105,7 +105,7 @@ sub component {
     eval {
         $component = $name->COMPONENT($context, $args->{args});
     };
-    croak "didn't get a component: $@" if $@ || !$component;
+    croak $@ if $@ || !$component;
 
     if ($component->can('ACCEPT_CONTEXT')) {
         return $component->ACCEPT_CONTEXT($context);
