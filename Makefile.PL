@@ -34,6 +34,7 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Action::REST' => '0.40';
 requires 'Catalyst::Plugin::Authentication' => '0.09999';
+requires 'Catalyst::Plugin::Authorization::Roles';
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::File';

@@ -3,8 +3,9 @@ use strict;
 use warnings;
 
 BEGIN {
-    use Catalyst::Helper;
+    use base qw/Catalyst::Helper/;
     use Catalyst::Utils;
+    use DateTime;
     use Path::Class qw/file dir/;
     use YAML;
     use Mango::Schema;
@@ -12,46 +13,79 @@ BEGIN {
 
 sub mk_app {
     my ($self, $name) = @_;
-    my $helper = Catalyst::Helper->new;
+
+    ## set defaults
+    $self->{'adminuser'} ||= 'admin';
+    $self->{'adminpass'} ||= 'admin';
+    $self->{'adminrole'} ||= 'admin';
 
     ## make the Catalyst app
-    $helper->mk_app($name);
+    $self->SUPER::mk_app($name);
 
     ## add database
-    $self->add_database($helper);
+    $self->add_database;
 
     ## inject plugins
-    $self->add_plugins($helper);
+    $self->add_plugins;
 
     # add config
-    $self->add_config($helper);
+    $self->add_config;
 
     ## add contollers/models/views
-    $self->mk_stuff($helper);
+    $self->mk_stuff;
 
     return;
 };
 
 sub add_database {
-    my ($self, $helper) = @_;
-    my $dir = dir($helper->{'dir'}, 'data');
+    my $self = shift;
+    my $dir = dir($self->{'dir'}, 'data');
     my $file = file($dir, 'mango.db');
 
-    $helper->mk_dir($dir);
+    if (! -e $file) {
+        $self->mk_dir($dir);
+        my $adminuser = $self->{'adminuser'};
+        my $adminpass = $self->{'adminpass'};
+        my $adminrole = $self->{'adminrole'};
 
-    my $schema = Mango::Schema->connect("dbi:SQLite:$file");
-    $schema->deploy;
+        my $schema = Mango::Schema->connect("dbi:SQLite:$file");
+        $schema->deploy;
+        print "created \"$file\"\n";
+
+        $schema->resultset('Users')->create({
+            id => 1,
+            username => $adminuser,
+            password => $adminpass,
+            created => DateTime->now,
+            updated => DateTime->now
+        });
+        print "created admin user/pass ($adminuser:$adminpass)\n";
+
+        $schema->resultset('Roles')->create({
+            id => 1,
+            name => $adminrole,
+            description => 'Administrators',
+            created => DateTime->now,
+            updated => DateTime->now
+        });
+        print "created admin role ($adminrole)\n";
+
+        $schema->resultset('UsersRoles')->create({
+            user_id => 1,
+            role_id => 1
+        });
+    };
 
     return;
 };
 
 sub add_plugins {
-    my ($self, $helper) = @_;
-    my $file = file($helper->{'mod'} . '.pm');
+    my $self = shift;
+    my $file = file($self->{'mod'} . '.pm');
     my $contents = $file->slurp;
 
     if ($contents !~ /\+Mango::Catalyst::Plugin/i) {
-        $contents =~ s/-Debug ConfigLoader/-Debug ConfigLoader Session Session::Store::File Session::State::Cookie +Mango::Catalyst::Plugin::I18N +Mango::Catalyst::Plugin::Authentication +Mango::Catalyst::Plugin::Forms/;
+        $contents =~ s/-Debug ConfigLoader/-Debug ConfigLoader Session Session::Store::File Session::State::Cookie +Mango::Catalyst::Plugin::I18N +Mango::Catalyst::Plugin::Authentication +Mango::Catalyst::Plugin::Forms Authorization::Roles/;
 
         my $io = $file->open('>');
         $io->print($contents);
@@ -63,8 +97,8 @@ sub add_plugins {
 };
 
 sub add_config {
-    my ($self, $helper) = @_;
-    my $file = file($helper->{'dir'}, $helper->{'appprefix'} . '.yml');
+    my $self = shift;
+    my $file = file($self->{'dir'}, $self->{'appprefix'} . '.yml');
     my $config = YAML::LoadFile($file);
 
     $config->{'authentication'} = {
@@ -78,12 +112,13 @@ sub add_config {
                 },
                 store => {
                     class => '+Mango::Catalyst::Plugin::Authentication::Store'
-                }
+                },
             }
         }
     };
     $config->{'connection_info'} = ['dbi:SQLite:data/mango.db'];
     $config->{'default_view'} = 'XHTML';
+    $config->{'authorization'}->{'mango'}->{'admin_role'} = $self->{'adminrole'};
 
     YAML::DumpFile($file, $config);
 
@@ -91,27 +126,48 @@ sub add_config {
 };
 
 sub mk_stuff {
-    my ($self, $helper) = @_;
-    my $c = $helper->{'c'};
-    my $m = $helper->{'m'};
-    my $v = $helper->{'v'};
+    my $self = shift;
+    my $c = $self->{'c'};
+    my $m = $self->{'m'};
+    my $v = $self->{'v'};
 
-    $helper->render_file('model_carts',     file($m, 'Carts.pm'));
-    $helper->render_file('model_orders',    file($m, 'Orders.pm'));
-    $helper->render_file('model_products',  file($m, 'Products.pm'));
-    $helper->render_file('model_profiles',  file($m, 'Profiles.pm'));
-    $helper->render_file('model_roles',     file($m, 'Roles.pm'));
-    $helper->render_file('model_users',     file($m, 'Users.pm'));
-    $helper->render_file('model_wishlists', file($m, 'Wishlists.pm'));
+    $self->render_file('model_carts',     file($m, 'Carts.pm'));
+    $self->render_file('model_orders',    file($m, 'Orders.pm'));
+    $self->render_file('model_products',  file($m, 'Products.pm'));
+    $self->render_file('model_profiles',  file($m, 'Profiles.pm'));
+    $self->render_file('model_roles',     file($m, 'Roles.pm'));
+    $self->render_file('model_users',     file($m, 'Users.pm'));
+    $self->render_file('model_wishlists', file($m, 'Wishlists.pm'));
 
-    $helper->render_file('view_atom',  file($v, 'Atom.pm'));
-    $helper->render_file('view_html',  file($v, 'HTML.pm'));
-    $helper->render_file('view_rss',   file($v, 'RSS.pm'));
-    $helper->render_file('view_text',  file($v, 'Text.pm'));
-    $helper->render_file('view_xhtml', file($v, 'XHTML.pm'));
+    $self->render_file('view_atom',  file($v, 'Atom.pm'));
+    $self->render_file('view_html',  file($v, 'HTML.pm'));
+    $self->render_file('view_rss',   file($v, 'RSS.pm'));
+    $self->render_file('view_text',  file($v, 'Text.pm'));
+    $self->render_file('view_xhtml', file($v, 'XHTML.pm'));
 
-    $helper->render_file('controller_cart',      file($c, 'Cart.pm'));
-    $helper->render_file('controller_wishlists', file($c, 'Wishlists.pm'));
+    $self->mk_dir(dir($c, 'Admin'));
+    $self->mk_dir(dir($c, 'Admin', 'Products'));
+
+    $self->render_file('controller_admin',
+        file($c, 'Admin.pm'));
+    $self->render_file('controller_admin_roles',
+        file($c, 'Admin', 'Roles.pm'));
+    $self->render_file('controller_admin_users',
+        file($c, 'Admin', 'Users.pm'));
+    $self->render_file('controller_admin_products',
+        file($c, 'Admin', 'Products.pm'));
+    $self->render_file('controller_admin_products_attributes',
+        file($c, 'Admin', 'Products', 'Attributes.pm'));
+    $self->render_file('controller_cart',
+        file($c, 'Cart.pm'));
+    $self->render_file('controller_login',
+        file($c, 'Login.pm'));
+    $self->render_file('controller_logout',
+        file($c, 'Logout.pm'));
+    $self->render_file('controller_products',
+        file($c, 'Products.pm'));
+    $self->render_file('controller_wishlists',
+        file($c, 'Wishlists.pm'));
 };
 
 1;
@@ -253,6 +309,86 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Wishlists/;
+};
+
+1;
+__controller_login__
+package [% name %]::Controller::Login;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Login/;
+};
+
+1;
+__controller_logout__
+package [% name %]::Controller::Logout;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Logout/;
+};
+
+1;
+__controller_products__
+package [% name %]::Controller::Products;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Products/;
+};
+
+1;
+__controller_admin__
+package [% name %]::Controller::Admin;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Admin/;
+};
+
+1;
+__controller_admin_roles__
+package [% name %]::Controller::Admin::Roles;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Admin::Roles/;
+};
+
+1;
+__controller_admin_users__
+package [% name %]::Controller::Admin::Users;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Admin::Users/;
+};
+
+1;
+__controller_admin_products__
+package [% name %]::Controller::Admin::Products;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Admin::Products/;
+};
+
+1;
+__controller_admin_products_attributes__
+package [% name %]::Controller::Admin::Products::Attributes;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Admin::Products::Attributes/;
 };
 
 1;

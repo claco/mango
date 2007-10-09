@@ -6,7 +6,7 @@ This file documents the revision history for Perl extension Mango.
     - Updated XML::Atom PREREQ and test
     - Mango->share now uses module_dir and falls back to ../../share when using
         local INC files
-    - Added mango.pl to create app/config/data/components
+    - Added mango.pl to create app/config/data/components/database
 
 0.01000_06 Sep 09 20:01:22 2007
     - Fixed Template->share when Mango has never been installed
