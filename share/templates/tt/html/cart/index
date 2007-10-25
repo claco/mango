@@ -42,7 +42,7 @@
             <td colspan="7" align="right">
                 [% c.forms('cart_clear').render %]
                 <form action="[% c.uri_for('/checkout/') %]" method="POST">
-                    <input type="submit" value="Checkout">
+                    <input type="submit" value="Checkout" />
                 </form>
             </td>
         </tr>

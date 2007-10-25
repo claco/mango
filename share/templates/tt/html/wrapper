@@ -23,8 +23,7 @@
 			</div>
 			<div id="footer">
 				<p>
-					Powered by Mango: a Catalyst-Handel ecommerce solution.
-					Visit the <a href="http://handelframework.com/mango/">Mango website</a> for more information.
+					Powered by <a href="http://mangoframework.com/">Mango</a>.
 				</p>
 			</div>
 		</div>

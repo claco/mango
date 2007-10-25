@@ -1,4 +1,5 @@
 $Id$
 - Have controllers register nicknames, like DBIC source_name
 - Consolidate all plugins into Mango::Catalyst::Plugin::Application
+- Added rating/s() and comments() to Object using Ratings/Comments models
 

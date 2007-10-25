@@ -12,6 +12,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'login'} = $class;
+
+    return $self;
+};
+
 sub index : Form('login') Template('login/index') {
     my ($self, $c) = @_;
     my $form = $self->form;

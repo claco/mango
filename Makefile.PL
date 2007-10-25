@@ -27,7 +27,7 @@ requires 'I18N::LangTags';
 requires 'I18N::LangTags::Detect';
 requires 'MIME::Types';
 requires 'Module::Starter' => '1.42';
-requires 'Catalyst::Runtime' => '5.7007';
+requires 'Catalyst::Runtime' => '5.7011';
 requires 'Catalyst::Devel' => '1.02';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';

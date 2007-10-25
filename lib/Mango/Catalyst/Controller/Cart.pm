@@ -13,6 +13,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'cart'} = $class;
+
+    return $self;
+};
+
 sub begin : Private {
     my ($self, $c) = @_;
 
@@ -39,12 +47,13 @@ sub add : Local Template('cart/index') {
     if ($self->submitted && $self->validate->success) {
         $c->user->cart->add({
             sku => $product->sku,
+            description => $product->description,
             price => $product->price,
             quantity => $form->field('quantity')
         });
 
         $c->res->redirect(
-            $c->uri_for('/', $self->path_prefix . '/')
+            $c->uri_for($self->action_for('index')) . '/'
         );
     };
 
@@ -60,7 +69,7 @@ sub clear : Local Template('cart/index') {
     };
 
     $c->res->redirect(
-        $c->uri_for('/', $self->path_prefix . '/')
+        $c->uri_for($self->action_for('index')) . '/'
     );
 
     return;
@@ -76,7 +85,7 @@ sub delete : Local Template('cart/index') {
         });
 
         $c->res->redirect(
-            $c->uri_for('/', $self->path_prefix . '/')
+            $c->uri_for($self->action_for('index')) . '/'
         );
     };
 
@@ -129,7 +138,9 @@ sub save : Local Template('cart/index') {
         $c->user->cart->clear;
 
         $c->res->redirect(
-            $c->uri_for('/', $self->path_prefix . '/')
+            $c->uri_for($c->controller(
+                $c->config->{'mango'}->{'controllers'}->{'wishlists'}
+            )->action_for('index')) . '/'
         );
     };
 
@@ -151,7 +162,7 @@ sub update : Local Template('cart/index') {
         };
 
         $c->res->redirect(
-            $c->uri_for('/', $self->path_prefix . '/')
+            $c->uri_for($self->action_for('index')) . '/'
         );
     };
 

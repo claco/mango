@@ -13,6 +13,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'wishlists'} = $class;
+
+    return $self;
+};
+
 sub _parse_PathPrefix_attr {
     my ($self, $c, $name, $value) = @_;
 
