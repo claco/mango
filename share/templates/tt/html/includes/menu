@@ -1,0 +1,10 @@
+<ul id="menu">
+[% IF c.user_exists %]
+	<li><a href="[% c.uri_for(c.controller(c.config.mango.controllers.logout).action_for('index')) %]/">Logout</a></li>
+    <li><a href="[% c.uri_for(c.controller(c.config.mango.controllers.admin _ '$').action_for('index')) %]/">Admin</a></li>
+    <li><a href="[% c.uri_for(c.controller(c.config.mango.controllers.user.wishlists).action_for('index')) %]/">Wishlists</a></li>
+[% ELSE %]
+    <li><a href="[% c.uri_for(c.controller(c.config.mango.controllers.login).action_for('index')) %]/">Login</a></li>
+[% END %]
+    <li><a href="[% c.uri_for(c.controller(c.config.mango.controllers.cart).action_for('index')) %]/">Cart</a></li>
+</ul>

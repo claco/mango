@@ -1,1 +1,2 @@
 [% INCLUDE 'includes/errors' %]
+[% INCLUDE 'includes/login' %]

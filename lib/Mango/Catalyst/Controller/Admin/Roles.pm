@@ -12,6 +12,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'admin_roles'} = $class;
+
+    return $self;
+};
+
 sub _parse_PathPrefix_attr {
     my ($self, $c, $name, $value) = @_;
 
@@ -74,12 +82,17 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/roles/edit') {
         id          => $role->id,
         name        => $role->name,
         description => $role->description,
-        created     => $role->created . ''
+        created     => $role->created . '',
+        updated     => $role->updated . ''
     });
 
     if ($self->submitted && $self->validate->success) {
         $role->description($form->field('description'));
         $role->update;
+
+        $form->values({
+            updated     => $role->updated . ''
+        });
     };
 };
 

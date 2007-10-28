@@ -1,0 +1,12 @@
+[% USE HTML %]
+[% INCLUDE includes/errors %]
+
+[% IF wishlists.count %]
+    <ul>
+    [% WHILE (wishlist = wishlists.next) %]
+            <li><a href="[% c.uri_for('.', wishlist.id) %]/">[% HTML.escape(wishlist.name) %]</a></li>
+    [% END %]
+    </ul>
+[% ELSE %]
+    <p>You currently have no wishlists.</p>
+[% END %]

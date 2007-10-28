@@ -13,6 +13,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'admin_users'} = $class;
+
+    return $self;
+};
+
 sub _parse_PathPrefix_attr {
     my ($self, $c, $name, $value) = @_;
 
@@ -78,8 +86,8 @@ sub create : Local Template('admin/users/create') {
             $c->model('Roles')->add_user($role, $user);
         };
 
-        $c->response->redirect(
-            $c->uri_for('/', $self->path_prefix, $user->id, 'edit/')
+        $c->res->redirect(
+            $c->uri_for($self->action_for('index') , $user->id, 'edit/')
         );
     };
 };
@@ -101,6 +109,7 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
         password         => $user->password,
         confirm_password => $user->password,
         created          => $user->created . '',
+        updated          => $user->updated . '',
         first_name       => $profile->first_name,
         last_name        => $profile->last_name,
         
@@ -122,6 +131,10 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
 
         $user->password($form->field('password'));
         $user->update;
+
+        $form->values({
+            updated     => $user->updated . ''
+        });
 
         $profile->first_name($form->field('first_name'));
         $profile->last_name($form->field('last_name'));
@@ -174,8 +187,8 @@ sub delete : Chained('load') PathPart Args(0) Template('admin/users/delete') {
             ## delete user
             $user->destroy;
 
-            $c->response->redirect(
-                $c->uri_for('/', $self->path_prefix . '/')
+            $c->res->redirect(
+                $c->uri_for($self->action_for('index')) . '/'
             );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];

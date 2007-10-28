@@ -12,7 +12,7 @@
 			<div id="header">
 				<h1>[% site.title OR name %]</h1>
 				[% IF page.subtitle %]<h2>[% page.subtitle %]</h2>[% END %]
-				[% INCLUDE 'includes/login' %]
+				[% INCLUDE 'includes/menu' %]
 			</div>
 			<div id="contents">
 				<div id="content">

@@ -104,13 +104,17 @@ sub restore : Local Template('cart/index') {
                     type    => CART_TYPE_SAVED
                 }, $c->req->param('mode') || CART_MODE_APPEND);
 
-                $c->res->redirect($c->uri_for('/cart/'));
+                $c->res->redirect(
+                    $c->uri_for($self->action_for('index')) . '/'
+                );
             };
         } else {
             $c->forward('list');
         };
     } else {
-        $c->res->redirect($c->uri_for('/cart/'));
+        $c->res->redirect(
+            $c->uri_for($self->action_for('index')) . '/'
+        );
     };
 
     return;
@@ -139,7 +143,7 @@ sub save : Local Template('cart/index') {
 
         $c->res->redirect(
             $c->uri_for($c->controller(
-                $c->config->{'mango'}->{'controllers'}->{'wishlists'}
+                $c->config->{'mango'}->{'controllers'}->{'user'}->{'wishlists'}
             )->action_for('index')) . '/'
         );
     };

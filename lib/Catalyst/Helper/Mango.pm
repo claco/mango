@@ -148,6 +148,7 @@ sub mk_stuff {
     $self->mk_dir(dir($c, 'Admin'));
     $self->mk_dir(dir($c, 'Admin', 'Products'));
 
+    ## admin speciic controllers
     $self->render_file('controller_admin',
         file($c, 'Admin.pm'));
     $self->render_file('controller_admin_roles',
@@ -158,6 +159,8 @@ sub mk_stuff {
         file($c, 'Admin', 'Products.pm'));
     $self->render_file('controller_admin_products_attributes',
         file($c, 'Admin', 'Products', 'Attributes.pm'));
+
+    ## sitewide controllers
     $self->render_file('controller_cart',
         file($c, 'Cart.pm'));
     $self->render_file('controller_login',
@@ -166,8 +169,10 @@ sub mk_stuff {
         file($c, 'Logout.pm'));
     $self->render_file('controller_products',
         file($c, 'Products.pm'));
-    $self->render_file('controller_wishlists',
-        file($c, 'Wishlists.pm'));
+
+    ## user specific controlers
+    $self->render_file('controller_user_wishlists',
+        file($c, 'User', 'Wishlists.pm'));
 };
 
 1;
@@ -302,13 +307,13 @@ BEGIN {
 };
 
 1;
-__controller_wishlists__
-package [% name %]::Controller::Wishlists;
+__controller_user_wishlists__
+package [% name %]::Controller::User::Wishlists;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Wishlists/;
+    use base qw/Mango::Catalyst::Controller::User::Wishlists/;
 };
 
 1;

@@ -47,5 +47,9 @@ fields:
       type: text
       size: 20
       disabled: 1
+  - updated:
+      type: text
+      size: 20
+      disabled: 1
   - tags:
       type: textarea

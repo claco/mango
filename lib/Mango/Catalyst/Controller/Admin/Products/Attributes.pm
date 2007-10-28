@@ -13,6 +13,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'admin_products_attributes'} = $class;
+
+    return $self;
+};
+
 sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/index') {
     my ($self, $c) = @_;
 
@@ -89,13 +97,18 @@ sub edit : PathPart('edit') Chained('load') Args(0) Template('admin/products/att
         id      => $attribute->id,
         name    => $attribute->name,
         value   => $attribute->value,
-        created => $attribute->created . ''
+        created => $attribute->created . '',
+        updated => $attribute->updated . ''
     });
 
     if ($self->submitted && $self->validate->success) {
         $attribute->name($form->field('name'));
         $attribute->value($form->field('value'));
         $attribute->update;
+        
+        $form->values({
+            updated     => $attribute->updated . ''
+        });
     };
 };
 

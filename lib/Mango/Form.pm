@@ -39,6 +39,16 @@ sub new {
     return $self;
 };
 
+sub action {
+    my ($self, $action) = @_;
+
+    if ($action) {
+        $self->_form->action($action . '');
+    };
+
+    return $self->_form->action;
+};
+
 sub clone {
     my $self = shift;
     my $localizer = $self->localizer;
@@ -57,10 +67,6 @@ sub clone {
 
 sub field {
     return shift->_form->field(@_);
-};
-
-sub action {
-    return shift->_form->action(@_);
 };
 
 sub render {

@@ -11,16 +11,16 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td colspan="4"><a href="create/">[% c.loc('LABEL_NEW_PRODUCT') %]</a></td>
+		<td colspan="4"><a href="[% c.uri_for('create/') %]">[% c.loc('LABEL_NEW_PRODUCT') %]</a></td>
 	</tr>
 [% WHILE (product = products.next) %]
 	<tr>
 		<td>
 			[% CALL delete_form.values(id => product.id) %]
-			[% CALL delete_form.action(product.id _ '/delete/') %]
+			[% CALL delete_form.action(c.uri_for(product.id,  'delete/')) %]
 			[% delete_form.render %]
 		</td>
-		<td><a href="[% product.id %]/edit/">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
+		<td><a href="[% c.uri_for(product.id,  'edit/') %]">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
 		<td>[% HTML.escape(product.description) %]</td>
 		<td>[% product.created %]</td>
 		<td>[% product.updated %]</td>

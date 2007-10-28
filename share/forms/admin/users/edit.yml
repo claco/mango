@@ -41,6 +41,9 @@ fields:
   - created:
       size: 20
       disabled: 1
+  - updated:
+      size: 20
+      disabled: 1
   - first_name:
       type: text
       size: 25

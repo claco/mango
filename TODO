@@ -1,5 +1,7 @@
 $Id$
 - Have controllers register nicknames, like DBIC source_name
 - Consolidate all plugins into Mango::Catalyst::Plugin::Application
+- Consolidate all controllers into Mango::Catalyst::Controler (isa Form/REST)
+- Added method to set config->mango->conrollers-name
 - Added rating/s() and comments() to Object using Ratings/Comments models
 

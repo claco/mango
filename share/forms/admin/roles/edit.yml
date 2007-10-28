@@ -33,3 +33,6 @@ fields:
   - created:
       size: 20
       disabled: 1
+  - updated:
+      size: 20
+      disabled: 1

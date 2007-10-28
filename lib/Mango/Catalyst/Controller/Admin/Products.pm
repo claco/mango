@@ -13,6 +13,14 @@ BEGIN {
     );
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'admin_products'} = $class;
+
+    return $self;
+};
+
 sub _parse_PathPrefix_attr {
     my ($self, $c, $name, $value) = @_;
 
@@ -100,7 +108,8 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/products/edit') {
         description => $product->description,
         price       => $product->price->value,
         tags        => join(', ', map {$_->name} @tags),
-        created     => $product->created . ''
+        created     => $product->created . '',
+        updated     => $product->updated . ''
     });
 
     if ($self->submitted && $self->validate->success) {
@@ -109,6 +118,10 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/products/edit') {
         $product->description($form->field('description'));
         $product->price($form->field('price'));
         $product->update;
+
+        $form->values({
+            updated     => $product->updated . ''
+        });
 
         if (my $tags = $form->field('tags')) {
             my $current_tags = Set::Scalar->new(map {$_->name} @tags);

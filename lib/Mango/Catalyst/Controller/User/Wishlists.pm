@@ -1,4 +1,4 @@
-package Mango::Catalyst::Controller::Wishlists;
+package Mango::Catalyst::Controller::User::Wishlists;
 use strict;
 use warnings;
 
@@ -9,14 +9,14 @@ BEGIN {
     use Path::Class ();
 
     __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'wishlists')
+        Path::Class::Dir->new(Mango->share, 'forms', 'user', 'wishlists')
     );
 };
 
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'wishlists'} = $class;
+    $_[0]->config->{'mango'}->{'controllers'}->{'user'}->{'wishlists'} = $class;
 
     return $self;
 };
@@ -27,7 +27,7 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
-sub index : Template('wishlists/index') {
+sub index : Template('user/wishlists/index') {
     my ($self, $c) = @_;
 
     if ($c->user_exists) {
@@ -39,9 +39,9 @@ sub index : Template('wishlists/index') {
     return;
 };
 
-sub default : Template('wishlists/details') {
+sub default : Template('user/wishlists/details') {
     my ($self, $c, @args) = @_;
-    my $id = $args[1];
+    my $id = $args[-1];
 
     $c->forward('load', [$id]);
 };
@@ -58,7 +58,7 @@ sub load : Chained('/') PathPrefix CaptureArgs(1) {
     };
 };
 
-sub details : Chained('load') PathPart Args(0) Template('wishlists/details') {
+sub details : Chained('load') PathPart Args(0) Template('user/wishlists/details') {
     my ($self, $c) = @_;
 };
 

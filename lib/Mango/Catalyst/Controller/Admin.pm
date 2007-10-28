@@ -6,6 +6,14 @@ BEGIN {
     use base qw/Catalyst::Controller/;
 };
 
+sub COMPONENT {
+    my $class = shift;
+    my $self = $class->NEXT::COMPONENT(@_);
+    $_[0]->config->{'mango'}->{'controllers'}->{'admin'} = $class;
+
+    return $self;
+};
+
 sub begin : Private {
     my ($self, $c) = @_;
 
