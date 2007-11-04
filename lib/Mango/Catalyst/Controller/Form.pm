@@ -73,7 +73,9 @@ sub COMPONENT {
             $form->action("/$action/");
         };
 
-        $c->log->debug("Form $filename attached to action '$action'");
+        if ($c->debug) {
+            $c->log->debug("Form $filename attached to action '$action'");
+        };
         $self->forms->{$name} = $form;
         $self->forms->{$action} = $form;
     };
@@ -84,7 +86,9 @@ sub COMPONENT {
 sub _load_form_from_file {
     my ($self, $c, $file) = @_;
 
-    $c->log->debug("Loading form '$file'");
+    if ($c->debug) {
+        $c->log->debug("Loading form '$file'");
+    };
 
     my $form = $self->form_class->new({
         source => $file

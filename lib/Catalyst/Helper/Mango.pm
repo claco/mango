@@ -169,10 +169,8 @@ sub mk_stuff {
         file($c, 'Logout.pm'));
     $self->render_file('controller_products',
         file($c, 'Products.pm'));
-
-    ## user specific controlers
-    $self->render_file('controller_user_wishlists',
-        file($c, 'User', 'Wishlists.pm'));
+    $self->render_file('controller_users',
+        file($c, 'Users.pm'));
 };
 
 1;
@@ -344,6 +342,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Products/;
+};
+
+1;
+__controller_users__
+package [% name %]::Controller::Users;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Users/;
 };
 
 1;

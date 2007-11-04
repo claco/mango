@@ -11,13 +11,18 @@ BEGIN {
 __PACKAGE__->config(
     serialize => {
         'stash_key' => 'entity',
+        'default'   => 'text/html',
         'map'       => {
             'text/plain'            => [qw/View Text/],
             'text/html'             => [qw/View HTML/],
             'application/xhtml+xml' => [qw/View XHTML/],
             'application/rss+xml'   => [qw/View RSS/],
             'application/atom+xml'  => [qw/View Atom/],
-        }
+
+            ## remap unwanted aceepted types util we get more REST
+            ## config for weighting
+            'text/xml'             => [qw/View HTML/],
+        },
     }
 );
 
@@ -55,14 +60,88 @@ $mimes->addType(
 
 sub begin : Private {
     my ($self, $c) = @_;
-    my $view = $c->request->param('view') || 'html';
+    my $view = $c->request->param('view');
 
-    $c->request->content_type(
-        $mimes->mimeTypeOf($view)
-    ) if $view;
+    if ($view) {
+        $c->request->content_type(
+            $mimes->mimeTypeOf($view)
+        );
+    };
 
     $self->NEXT::begin($c);
 };
+
+sub wants_atom {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('atom');
+};
+
+sub wants_rss {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('rss');
+};
+
+sub wants_json {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('json');
+};
+
+sub wants_yaml {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('yaml');
+};
+
+sub wants_html {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('html');
+};
+
+sub wants_xhtml {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('xhtml');
+};
+
+sub wants_text {
+    my $self = shift;
+    my $c = $self->context;
+
+    return $c->request->preferred_content_type eq
+        $mimes->mimeTypeOf('text');
+};
+
+sub wants_browser {
+    my $self = shift;
+
+    return $self->wants_html ||
+        $self->wants_xhtml ||
+        $self->wants_text;
+};
+
+sub wants_feed {
+    my $self = shift;
+
+    return $self->wants_atom ||
+        $self->wants_rss;
+};
+
 
 1;
 __END__
