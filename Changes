@@ -12,6 +12,9 @@ This file documents the revision history for Perl extension Mango.
     - Updating an Attribute wasn't setting update()
     - Converted admin to RESTish access
     - Controllers now inherit from M::Catalyst:Controller (which does REST/Form
+    - Merge plugins into Plugin::Application
+    - Added Auth helpers is_admin/unauthorized
+    - Added REST helpers want_html/browser/yaml/feed, etc
 
 0.01000_06 Sep 09 20:01:22 2007
     - Fixed Template->share when Mango has never been installed

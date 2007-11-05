@@ -71,6 +71,17 @@ sub begin : Private {
     $self->NEXT::begin($c);
 };
 
+sub entity {
+    my ($self, $data) = @_;
+    my $key = $self->{'serialize'}->{'stash_key'};
+
+    if (defined $data) {
+        $self->context->stash->{$key} = $data;
+    };
+
+    return $self->context->stash->{$key};
+};
+
 sub wants_atom {
     my $self = shift;
     my $c = $self->context;
@@ -141,7 +152,6 @@ sub wants_feed {
     return $self->wants_atom ||
         $self->wants_rss;
 };
-
 
 1;
 __END__

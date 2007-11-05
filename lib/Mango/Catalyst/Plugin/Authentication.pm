@@ -31,6 +31,21 @@ sub user {
     return;
 };
 
+sub is_admin {
+    my $c = shift;
+    my $role = $c->config->{'mango'}->{'admin_role'} || 'admin';
+
+    return $c->check_user_roles($role);
+};
+
+sub unauthorized {
+    my $c = shift;
+
+        $c->response->status(401);
+        $c->stash->{'template'} = 'errors/401';
+        $c->detach;
+};
+
 1;
 __END__
 

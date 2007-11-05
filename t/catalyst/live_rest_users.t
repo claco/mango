@@ -46,6 +46,7 @@ BEGIN {
     my $r = $m->get('/users/?view=yaml');
     is($r->code, 400);
     is($r->header('Content-Type'), 'text/x-yaml');
+    diag $r->content;
 
     ## using content-type param
     $r = $m->get('/users/?content-type=text/x-yaml');

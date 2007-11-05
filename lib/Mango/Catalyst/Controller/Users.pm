@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Users;
 use strict;
 use warnings;
@@ -8,17 +9,21 @@ BEGIN {
 
 sub index : ActionClass('REST') Template('users/index') {
     my ($self, $c) = @_;
+
 };
 
 sub index_GET : Private {
     my ($self, $c) = @_;
 
-    if ($self->wants_browser) {
+};
+
+sub index_POST : Private {
+    my ($self, $c) = @_;
+
+    if ($c->is_admin) {
         
     } else {
-        $self->status_bad_request(
-            $c, message => $c->localize('METHOD_NOT_SUPPORTED')
-        );
+        $c->unauthorized;
     };
 };
 

@@ -1,3 +1,4 @@
+# $Id$
 package Catalyst::Helper::Mango;
 use strict;
 use warnings;
@@ -85,7 +86,7 @@ sub add_plugins {
     my $contents = $file->slurp;
 
     if ($contents !~ /\+Mango::Catalyst::Plugin/i) {
-        $contents =~ s/-Debug ConfigLoader/-Debug ConfigLoader Session Session::Store::File Session::State::Cookie +Mango::Catalyst::Plugin::I18N +Mango::Catalyst::Plugin::Authentication +Mango::Catalyst::Plugin::Forms Authorization::Roles/;
+        $contents =~ s/-Debug ConfigLoader/-Debug ConfigLoader Session Session::Store::File Session::State::Cookie +Mango::Catalyst::Plugin::Application Authorization::Roles/;
 
         my $io = $file->open('>');
         $io->print($contents);
