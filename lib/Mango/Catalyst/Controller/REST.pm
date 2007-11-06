@@ -62,10 +62,16 @@ sub begin : Private {
     my ($self, $c) = @_;
     my $view = $c->request->param('view');
 
+    ## convert friendly view param into content-type
     if ($view) {
         $c->request->content_type(
             $mimes->mimeTypeOf($view)
         );
+    };
+
+    ## convert POSTed _method into request method
+    if ($c->request->method eq 'POST' && $c->request->param('_method')) {
+        $c->request->method(uc $c->request->param('_method'));
     };
 
     $self->NEXT::begin($c);

@@ -12,4 +12,12 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
+sub page {
+    return shift->context->request->param('page') || 1;
+};
+
+sub rows {
+    return shift->context->request->param('rows') || 10;
+};
+
 1;
