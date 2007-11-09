@@ -7,7 +7,7 @@
   <string id="rubyExtraPaths"></string>
   <string id="phpExtraPaths"></string>
   <string id="pythonExtraPaths"></string>
-  <string relative="path" id="perlExtraPaths">lib:/home/claco/CPAN/Mango/t/lib:/home/claco/CPAN/Mango/inc:/Users/claco/Documents/Mango/t/lib;C:/Development/CPAN/Mango/lib</string>
+  <string relative="path" id="perlExtraPaths">lib:/home/claco/CPAN/Mango/t/lib:/home/claco/CPAN/Mango/inc:/Users/claco/Documents/Mango/t/lib:/Development/CPAN/Mango/lib</string>
   <boolean id="import_live">1</boolean>
   <string id="import_type">useFolders</string>
   <string id="mappedPaths"></string>

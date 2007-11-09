@@ -44,26 +44,71 @@ BEGIN {
 };
 
 
-## index is only allowed in html/xhtml/text
+## GET /users
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
 
-    ## using friendly view name
+    ## REST using friendly view name
     my $r = $m->get('/users/?view=yaml');
-    is($r->code, 400);
+    is($r->code, 200);
     is($r->header('Content-Type'), 'text/x-yaml');
-    diag $r->content;
+    is_deeply(YAML::Load($r->content), {
+        users => [
+            {id => 1, username => 'admin'}
+        ],
+        current_page => 1,
+        entries_per_page => 10,
+        total_entries => 1,
+        first_page => 1,
+        last_page => 1
+    });
 
-    ## using content-type param
+    ## REST using content-type param
     $r = $m->get('/users/?content-type=text/x-yaml');
-    is($r->code, 400);
+    is($r->code, 200);
     is($r->header('Content-Type'), 'text/x-yaml');
-    diag $r->content;
+    is_deeply(YAML::Load($r->content), {
+        users => [
+            {id => 1, username => 'admin'}
+        ],
+        current_page => 1,
+        entries_per_page => 10,
+        total_entries => 1,
+        first_page => 1,
+        last_page => 1
+    });
 
-    ## using Content-Type header
+    ## REST using Content-Type header
     $m->add_header('Content-Type', 'text/x-yaml');
     $r = $m->get('/users/');
-    is($r->code, 400);
+    is($r->code, 200);
     is($r->header('Content-Type'), 'text/x-yaml');
-    diag $r->content;
+    is_deeply(YAML::Load($r->content), {
+        users => [
+            {id => 1, username => 'admin'}
+        ],
+        current_page => 1,
+        entries_per_page => 10,
+        total_entries => 1,
+        first_page => 1,
+        last_page => 1
+    });
 };
+
+
+## POST /users
+{
+    my $m = Test::WWW::Mechanize::Catalyst->new;
+    
+#$m->credentials( 'localhost:3000', $realm, $uname, $pass )
+
+    ## access denied for anonymous users
+    my $r = $m->post('/users/?view=yaml');
+    diag $r->as_string;
+    is($r->code, 401);
+    is($r->header('Content-Type'), 'text/x-yaml');
+};
+
+
+
+

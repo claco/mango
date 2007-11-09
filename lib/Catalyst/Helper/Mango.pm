@@ -121,6 +121,10 @@ sub add_config {
     $config->{'default_view'} = 'XHTML';
     $config->{'authorization'}->{'mango'}->{'admin_role'} = $self->{'adminrole'};
 
+$config->{cache}->{backend} = {
+        store => "Memory",
+};
+
     YAML::DumpFile($file, $config);
 
     return;

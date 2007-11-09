@@ -6,6 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Catalyst::Controller::REST/;
     use MIME::Types;
+    use Scalar::Util qw/blessed/;
 };
 
 __PACKAGE__->config(
@@ -78,10 +79,18 @@ sub begin : Private {
 };
 
 sub entity {
-    my ($self, $data) = @_;
+    my ($self, $data, $pager) = @_;
     my $key = $self->{'serialize'}->{'stash_key'};
 
     if (defined $data) {
+        if (blessed $pager && $pager->isa('Data::Page')) {
+            $data->{'current_page'}     = $pager->current_page;
+            $data->{'entries_per_page'} = $pager->entries_per_page;
+            $data->{'total_entries'}    = $pager->total_entries;
+            $data->{'first_page'}       = $pager->first_page;
+            $data->{'last_page'}        = $pager->last_page;
+        };
+
         $self->context->stash->{$key} = $data;
     };
 

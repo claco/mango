@@ -5,7 +5,7 @@ use warnings;
 our $VERSION = $Mango::VERSION;
 
 BEGIN {
-    use base qw/Catalyst::Plugin::Authentication/;
+    use base qw/Catalyst::Plugin::Authentication Catalyst::Plugin::Authentication::Credential::HTTP/;
 
     use Mango ();
     use Mango::I18N ();
@@ -41,9 +41,10 @@ sub is_admin {
 sub unauthorized {
     my $c = shift;
 
-        $c->response->status(401);
-        $c->stash->{'template'} = 'errors/401';
-        $c->detach;
+    $c->response->status(401);
+    $c->stash->{'template'} = 'errors/401';
+    $c->authorization_required(realm => $c->config->{'authentication'}->{'default_realm'});
+    $c->detach;
 };
 
 1;

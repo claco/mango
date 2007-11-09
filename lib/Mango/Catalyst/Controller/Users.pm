@@ -31,8 +31,8 @@ returns a collection of user data.
 sub index_GET : Private {
     my ($self, $c) = @_;
     my $users = $c->model('Users')->search(undef, {
-        page => $self->page,
-        rows => $self->rows
+        page => $self->current_page,
+        rows => $self->entries_per_page
     });
     my $pager = $users->pager;
 
@@ -46,7 +46,7 @@ sub index_GET : Private {
 
         $self->entity({
             users => \@users
-        });
+        }, $pager);
     };
 };
 
