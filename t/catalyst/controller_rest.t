@@ -18,6 +18,7 @@ BEGIN {
     my $controller = $c->controller('REST');
     isa_ok($controller, 'Mango::Catalyst::Controller::REST');
 
+    $c->request->content_type('text/html');
     $controller->begin($c);
     is($c->request->content_type, 'text/html');
 

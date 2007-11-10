@@ -22,4 +22,8 @@ sub param {
     return shift->{$_[0]};
 };
 
+sub method {
+    return 'GET';
+};
+
 1;
