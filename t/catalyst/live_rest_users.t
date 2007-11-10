@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     use lib 't/lib';
     use lib 't/var/TestApp/lib';
-    use Mango::Test tests => 15;
+    use Mango::Test tests => 20;
     use Cwd;
     use File::Path;
     use File::Spec::Functions qw/catfile/;
@@ -99,14 +99,25 @@ BEGIN {
 ## POST /users
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
-    
-#$m->credentials( 'localhost:3000', $realm, $uname, $pass )
 
-    ## access denied for anonymous users
+    ## access denied for anonymous users using view
     my $r = $m->post('/users/?view=yaml');
-    diag $r->as_string;
     is($r->code, 401);
     is($r->header('Content-Type'), 'text/x-yaml');
+    is($r->content, YAML::Dump(undef));
+
+    ## access denied for anonymous users using view
+    $r = $m->post('/users/?content-type=text/x-yaml');
+    is($r->code, 401);
+    is($r->header('Content-Type'), 'text/x-yaml');
+    is($r->content, YAML::Dump(undef));
+
+    ## access denied for anonymous users using Content-Type
+    $m->add_header('Content-Type', 'text/x-yaml');
+    $r = $m->post('/users/');
+    is($r->code, 401);
+    is($r->header('Content-Type'), 'text/x-yaml');
+    is($r->content, YAML::Dump(undef));
 };
 
 

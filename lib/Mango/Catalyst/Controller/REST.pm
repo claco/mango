@@ -61,21 +61,33 @@ $mimes->addType(
 
 sub begin : Private {
     my ($self, $c) = @_;
+    $self->NEXT::begin($c);
+
     my $view = $c->request->param('view');
+    my $type = $c->request->param('content-type');
 
     ## convert friendly view param into content-type
     if ($view) {
         $c->request->content_type(
             $mimes->mimeTypeOf($view)
         );
+    # REST only looks at this during GET, we look at POST/PUT/DELETE too
+    } elsif ($type) {
+        $c->request->content_type($type);
     };
 
     ## convert POSTed _method into request method
     if ($c->request->method eq 'POST' && $c->request->param('_method')) {
         $c->request->method(uc $c->request->param('_method'));
     };
+};
 
-    $self->NEXT::begin($c);
+sub end : ActionClass('Serialize') {
+    my ($self, $c) = @_;
+    $self->NEXT::end($c);
+
+    $c->response->content_type($c->request->preferred_content_type);
+    $c->response->body('');
 };
 
 sub entity {
