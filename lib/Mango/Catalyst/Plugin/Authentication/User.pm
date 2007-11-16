@@ -8,14 +8,14 @@ BEGIN {
 
     use Mango::Exception ();
 };
-__PACKAGE__->mk_accessors(qw/config _context _cart _user _profile/);
+__PACKAGE__->mk_accessors(qw/config _context _cart _user _profile supports_sessions/);
 
 sub new {
 	my ($class, $c, $config, $user) = @_;
 
 	return unless $user;
 
-	return bless {config => $config, _user => $user, _context => $c}, $class;
+	return bless {config => $config, _user => $user, _context => $c, supports_sessions => 1}, $class;
 };
 
 sub get {
@@ -39,7 +39,7 @@ sub supported_features {
     my $self = shift;
 
 	return {
-        session => 1,
+        session => $self->supports_sessions,
         roles => 1,
         profiles => 1,
         carts => 1

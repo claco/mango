@@ -48,9 +48,14 @@ sub find_user {
     })->first;
 
     if ($user) {
-        return Mango::Catalyst::Plugin::Authentication::User->new(
+        my $user = Mango::Catalyst::Plugin::Authentication::User->new(
             $c, $self->config, $user
         );
+
+        if ($authinfo->{'disable_sessions'}) {
+            $user->supports_sessions(undef);
+        };
+        return $user;
     } else {
         return undef;
     };

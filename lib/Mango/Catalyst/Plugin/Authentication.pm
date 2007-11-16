@@ -11,6 +11,21 @@ BEGIN {
     use Mango::I18N ();
 };
 
+sub authenticate {
+    my ($c, $userinfo, $realmname) = @_;
+    my ($husername, $hpassword) = $c->request->headers->authorization_basic;
+
+    $userinfo ||= {};
+
+    if (! $userinfo->{'username'}) {
+        $userinfo->{'username'} ||= $husername;
+        $userinfo->{'password'} ||= $hpassword;
+        $userinfo->{'disable_sessions'} = 1
+    };
+
+    return $c->NEXT::authenticate($userinfo, $realmname);
+};
+
 sub user {
     my $c = shift;
     my $default = $c->config->{'authentication'}{'default_realm'};

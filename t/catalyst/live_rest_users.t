@@ -118,6 +118,14 @@ BEGIN {
     is($r->code, 401);
     is($r->header('Content-Type'), 'text/x-yaml');
     is($r->content, YAML::Dump(undef));
+
+    ## successful post using view
+    $m = Test::WWW::Mechanize::Catalyst->new;
+    $m->credentials('admin', 'admin');
+    $r = $m->post('/users/?view=yaml', Content => "---\nfoo: bar\nboo:\n  - 1\n  - 2\n", Content_Type => 'text/x-json');
+    is($r->code, 201);
+    is($r->header('Content-Type'), 'text/x-yaml');
+    is($r->content, YAML::Dump(undef));
 };
 
 

@@ -10,7 +10,7 @@ BEGIN {
     plan skip_all => 'set TEST_AUTHOR to enable this test' unless $ENV{TEST_AUTHOR};
 
     eval 'use Test::Pod::Coverage 1.04';
-    plan skip_all => 'Test::Pod::Coverage 1.04' if $@;
+    plan skip_all => 'Test::Pod::Coverage 1.04 not installed' if $@;
 
     eval 'use Pod::Coverage 0.14';
     plan skip_all => 'Pod::Coverage 0.14 not installed' if $@;

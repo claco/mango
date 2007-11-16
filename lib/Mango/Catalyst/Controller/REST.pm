@@ -59,32 +59,36 @@ $mimes->addType(
     )
 );
 
-sub begin : Private {
-    my ($self, $c) = @_;
-    $self->NEXT::begin($c);
+sub ACCEPT_CONTEXT {
+    my $self = shift;
+    my $c = shift;
 
+    ## friendly view name overrides header
     my $view = $c->request->param('view');
-    my $type = $c->request->param('content-type');
-
-    ## convert friendly view param into content-type
     if ($view) {
         $c->request->content_type(
             $mimes->mimeTypeOf($view)
         );
-    # REST only looks at this during GET, we look at POST/PUT/DELETE too
-    } elsif ($type) {
-        $c->request->content_type($type);
     };
 
-    ## convert POSTed _method into request method
+    ## type param overrides headerß
+    my $type = $c ->request->param('content-type');
+    if ($type) {
+        $c ->request->content_type($type);
+    };
+
+    ## change method if we're faking it through crippled client POST
     if ($c->request->method eq 'POST' && $c->request->param('_method')) {
         $c->request->method(uc $c->request->param('_method'));
     };
+
+    return $self->NEXT::ACCEPT_CONTEXT($c, @_) || $self;
 };
 
 sub end : ActionClass('Serialize') {
-    my ($self, $c) = @_;
-    $self->NEXT::end($c);
+    my $self = shift;
+    my $c = shift;
+    $self->NEXT::end($c, @_);
 
     $c->response->content_type($c->request->preferred_content_type);
     $c->response->body('');
@@ -106,7 +110,7 @@ sub entity {
         $self->context->stash->{$key} = $data;
     };
 
-    return $self->context->stash->{$key};
+    return $self->context->stash->{$key} || $self->context->request->data;
 };
 
 sub wants_atom {
