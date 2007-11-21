@@ -171,10 +171,13 @@ sub wants_text {
 
 sub wants_browser {
     my $self = shift;
+    my $c = $self->context;
 
     return $self->wants_html ||
         $self->wants_xhtml ||
-        $self->wants_text;
+        $self->wants_text ||
+        $c->request->preferred_content_type eq
+            'application/x-www-form-urlencoded';
 };
 
 sub wants_feed {

@@ -105,7 +105,7 @@ sub form {
     my $form;
 
     $name ||= $c->action;
-warn %{$c->action->attributes};
+
     if (exists $c->action->attributes->{'Form'}) {
         $form = $c->action->attributes->{'Form'}->[-1];
     };

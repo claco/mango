@@ -29,4 +29,16 @@ sub entries_per_page {
     return $c->request->param('entries_per_page') || 10;
 };
 
+## this sucks. REST exposes validate via Params::Validate :all and I have an
+## ISA ordering issue with that
+sub validate {
+    my $self = shift;
+
+    if ($self->wants_browser) {
+        return Mango::Catalyst::Controller::Form::validate($self, @_);
+    } else {
+        return $self->SUPER::validate(@_);
+    };
+};
+
 1;
