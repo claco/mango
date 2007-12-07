@@ -2,7 +2,10 @@
 package Catalyst::Helper::Mango;
 use strict;
 use warnings;
-
+######################
+## split out mk_stuff into ml_controllers, mk_views, mk_models
+## called by mk_app, or with mk_stuff with $c/m/v set so
+## mk_stuff can call database/plugins/config
 BEGIN {
     use base qw/Catalyst::Helper/;
     use Catalyst::Utils;
@@ -86,7 +89,7 @@ sub add_plugins {
     my $contents = $file->slurp;
 
     if ($contents !~ /\+Mango::Catalyst::Plugin/i) {
-        $contents =~ s/-Debug ConfigLoader/-Debug ConfigLoader Session Session::Store::File Session::State::Cookie +Mango::Catalyst::Plugin::Application Authorization::Roles/;
+        $contents =~ s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    +Mango::Catalyst::Plugin::Application\n    Authorization::Roles\n   /;
 
         my $io = $file->open('>');
         $io->print($contents);
@@ -120,10 +123,7 @@ sub add_config {
     $config->{'connection_info'} = ['dbi:SQLite:data/mango.db'];
     $config->{'default_view'} = 'XHTML';
     $config->{'authorization'}->{'mango'}->{'admin_role'} = $self->{'adminrole'};
-
-$config->{cache}->{backend} = {
-        store => "Memory",
-};
+    $config->{'cache'}->{'backend'}->{'store'} = 'Memory';
 
     YAML::DumpFile($file, $config);
 
@@ -131,10 +131,23 @@ $config->{cache}->{backend} = {
 };
 
 sub mk_stuff {
-    my $self = shift;
+    my ($self, $helper) = @_;
+
+    no strict 'refs';
     my $c = $self->{'c'};
     my $m = $self->{'m'};
     my $v = $self->{'v'};
+
+    ## looks like we're being called by create.pl
+    if ($helper) {
+        my @app = ('lib', split(/\:\:/, $helper->{'app'}));
+
+        $c = dir(@app, 'Controller');
+        $m = dir(@app, 'Model');
+        $v = dir(@app, 'View');
+
+        $self = $helper;
+    };
 
     $self->render_file('model_carts',     file($m, 'Carts.pm'));
     $self->render_file('model_orders',    file($m, 'Orders.pm'));
