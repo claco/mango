@@ -1,0 +1,27 @@
+[% USE HTML -%]
+[% INCLUDE 'includes/admin/menu' %]
+
+<table border="1">
+	<tr>
+		<th></th>
+		<th>[% c.loc('LABEL_USER') %]</th>
+		<th>[% c.loc('LABEL_CREATED') %]</th>
+		<th>[% c.loc('LABEL_LAST_UPDATED') %]</th>
+	</tr>
+	<tr>
+		<td></td>
+		<td colspan="3"><a href="[% c.uri_for('create/') %]">[% c.loc('LABEL_NEW_USER') %]</a></td>
+	</tr>
+[% WHILE (user = users.next) %]
+	<tr>
+		<td>
+			[% CALL delete_form.values(id => user.id) %]
+			[% CALL delete_form.action(c.uri_for(user.id,  'delete/')) %]
+			[% delete_form.render %]
+		</td>
+		<td><a href="[% c.uri_for(user.id,  'edit/') %]">[% HTML.escape(user.username) %]</a></td>
+		<td>[% user.created %]</td>
+		<td>[% user.updated %]</td>
+	</tr>
+[% END %]
+</table>
