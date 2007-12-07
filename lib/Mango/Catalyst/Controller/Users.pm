@@ -13,10 +13,6 @@ BEGIN {
     );
 };
 
-=head2 COMPONENT
-
-=cut
-
 sub COMPONENT {
     my $self = shift->NEXT::COMPONENT(@_);
 
@@ -24,10 +20,6 @@ sub COMPONENT {
 
     return $self;
 };
-
-=head2 index
-
-=cut
 
 sub index : Chained PathPrefix Args(0) ActionClass('REST') Template('users/index') {
     my ($self, $c) = @_;
@@ -48,10 +40,6 @@ sub index : Chained PathPrefix Args(0) ActionClass('REST') Template('users/index
     return;
 };
 
-=head2 index_GET
-
-=cut
-
 sub index_GET : Private {
     my ($self, $c) = @_;
     my $users = $c->stash->{'users'};
@@ -68,10 +56,6 @@ sub index_GET : Private {
     return;
 };
 
-=head2 index_POST
-
-=cut
-
 sub index_POST : Private {
     my ($self, $c) = @_;
 
@@ -83,10 +67,6 @@ sub index_POST : Private {
 
     return;
 };
-
-=head2 instance
-
-=cut
 
 sub instance : Chained PathPrefix CaptureArgs(1) {
     my ($self, $c, $id) = @_;
@@ -106,10 +86,6 @@ sub instance : Chained PathPrefix CaptureArgs(1) {
         $c->detach;
     };
 };
-
-=head2 create
-
-=cut
 
 sub create : Local Template('users/create') {
     my ($self, $c) = @_;
@@ -145,10 +121,6 @@ sub create : Local Template('users/create') {
         );
     };
 };
-
-=head2 update
-
-=cut
 
 sub update : Chained('instance') PathPart Args(0) Template('users/update') {
     my ($self, $c) = @_;
@@ -212,10 +184,6 @@ sub update : Chained('instance') PathPart Args(0) Template('users/update') {
     };
 };
 
-=head2 delete
-
-=cut
-
 sub delete : Chained('load') PathPart Args(0) Template('users/delete') {
     my ($self, $c) = @_;
     my $form = $self->form;
@@ -257,53 +225,5 @@ sub delete : Chained('load') PathPart Args(0) Template('users/delete') {
         };
     };
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#
-#=head2 index_POST
-#
-#Creates a new user.
-#
-#=cut
-#
-#sub index_POST : Form('create') {
-#    my ($self, $c) = @_;
-#
-#    if ($self->wants_browser) {
-#        
-#    } else {
-#        if (my $user = $c->authenticate) {
-#            warn $self->form;
-#        } else {
-#            $c->unauthorized;
-#        };
-#    };
-#};
 
 1;

@@ -152,8 +152,9 @@ sub mk_stuff {
 
     $self->mk_dir(dir($c, 'Admin'));
     $self->mk_dir(dir($c, 'Admin', 'Products'));
+    $self->mk_dir(dir($c, 'REST'));
 
-    ## admin speciic controllers
+    ## admin specific controllers
     $self->render_file('controller_admin',
         file($c, 'Admin.pm'));
     $self->render_file('controller_admin_roles',
