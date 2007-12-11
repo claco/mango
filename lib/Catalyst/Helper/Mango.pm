@@ -2,10 +2,7 @@
 package Catalyst::Helper::Mango;
 use strict;
 use warnings;
-######################
-## split out mk_stuff into ml_controllers, mk_views, mk_models
-## called by mk_app, or with mk_stuff with $c/m/v set so
-## mk_stuff can call database/plugins/config
+
 BEGIN {
     use base qw/Catalyst::Helper/;
     use Catalyst::Utils;
@@ -15,33 +12,110 @@ BEGIN {
     use Mango::Schema;
 };
 
+=head1 NAME
+
+Catalyst::Helper::Mango - Catalyst Helper for Mango applications
+
+=head SYNOPSIS
+
+    ## for a new application
+    $ mango.pl MyApp
+    
+    ## in an existing Catalyst application
+    $ cd MyApp
+    $ script/myapp_create.pl Mango
+
+=head1 DESCRIPTION
+
+Creates a new Mango application, or adds a Mango applicaiton into an existing Catalyst application.
+
+=head1 METHODS
+
+=head2 mk_app
+
+Creates the entire Mango application from scratch using mango.pl and the Catalyst mk_app (catalyst.pl).
+
+=cut
+
 sub mk_app {
     my ($self, $name) = @_;
+
+    ## make the Catalyst app
+    $self->SUPER::mk_app($name);
+
+    ## make everything
+    $self->mk_all;
+
+    return;
+};
+
+=head2 mk_stuff
+
+Adds the entire Mango application to an existing Catalyst application using C<myapp_create.pl Mango>.
+
+=cut
+
+sub mk_stuff {
+    my ($self, $helper) = @_;
+    my @app = (split(/\:\:/, $helper->{'app'}));
+
+    $self = bless {%{$helper}}, ref $self || $self;
+    $self->{'dir'} = '.';
+    $self->{'app'} = dir(@app)->stringify;
+    $self->{'mod'} = dir('lib', @app)->stringify;
+    $self->{'name'} = $helper->{'app'};
+    $self->{'appprefix'} = Catalyst::Utils::appprefix($helper->{'app'});
+    $self->{'c'} = dir('lib', @app, 'Controller')->stringify;
+    $self->{'m'} = dir('lib', @app, 'Model')->stringify;
+    $self->{'v'} = dir('lib', @app, 'View')->stringify;
+
+    ## make everything
+    $self->mk_all;
+
+
+    return $self;
+};
+
+=head2 mk_all
+
+Creates the various Mango bits when called by mk_app or mk_stuff.
+
+=cut
+
+sub mk_all {
+    my $self = shift;
+    my $c = $self->{'c'};
+    my $m = $self->{'m'};
+    my $v = $self->{'v'};
 
     ## set defaults
     $self->{'adminuser'} ||= 'admin';
     $self->{'adminpass'} ||= 'admin';
     $self->{'adminrole'} ||= 'admin';
 
-    ## make the Catalyst app
-    $self->SUPER::mk_app($name);
-
     ## add database
-    $self->add_database;
+    $self->mk_database;
 
     ## inject plugins
-    $self->add_plugins;
+    $self->mk_plugins;
 
     # add config
-    $self->add_config;
+    $self->mk_config;
 
     ## add contollers/models/views
-    $self->mk_stuff;
+    $self->mk_models;
+    $self->mk_views;
+    $self->mk_controllers;
 
-    return;
 };
 
-sub add_database {
+=head1 mk_database
+
+Adds the data directory and mango.db SQLite database if they don't already exist.
+
+=cut
+
+sub mk_database {
     my $self = shift;
     my $dir = dir($self->{'dir'}, 'data');
     my $file = file($dir, 'mango.db');
@@ -83,7 +157,13 @@ sub add_database {
     return;
 };
 
-sub add_plugins {
+=head1 mk_plugins
+
+Adds the necessary plugins into MyApp.pm 'use Catalyst' code.
+
+=cut
+
+sub mk_plugins {
     my $self = shift;
     my $file = file($self->{'mod'} . '.pm');
     my $contents = $file->slurp;
@@ -100,7 +180,13 @@ sub add_plugins {
     return;
 };
 
-sub add_config {
+=head1 mk_config
+
+Adds the necessary config changes to myapp.yml.
+
+=cut
+
+sub mk_config {
     my $self = shift;
     my $file = file($self->{'dir'}, $self->{'appprefix'} . '.yml');
     my $config = YAML::LoadFile($file);
@@ -130,24 +216,15 @@ sub add_config {
     return;
 };
 
-sub mk_stuff {
-    my ($self, $helper) = @_;
+=head1 mk_models
 
-    no strict 'refs';
-    my $c = $self->{'c'};
+Adds the necessary models.
+
+=cut
+
+sub mk_models {
+    my $self = shift;
     my $m = $self->{'m'};
-    my $v = $self->{'v'};
-
-    ## looks like we're being called by create.pl
-    if ($helper) {
-        my @app = ('lib', split(/\:\:/, $helper->{'app'}));
-
-        $c = dir(@app, 'Controller');
-        $m = dir(@app, 'Model');
-        $v = dir(@app, 'View');
-
-        $self = $helper;
-    };
 
     $self->render_file('model_carts',     file($m, 'Carts.pm'));
     $self->render_file('model_orders',    file($m, 'Orders.pm'));
@@ -156,18 +233,40 @@ sub mk_stuff {
     $self->render_file('model_roles',     file($m, 'Roles.pm'));
     $self->render_file('model_users',     file($m, 'Users.pm'));
     $self->render_file('model_wishlists', file($m, 'Wishlists.pm'));
+};
+
+=head1 mk_views
+
+Adds the necessary views.
+
+=cut
+
+sub mk_views {
+    my $self = shift;
+    my $v = $self->{'v'};
 
     $self->render_file('view_atom',  file($v, 'Atom.pm'));
     $self->render_file('view_html',  file($v, 'HTML.pm'));
     $self->render_file('view_rss',   file($v, 'RSS.pm'));
     $self->render_file('view_text',  file($v, 'Text.pm'));
     $self->render_file('view_xhtml', file($v, 'XHTML.pm'));
+};
+
+=head1 mk_controllers
+
+Adds the necessary controllers.
+
+=cut
+
+sub mk_controllers {
+    my $self = shift;
+    my $c = $self->{'c'};
 
     $self->mk_dir(dir($c, 'Admin'));
     $self->mk_dir(dir($c, 'Admin', 'Products'));
     $self->mk_dir(dir($c, 'REST'));
 
-    ## admin specific controllers
+    ## admin
     $self->render_file('controller_admin',
         file($c, 'Admin.pm'));
     $self->render_file('controller_admin_roles',
@@ -179,7 +278,7 @@ sub mk_stuff {
     $self->render_file('controller_admin_products_attributes',
         file($c, 'Admin', 'Products', 'Attributes.pm'));
 
-    ## sitewide controllers
+    ## public
     $self->render_file('controller_cart',
         file($c, 'Cart.pm'));
     $self->render_file('controller_login',
@@ -190,7 +289,22 @@ sub mk_stuff {
         file($c, 'Products.pm'));
     $self->render_file('controller_users',
         file($c, 'Users.pm'));
+
+    ## rest
 };
+
+=head1 SEE ALSO
+
+L<Mango::Manual>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+
+=cut
 
 1;
 __DATA__
