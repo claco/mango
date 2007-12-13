@@ -12,11 +12,13 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
-sub register_namespace {
-    my ($self, $namespace) = @_;
-    my $config = $self->context->config;
+sub register {
+    my ($self, $name) = @_;
+    my $class = ref $self || $self;
 
-    $config->{'mango'}->{'controllers'}->{$namespace} = ref $self || $self;
+    $self->context->register_resource($name, $class);
+
+    return;
 };
 
 sub current_page {

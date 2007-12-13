@@ -16,7 +16,7 @@ BEGIN {
 sub COMPONENT {
     my $self = shift->NEXT::COMPONENT(@_);
 
-    $self->register_namespace('users');
+    $self->register('users');
 
     return $self;
 };

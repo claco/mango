@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Form/;
+    use base qw/Mango::Catalyst::Controller/;
     use Set::Scalar ();
     use Mango ();
     use Path::Class ();
@@ -16,7 +16,8 @@ BEGIN {
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'admin_users'} = $class;
+
+    $self->register('admin/users');
 
     return $self;
 };
@@ -87,7 +88,7 @@ sub create : Local Template('admin/users/create') {
         };
 
         $c->res->redirect(
-            $c->uri_for($self->action_for('index') , $user->id, 'edit/')
+            $c->uri_for($self->action_for('edit'), [$user->id]) . '/'
         );
     };
 };

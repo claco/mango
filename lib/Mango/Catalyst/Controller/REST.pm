@@ -20,7 +20,7 @@ __PACKAGE__->config(
             'application/rss+xml'   => [qw/View RSS/],
             'application/atom+xml'  => [qw/View Atom/],
 
-            ## remap unwanted aceepted types util we get more REST
+            ## remap unwanted accepted types until we get more REST
             ## config for weighting
             'text/xml'             => [qw/View HTML/],
         },

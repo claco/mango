@@ -14,4 +14,25 @@ BEGIN {
     /;
 };
 
+sub register_resource {
+    my ($self, $name, $class) = @_;
+    $class = ref $class || $class;
+
+    $self->config->{'mango'}->{'controllers'}->{$name} = $class;
+
+    return;
+};
+
+sub uri_for_resource {
+    my ($self, $name, $action, @args) = @_;
+    my $class = $self->config->{'mango'}->{'controllers'}->{$name};
+
+    return unless $class;
+
+    my $controller = $self->controller($class . '$');
+    $action = $controller->action_for($action || 'index');
+
+    return $self->uri_for($action, @args);
+};
+
 1;

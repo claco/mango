@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Form/;
+    use base qw/Mango::Catalyst::Controller/;
     use Set::Scalar ();
     use Mango ();
     use Path::Class ();
@@ -16,7 +16,8 @@ BEGIN {
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'admin_products'} = $class;
+
+    $self->register('admin/products');
 
     return $self;
 };
@@ -75,7 +76,7 @@ sub create : Local Template('admin/products/create') {
         };
 
         $c->response->redirect(
-            $c->uri_for('/', $self->path_prefix, $product->id, 'edit/')
+            $c->uri_for($self->action_for('edit'), [$product->id]) . '/'
         );
     };
 };
@@ -153,7 +154,7 @@ sub delete : Chained('load') PathPart Args(0) Template('admin/products/delete') 
             $product->destroy;
 
             $c->response->redirect(
-                $c->uri_for('/', $self->path_prefix . '/')
+                $c->uri_for($self->action_for('index')) . '/'
             );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];

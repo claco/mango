@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Form Mango::Catalyst::Controller::REST/;
+    use base qw/Mango::Catalyst::Controller/;
     use Handel::Constants qw/:cart/;
     use Mango ();
     use Path::Class ();
@@ -16,7 +16,8 @@ BEGIN {
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'cart'} = $class;
+
+    $self->register('cart');
 
     return $self;
 };

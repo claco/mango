@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Form/;
+    use base qw/Mango::Catalyst::Controller/;
     use Mango ();
     use Path::Class ();
     
@@ -15,7 +15,8 @@ BEGIN {
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'admin_roles'} = $class;
+
+    $self->register('admin/roles');
 
     return $self;
 };
@@ -68,7 +69,7 @@ sub create : Local Template('admin/roles/create') {
         });
 
         $c->response->redirect(
-            $c->uri_for('/', $self->path_prefix, $role->id, 'edit/')
+            $c->uri_for($self->action_for('edit'), [$role->id]) . '/'
         );
     };
 };
@@ -107,7 +108,7 @@ sub delete : Chained('load') PathPart Args(0) Template('admin/roles/delete') {
             $role->destroy;
 
             $c->response->redirect(
-                $c->uri_for('/', $self->path_prefix . '/')
+                $c->uri_for($self->action_for('index')) . '/'
             );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];

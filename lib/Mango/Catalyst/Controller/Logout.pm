@@ -3,13 +3,14 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Controller/;
+    use base qw/Mango::Catalyst::Controller/;
 };
 
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'logout'} = $class;
+
+    $self->register('logout');
 
     return $self;
 };

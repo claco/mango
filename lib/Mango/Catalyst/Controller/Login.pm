@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::Form/;
+    use base qw/Mango::Catalyst::Controller/;
     use Mango ();
     use Path::Class ();
     
@@ -15,7 +15,8 @@ BEGIN {
 sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
-    $_[0]->config->{'mango'}->{'controllers'}->{'login'} = $class;
+
+    $self->register('login');
 
     return $self;
 };
