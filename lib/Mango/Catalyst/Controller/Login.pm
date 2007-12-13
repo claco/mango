@@ -16,7 +16,7 @@ sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
 
-    $self->register('login');
+    $self->register_as_resource('login');
 
     return $self;
 };

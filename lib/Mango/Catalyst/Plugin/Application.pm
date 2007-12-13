@@ -20,6 +20,10 @@ sub register_resource {
 
     $self->config->{'mango'}->{'controllers'}->{$name} = $class;
 
+    if ($self->debug) {
+        $self->log->debug("Registering resource $class as $name");
+    };
+
     return;
 };
 

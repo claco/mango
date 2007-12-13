@@ -10,7 +10,7 @@ sub COMPONENT {
     my $class = shift;
     my $self = $class->NEXT::COMPONENT(@_);
 
-    $self->register('admin');
+    $self->register_as_resource('admin');
 
     return $self;
 };

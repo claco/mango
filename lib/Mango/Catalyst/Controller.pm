@@ -12,7 +12,7 @@ sub _parse_PathPrefix_attr {
     return PathPart => $self->path_prefix;
 };
 
-sub register {
+sub register_as_resource {
     my ($self, $name) = @_;
     my $class = ref $self || $self;
 
