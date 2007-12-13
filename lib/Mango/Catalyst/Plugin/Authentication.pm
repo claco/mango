@@ -5,7 +5,11 @@ use warnings;
 our $VERSION = $Mango::VERSION;
 
 BEGIN {
-    use base qw/Catalyst::Plugin::Authentication Catalyst::Plugin::Authentication::Credential::HTTP/;
+    use base qw/
+        Catalyst::Plugin::Authentication
+        Catalyst::Plugin::Authentication::Credential::HTTP
+        Catalyst::Plugin::Authorization::Roles
+    /;
 
     use Mango ();
     use Mango::I18N ();

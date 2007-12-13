@@ -9,8 +9,6 @@ BEGIN {
         Mango::Catalyst::Plugin::Authentication
         Mango::Catalyst::Plugin::I18N
         Mango::Catalyst::Plugin::Forms
-        Catalyst::Plugin::Cache
-        Catalyst::Plugin::Cache::Store::Memory
     /;
 };
 

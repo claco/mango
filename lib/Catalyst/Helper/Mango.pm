@@ -169,7 +169,7 @@ sub mk_plugins {
     my $contents = $file->slurp;
 
     if ($contents !~ /\+Mango::Catalyst::Plugin/i) {
-        $contents =~ s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    +Mango::Catalyst::Plugin::Application\n    Authorization::Roles\n   /;
+        $contents =~ s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    Cache\n    Cache::Store::Memory\n    +Mango::Catalyst::Plugin::Application\n   /;
 
         my $io = $file->open('>');
         $io->print($contents);
