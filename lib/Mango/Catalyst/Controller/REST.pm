@@ -5,8 +5,8 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::Controller::REST/;
-    use MIME::Types;
-    use Scalar::Util qw/blessed/;
+    use MIME::Types ();
+    use Scalar::Util ();
 
     __PACKAGE__->config(
         serialize => {
@@ -99,7 +99,7 @@ sub entity {
     my $key = $self->{'serialize'}->{'stash_key'};
 
     if (defined $data) {
-        if (blessed $pager && $pager->isa('Data::Page')) {
+        if (Scalar::Util::blessed $pager && $pager->isa('Data::Page')) {
             $data->{'current_page'}     = $pager->current_page;
             $data->{'entries_per_page'} = $pager->entries_per_page;
             $data->{'total_entries'}    = $pager->total_entries;
