@@ -7,25 +7,11 @@ BEGIN {
     use Set::Scalar ();
     use Mango ();
     use Path::Class ();
-    
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'users')
+
+    __PACKAGE__->config(
+        resource_name  => 'admin/users',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'users')
     );
-};
-
-sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('admin/users');
-
-    return $self;
-};
-
-sub _parse_PathPrefix_attr {
-    my ($self, $c, $name, $value) = @_;
-
-    return PathPart => $self->path_prefix;
 };
 
 sub index : Template('admin/users/index') {

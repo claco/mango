@@ -6,25 +6,11 @@ BEGIN {
     use base qw/Mango::Catalyst::Controller/;
     use Mango ();
     use Path::Class ();
-    
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'roles')
+
+    __PACKAGE__->config(
+        resource_name  => 'admin/roles',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'roles')
     );
-};
-
-sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('admin/roles');
-
-    return $self;
-};
-
-sub _parse_PathPrefix_attr {
-    my ($self, $c, $name, $value) = @_;
-
-    return PathPart => $self->path_prefix;
 };
 
 sub index : Template('admin/roles/index') {

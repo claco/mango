@@ -4,11 +4,11 @@
 [% IF cart.count %]
     <table border="0" cellpadding="3" cellspacing="5">
         <tr>
-            <th align="left">SKU</th>
-            <th align="left">Description</th>
-            <th align="center">Quantity</th>
-	    <th align="right">Unit Price</th>
-            <th align="right">Total</th>
+            <th align="left">[% c.localize('LABEL_SKU') %]</th>
+            <th align="left">[% c.localize('LABEL_DESCRIPTION') %]</th>
+            <th align="center">[% c.localize('LABEL_QUANTITY') %]</th>
+	    <th align="right">[% c.localize('LABEL_UNIT_PRICE') %]</th>
+            <th align="right">[% c.localize('LABEL_TOTAL') %]</th>
             <th colspan="2"></th>
         </tr>
 	[% FOREACH item = cart.items %]
@@ -34,7 +34,7 @@
             <td colspan="7" height="20"></td>
         </tr>
         <tr>
-            <th colspan="4" align="right">Subtotal:</th>
+            <th colspan="4" align="right">[% c.localize('LABEL_SUBTOTAL') %]:</th>
             <td align="right">[% HTML.escape(cart.subtotal.as_string('FMT_SYMBOL')) %]</td>
             <td colspan="2"></td>
         </tr>

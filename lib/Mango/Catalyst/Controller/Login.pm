@@ -6,19 +6,11 @@ BEGIN {
     use base qw/Mango::Catalyst::Controller/;
     use Mango ();
     use Path::Class ();
-    
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'login')
+
+    __PACKAGE__->config(
+        resource_name  => 'login',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'login')
     );
-};
-
-sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('login');
-
-    return $self;
 };
 
 sub index : Form('login') Template('login/index') {

@@ -43,14 +43,8 @@ sub COMPONENT {
     my $c = shift;
     my $prefix = Catalyst::Utils::class2prefix($class);
 
-    if (my $form_class = $self->{'form_class'}) {
-        $self->form_class($form_class);
-    };
     $self->forms({});
 
-    if (my $form_directory = $self->{'form_directory'}) {
-        $self->form_directory($form_directory);
-    };
     if (!$self->form_directory) {
         $self->form_directory(
             Path::Class::Dir->new(Mango->share, 'forms', $prefix)

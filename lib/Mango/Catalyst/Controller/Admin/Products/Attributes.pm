@@ -7,24 +7,15 @@ BEGIN {
     use Set::Scalar ();
     use Mango ();
     use Path::Class ();
-    
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'products', 'attributes')
+
+    __PACKAGE__->config(
+        resource_name  => 'admin/products/attributes',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'products', 'attributes')
     );
 };
 
-sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('admin/products/attributes');
-
-    return $self;
-};
-
-sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/index') {
+sub index : PathPart('attributes') Chained('../load') Args(0) Template('admin/products/attributes/index') {
     my ($self, $c) = @_;
-
     my $product = $c->stash->{'product'};
     my $page = $c->request->param('page') || 1;
     my $attributes = $product->attributes(undef, {
@@ -37,7 +28,7 @@ sub index : PathPart('attributes') Chained('/admin/products/load') Args(0) Templ
     $c->stash->{'delete_form'} = $self->form('delete');
 };
 
-sub load : PathPart('attributes') Chained('/admin/products/load') CaptureArgs(1) {
+sub load : PathPart('attributes') Chained('../load') CaptureArgs(1) {
     my ($self, $c, $id) = @_;
     my $attribute = $c->stash->{'product'}->attributes({
         id => $id
@@ -51,7 +42,7 @@ sub load : PathPart('attributes') Chained('/admin/products/load') CaptureArgs(1)
     };
 };
 
-sub create : PathPart('attributes/create') Chained('/admin/products/load') Args(0) Template('admin/products/attributes/create') {
+sub create : PathPart('attributes/create') Chained('../load') Args(0) Template('admin/products/attributes/create') {
     my ($self, $c) = @_;
     my $product = $c->stash->{'product'};
     my $form = $self->form;

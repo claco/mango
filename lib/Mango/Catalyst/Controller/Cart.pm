@@ -6,20 +6,12 @@ BEGIN {
     use base qw/Mango::Catalyst::Controller/;
     use Handel::Constants qw/:cart/;
     use Mango ();
-    use Path::Class ();
+    use Path::Class::Dir ();
 
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'cart')
+    __PACKAGE__->config(
+        resource_name  => 'cart',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'cart')
     );
-};
-
-sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('cart');
-
-    return $self;
 };
 
 sub begin : Private {

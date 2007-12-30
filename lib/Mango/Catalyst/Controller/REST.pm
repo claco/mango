@@ -7,25 +7,25 @@ BEGIN {
     use base qw/Catalyst::Controller::REST/;
     use MIME::Types;
     use Scalar::Util qw/blessed/;
+
+    __PACKAGE__->config(
+        serialize => {
+            'stash_key' => 'entity',
+            'default'   => 'text/html',
+            'map'       => {
+                'text/plain'            => [qw/View Text/],
+                'text/html'             => [qw/View HTML/],
+                'application/xhtml+xml' => [qw/View XHTML/],
+                'application/rss+xml'   => [qw/View RSS/],
+                'application/atom+xml'  => [qw/View Atom/],
+
+                ## remap unwanted accepted types until we get more REST
+                ## config for weighting
+                'text/xml'             => [qw/View HTML/],
+            },
+        }
+    );
 };
-
-__PACKAGE__->config(
-    serialize => {
-        'stash_key' => 'entity',
-        'default'   => 'text/html',
-        'map'       => {
-            'text/plain'            => [qw/View Text/],
-            'text/html'             => [qw/View HTML/],
-            'application/xhtml+xml' => [qw/View XHTML/],
-            'application/rss+xml'   => [qw/View RSS/],
-            'application/atom+xml'  => [qw/View Atom/],
-
-            ## remap unwanted accepted types until we get more REST
-            ## config for weighting
-            'text/xml'             => [qw/View HTML/],
-        },
-    }
-);
 
 my $mimes = MIME::Types->new;
 $mimes->addType(
