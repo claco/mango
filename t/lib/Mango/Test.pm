@@ -44,9 +44,11 @@ sub init_schema {
     };
 
     my $temp = File::Temp->new(
-        SUFFIX => '.db'
+        SUFFIX => '.db',
+        EXLOCK => 0,
+        UNLINK => 0
     );
-    my $dsn = "dbi:SQLite:$temp";
+    my $dsn = "dbi:SQLite:$temp";undef $temp;
     my $schema = Mango::Test::Schema->compose_namespace($namespace)->connect(
         $dsn, undef, undef, {AutoCommit => 1}
     );
@@ -209,7 +211,11 @@ sub mk_app {
     my $app    = shift || 'TestApp';
     my $prefix = Catalyst::Utils::appprefix($app);
     my $cwd    = Cwd::cwd;
-    my $temp   = File::Temp::tempdir;
+    my $temp   = File::Temp->newdir(
+        EXLOCK  => 0,
+        UNLINK  => 0,
+        CLEANUP => 0
+    );
     my $dir    = $app;$dir =~ s/\:\:/\//g;
     my $lib    = Path::Class::Dir->new($temp, $dir, 'lib');
     my $helper = Catalyst::Helper::Mango->new;
