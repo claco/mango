@@ -19,51 +19,51 @@ BEGIN {
     isa_ok($controller, 'Mango::Catalyst::Controller::REST');
 
     $c->request->content_type('text/html');
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/html');
 
     $c->request->{'view'} = 'json';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/x-json');
 
     $c->request->{'view'} = 'yml';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/x-yaml');
 
     $c->request->{'view'} = 'atom';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'application/atom+xml');
 
     $c->request->{'view'} = 'yaml';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/x-yaml');
 
     $c->request->{'view'} = 'txt';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/plain');
 
     $c->request->{'view'} = 'rss';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'application/rss+xml');
 
     $c->request->{'view'} = 'text';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/plain');
 
     $c->request->{'view'} = 'htm';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/html');
 
     $c->request->{'view'} = 'xhtml';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'application/xhtml+xml');
 
     $c->request->{'view'} = 'html';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, 'text/html');
 
     $c->request->content_type('application/x-storable');
     $c->request->{'view'} = 'crapiseatenintoundef';
-    $controller->begin($c);
+    $controller->ACCEPT_CONTEXT($c);
     is($c->request->content_type, undef);
 };

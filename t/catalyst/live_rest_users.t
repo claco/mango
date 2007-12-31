@@ -6,11 +6,13 @@ use warnings;
 BEGIN {
     use lib 't/lib';
     use lib 't/var/TestApp/lib';
-    use Mango::Test tests => 23;
+    use Mango::Test;
     use Cwd;
     use File::Path;
     use File::Spec::Functions qw/catfile/;
     use YAML;
+
+    plan skip_all => 'No REST for the wicked.';
 
     use_ok('Catalyst::Helper::Mango');
     use_ok('Mango::Exception', ':try');
