@@ -231,6 +231,8 @@ sub mk_app {
     require Test::WWW::Mechanize::Catalyst;
     Test::WWW::Mechanize::Catalyst->import('TestApp');
 
+    @INC = @lib::ORIG_INC;
+
     return $temp;
 };
 
