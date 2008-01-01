@@ -1,2 +1,3 @@
+[% page.title = c.localize('LABEL_LOGIN') %]
 [% INCLUDE 'includes/errors' %]
 [% INCLUDE 'includes/login' %]

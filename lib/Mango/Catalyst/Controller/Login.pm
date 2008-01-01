@@ -23,10 +23,8 @@ sub index : Form('login') Template('login/index') {
                 username => $c->request->param('username'), 
                 password => $c->request->param('password')
             })) {
-                
-                
+
             } else {
-                warn $c->localize('LOGIN_FAILED');
                 $c->stash->{'errors'} = [$c->localize('LOGIN_FAILED')];
             };
         };

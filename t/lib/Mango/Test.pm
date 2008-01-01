@@ -7,17 +7,13 @@ BEGIN {
     # little trick by Ovid to pretend to subclass+exporter Test::More
     use base qw/Test::Builder::Module/;
     use Test::More;
-    use File::Spec::Functions qw/catfile catdir/;
-    use DateTime ();
-    use Cwd ();
-    use File::Path ();
-    use File::Spec::Functions ();
-    use YAML ();
-
     use Catalyst::Utils ();
-    use File::Temp ();
-    use Path::Class ();
     use Catalyst::Helper::Mango ();
+    use Cwd ();
+    use DateTime ();
+    use File::Temp ();
+    use File::Spec::Functions qw/catdir catfile/;
+    use YAML ();
 
     $ENV{'CATALYST_DEBUG'} = 0;
     @Mango::Test::EXPORT = @Test::More::EXPORT;
@@ -211,25 +207,26 @@ sub mk_app {
     my $app    = shift || 'TestApp';
     my $prefix = Catalyst::Utils::appprefix($app);
     my $cwd    = Cwd::cwd;
-    my $temp   = File::Temp->newdir(
+    my $temp   = File::Temp::tempdir(
+        undef,
         EXLOCK  => 0,
         UNLINK  => 0,
         CLEANUP => 0
     );
     my $dir    = $app;$dir =~ s/\:\:/\//g;
-    my $lib    = Path::Class::Dir->new($temp, $dir, 'lib');
+    my $lib    = catdir($temp, $dir, 'lib');
     my $helper = Catalyst::Helper::Mango->new;
 
-    eval "use lib '" . $lib->as_foreign('Unix') . "';";
+    eval "use lib '$lib';";
 
     chdir $temp;
     $helper->mk_app($app);
 
     my $config = YAML::LoadFile(
-        File::Spec::Functions::catfile($app, "$prefix.yml")
+        catfile($app, "$prefix.yml")
     );
-    $config->{'connection_info'}->[0] = 'dbi:SQLite:' . Path::Class::File->new($temp, $dir, 'data', 'mango.db');
-    YAML::DumpFile(File::Spec::Functions::catfile($app, "$prefix.yml"), $config);
+    $config->{'connection_info'}->[0] = 'dbi:SQLite:' . catfile($temp, $dir, 'data', 'mango.db');
+    YAML::DumpFile(catfile($app, "$prefix.yml"), $config);
 
     chdir($cwd);
 

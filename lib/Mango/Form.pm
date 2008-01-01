@@ -82,6 +82,9 @@ sub render {
         $self->localizer->($self->labels->{'submit'})
     );
 
+    ## keeps CGI::FB from bitching about empty basename
+    local $ENV{'SCRIPT_NAME'} ||= '';
+
     return $form->render(@_);
 };
 

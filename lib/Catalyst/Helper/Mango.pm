@@ -266,6 +266,11 @@ sub mk_controllers {
     $self->mk_dir(dir($c, 'Admin', 'Products'));
     $self->mk_dir(dir($c, 'REST'));
 
+    ## root
+    unlink file($c, 'Root.pm');
+    $self->render_file('controller_root',
+        file($c, 'Root.pm'));
+
     ## admin
     $self->render_file('controller_admin',
         file($c, 'Admin.pm'));
@@ -425,6 +430,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::View::XHTML/;
+};
+
+1;
+__controller_root__
+package [% name %]::Controller::Root;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Root/;
 };
 
 1;
