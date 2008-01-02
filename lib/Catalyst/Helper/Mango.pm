@@ -109,7 +109,7 @@ sub mk_all {
 
 };
 
-=head1 mk_database
+=head2 mk_database
 
 Adds the data directory and mango.db SQLite database if they don't already exist.
 
@@ -157,7 +157,7 @@ sub mk_database {
     return;
 };
 
-=head1 mk_plugins
+=head2 mk_plugins
 
 Adds the necessary plugins into MyApp.pm 'use Catalyst' code.
 
@@ -180,7 +180,7 @@ sub mk_plugins {
     return;
 };
 
-=head1 mk_config
+=head2 mk_config
 
 Adds the necessary config changes to myapp.yml.
 
@@ -216,7 +216,7 @@ sub mk_config {
     return;
 };
 
-=head1 mk_models
+=head2 mk_models
 
 Adds the necessary models.
 
@@ -235,7 +235,7 @@ sub mk_models {
     $self->render_file('model_wishlists', file($m, 'Wishlists.pm'));
 };
 
-=head1 mk_views
+=head2 mk_views
 
 Adds the necessary views.
 
@@ -252,7 +252,7 @@ sub mk_views {
     $self->render_file('view_xhtml', file($v, 'XHTML.pm'));
 };
 
-=head1 mk_controllers
+=head2 mk_controllers
 
 Adds the necessary controllers.
 

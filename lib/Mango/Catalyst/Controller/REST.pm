@@ -72,7 +72,7 @@ sub ACCEPT_CONTEXT {
     };
 
     ## type param overrides headerß
-    my $type = $c ->request->param('content-type');
+    my $type = $c->request->param('content-type');
     if ($type) {
         $c ->request->content_type($type);
     };

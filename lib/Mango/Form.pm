@@ -430,6 +430,11 @@ the same configuration data.
 
 A code reference to be used to localize the field labels, buttons and messages.
 
+=item exists
+
+A hash reference containing methods to be used to determine if s fields values
+already exists.
+
 =item unique
 
 A hash reference containing methods to be used to determine field value
@@ -452,6 +457,27 @@ A hash reference containing the default form field values.
 =back
 
 Gets/sets the action for the current form.
+
+=head2 clone
+
+Creates and returns a clone of the current form.
+
+=head2 exists
+
+=over
+
+=item Arguments: $field, \&code
+
+=back
+
+Gets/sets the code reference to be used to determine if a fields value
+already exists.
+
+    $form->exists('field')->($self, 'field', 'value');
+    $form->exists('field', sub {
+        my ($self, $field, $value) = @_;
+        ...exists magic...
+    };
 
 =head2 field
 
