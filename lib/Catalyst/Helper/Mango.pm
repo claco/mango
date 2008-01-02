@@ -16,7 +16,7 @@ BEGIN {
 
 Catalyst::Helper::Mango - Catalyst Helper for Mango applications
 
-=head SYNOPSIS
+=head1 SYNOPSIS
 
     ## for a new application
     $ mango.pl MyApp
@@ -27,7 +27,7 @@ Catalyst::Helper::Mango - Catalyst Helper for Mango applications
 
 =head1 DESCRIPTION
 
-Creates a new Mango application, or adds a Mango applicaiton into an existing Catalyst application.
+Creates a new Mango application, or adds a Mango application into an existing Catalyst application.
 
 =head1 METHODS
 
