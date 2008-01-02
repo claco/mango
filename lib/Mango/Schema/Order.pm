@@ -250,12 +250,18 @@ __PACKAGE__->add_columns(
     created => {
         data_type     => 'DATETIME',
         is_nullable   => 1,
-        default_value => undef
+        default_value => undef,
+        extra         => {
+            timezone  => 'UTC'
+        }
     },
     updated => {
         data_type     => 'DATETIME',
         is_nullable   => 1,
-        default_value => undef
+        default_value => undef,
+        extra         => {
+            timezone  => 'UTC'
+        }
     },
 );
 __PACKAGE__->set_primary_key('id');

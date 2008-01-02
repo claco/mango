@@ -10,7 +10,7 @@ perl_version '5.008001';
 all_from 'lib/Mango.pm';
 
 requires 'Handel' => '1.00001';
-requires 'DBIx::Class' => '0.08002';
+requires 'DBIx::Class' => '0.08008';
 requires 'Class::Accessor::Grouped' => '0.06000';
 requires 'Clone' => '0.27';
 requires 'FormValidator::Simple' => '0.17';

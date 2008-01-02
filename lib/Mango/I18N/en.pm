@@ -77,6 +77,14 @@ BEGIN {
         'The default realm is not \'mango\'',
     LOGIN_FAILED =>
         'The username or password are incorrect.',
+    LOGIN_SUCCEEDED =>
+        'Login successful!',
+    ALREADY_LOGGED_IN =>
+        'You are already logged in!',
+    USERNAME_NOT_BLANK =>
+        'The username field is required.',
+    PASSWORD_NOT_BLANK =>
+        'The password field is required.',
 );
 
 1;

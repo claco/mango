@@ -17,13 +17,15 @@ sub index : Form('login') Template('login/index') {
     my ($self, $c) = @_;
     my $form = $self->form;
 
-    if (!$c->user_exists) {
+    if ($c->user_exists) {
+        $c->stash->{'errors'} = [$c->localize('ALREADY_LOGGED_IN')];
+    } else {
         if ($self->submitted && $self->validate->success) {
             if ($c->authenticate({
                 username => $c->request->param('username'), 
                 password => $c->request->param('password')
             })) {
-
+                $c->stash->{'errors'} = [$c->localize('LOGIN_SUCCEEDED')];
             } else {
                 $c->stash->{'errors'} = [$c->localize('LOGIN_FAILED')];
             };
