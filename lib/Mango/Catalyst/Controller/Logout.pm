@@ -15,6 +15,7 @@ sub index : Template('logout/index') {
 
     if ($c->user_exists) {
         $c->logout;
+        $c->stash->{'errors'} = [$c->localize('LOGOUT_SUCCEEDED')];
     };
 };
 

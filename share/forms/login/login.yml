@@ -6,7 +6,7 @@ method: POST
 javascript: 0
 stylesheet: 1
 sticky: 1
-submit: LABEL_LOGIN
+submit: BUTTON_LABEL_LOGIN
 fields:
   - username:
       type: text

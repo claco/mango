@@ -6,7 +6,7 @@ method: POST
 javascript: 0
 stylesheet: 1
 sticky: 1
-submit: LABEL_DELETE
+submit: BUTTON_LABEL_DELETE
 fields:
   - id:
       type: hidden

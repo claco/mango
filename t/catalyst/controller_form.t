@@ -55,11 +55,11 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'ID_NOT_BLANK',
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_ID_NOT_BLANK',
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
     ## create
@@ -75,10 +75,10 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
 
@@ -97,11 +97,11 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'ID_NOT_BLANK',
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_ID_NOT_BLANK',
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
 
@@ -134,11 +134,11 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'ID_NOT_BLANK',
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_ID_NOT_BLANK',
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
     ## create
@@ -154,10 +154,10 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
 
@@ -176,10 +176,10 @@ BEGIN {
     isa_ok($results, 'Mango::Form::Results');
     ok(!$results->success);
     is_deeply($results->errors, [
-        'ID_NOT_BLANK',
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_ID_NOT_BLANK',
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 };

@@ -1,6 +1,6 @@
 [% IF pager %]
 <div id="pager">
-	[% c.loc('LABEL_PAGE') %]:
+	[% c.localize('LABEL_PAGE') %]:
 [% FOREACH page IN [pager.first_page..pager.last_page] %]
 	<div class="pager">
 	[% IF page == pager.current_page %]

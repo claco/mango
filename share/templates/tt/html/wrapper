@@ -3,11 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>[% page.title OR site.title OR name OR c.config.site.name %]</title>
+		<title>[% site.title OR name OR c.config.site.name %]: [% page.title %]</title>
 		<!--<link rel="stylesheet" href="/static/style/basic.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/static/style/mango.css" type="text/css" media="screen" />-->
 	</head>
-	<body id="[% site.id OR c.config.site.id %]">
+	<body id="[% HTML.escape(site.id OR c.config.site.id) %]">
 		<div id="container">
 			<div id="header">
 				<h1>[% site.title OR name %]</h1>

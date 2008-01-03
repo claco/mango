@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 23;
+    use Mango::Test tests => 27;
 
     Mango::Test->mk_app;
 };
@@ -68,4 +68,10 @@ BEGIN {
     $m->title_like(qr/login/i);
     $m->content_like(qr/already logged in/i);
     ok($m->find_link(text => 'Logout'));
+
+    ## logout
+    $m->follow_link_ok({text => 'Logout'});
+    $m->content_like(qr/logout successful/i);
+    ok($m->find_link(text => 'Login'));
+    ok(! $m->find_link(text => 'Logout'));
 };

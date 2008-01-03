@@ -79,12 +79,72 @@ BEGIN {
         'The username or password are incorrect.',
     LOGIN_SUCCEEDED =>
         'Login successful!',
+    LOGOUT_SUCCEEDED =>
+        'Logout successful!',
     ALREADY_LOGGED_IN =>
         'You are already logged in!',
     USERNAME_NOT_BLANK =>
         'The username field is required.',
     PASSWORD_NOT_BLANK =>
         'The password field is required.',
+    CART_IS_EMPTY =>
+        'Your shopping cart is empty.',
+
+
+
+    ## page titles
+    PAGE_TITLE_HOME =>
+        'Welcome!',
+    PAGE_TITLE_CART =>
+        'Cart',
+    PAGE_TITLE_LOGIN =>
+        'Login',
+    PAGE_TITLE_LOGOUT =>
+        'Logout',
+    PAGE_TITLE_PRODUCTS =>
+        'Products',
+
+
+    ## link text
+    LINK_TEXT_HOME =>
+        'Home',
+    LINK_TEXT_ADMIN =>
+        'Admin',
+    LINK_TEXT_CART =>
+        'Cart',
+    LINK_TEXT_LOGIN =>
+        'Login',
+    LINK_TEXT_LOGOUT =>
+        'Logout',
+    LINK_TEXT_PRODUCTS =>
+        'Products',
+    LINK_TEXT_WISHLISTS =>
+        'Wishlists',
+
+
+    ## field label text
+    FIELD_LABEL_USERNAME =>
+        'Username',
+    FIELD_LABEL_PASSWORD =>
+        'Password',
+    FIELD_LABEL_QUANTITY =>
+        'Quantity',
+
+
+    ## form button text
+    BUTTON_LABEL_LOGIN =>
+        'Login',
+    BUTTON_LABEL_ADD_TO_CART =>
+        'Add to Cart',
+
+
+    ## form constraint messages
+    CONSTRAINT_USERNAME_NOT_BLANK =>
+        'The username field is required.',
+    CONSTRAINT_PASSWORD_NOT_BLANK =>
+        'The password field is required.',
+    CONSTRAINT_SKU_EXISTS =>
+        'The sku or part requested could not be found.',
 );
 
 1;

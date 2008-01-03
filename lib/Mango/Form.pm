@@ -118,7 +118,7 @@ sub parse {
 
     foreach (@{$fields}) {
         my ($name, $field) = %{$_};
-        my $label = 'LABEL_' . uc $name;
+        my $label = 'FIELD_LABEL_' . uc $name;
         my $constraints = delete $field->{'constraints'};
         my $errors = delete $field->{'messages'};
 
@@ -140,7 +140,7 @@ sub parse {
                 $cname = uc $cname;
 
                 if ($cname =~ /(NOT_)?SAME_AS/) {
-                    my $mname = uc $name . '_' . $cname . '_' . uc $args[0];
+                    my $mname = 'CONSTRAINT_' . uc $name . '_' . $cname . '_' . uc $args[0];
                     $self->messages->{$mname}->{($1 || '') . 'DUPLICATION'} = $mname;
                     push @additional, {$mname => [$name, @args]}, [($1 || '') . 'DUPLICATION'];
                 } else {
@@ -156,7 +156,7 @@ sub parse {
                             return FormValidator::Simple::Constants::FALSE;
                         });
                     };
-                    $self->messages->{$name}->{$cname} = $errors->{$cname} || (uc $name . '_' . $cname);
+                    $self->messages->{$name}->{$cname} = $errors->{$cname} || ('CONSTRAINT_' . uc $name . '_' . $cname);
                     push @constraints, scalar @args ? [$cname, @args] : $cname;
                 };
             };
@@ -164,8 +164,8 @@ sub parse {
         };
     };
     
-    $self->_form->submit('LABEL_SUBMIT') unless $config->{'submit'};
-    $self->labels->{'submit'} = $config->{'submit'} || 'LABEL_SUBMIT';
+    $self->_form->submit('BUTTON_LABEL_SUBMIT') unless $config->{'submit'};
+    $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
 
     $self->validator->set_messages({'.' => $self->messages});
 

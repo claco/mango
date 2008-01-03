@@ -6,7 +6,7 @@ method: POST
 javascript: 0
 stylesheet: 1
 sticky: 1
-submit: LABEL_UPDATE
+submit: BUTTON_LABEL_UPDATE
 fields:
   - id:
       type: hidden

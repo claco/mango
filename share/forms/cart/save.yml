@@ -6,7 +6,7 @@ method: POST
 javascript: 0
 stylesheet: 1
 sticky: 0
-submit: LABEL_SAVE
+submit: BUTTON_LABEL_SAVE
 fields:
   - name:
       type: text

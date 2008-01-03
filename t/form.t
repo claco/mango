@@ -41,10 +41,10 @@ BEGIN {
     ok(!$results->success);
     my $errors = $results->errors;
     is_deeply($errors, [
-        'SKU_NOT_BLANK',
-        'NAME_NOT_BLANK',
-        'DESCRIPTION_NOT_BLANK',
-        'PRICE_NOT_BLANK'
+        'CONSTRAINT_SKU_NOT_BLANK',
+        'CONSTRAINT_NAME_NOT_BLANK',
+        'CONSTRAINT_DESCRIPTION_NOT_BLANK',
+        'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
 
     ## too longs
@@ -60,11 +60,11 @@ BEGIN {
     ok(!$results->success);
     $errors = $results->errors;
     is_deeply($errors, [
-        'SKU_LENGTH',
-        'SKU_UNIQUE',
-        'NAME_LENGTH',
-        'DESCRIPTION_LENGTH',
-        'PRICE_DECIMAL'
+        'CONSTRAINT_SKU_LENGTH',
+        'CONSTRAINT_SKU_UNIQUE',
+        'CONSTRAINT_NAME_LENGTH',
+        'CONSTRAINT_DESCRIPTION_LENGTH',
+        'CONSTRAINT_PRICE_DECIMAL'
     ]);
 
     ## not unique
@@ -78,7 +78,7 @@ BEGIN {
     ok(!$results->success);
     $errors = $results->errors;
     is_deeply($errors, [
-        'SKU_UNIQUE'
+        'CONSTRAINT_SKU_UNIQUE'
     ]);
 
 
