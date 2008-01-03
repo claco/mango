@@ -213,8 +213,8 @@ sub mk_app {
         UNLINK  => 0,
         CLEANUP => 0
     );
-    my $dir    = $app;$dir =~ s/\:\:/\//g;
-    my $lib    = catdir($temp, $dir, 'lib');
+    my @dir    = split(/\:\:/, $app);
+    my $lib    = catdir($temp, @dir, 'lib');
     my $helper = Catalyst::Helper::Mango->new;
 
     eval "use lib '$lib';";
@@ -225,7 +225,7 @@ sub mk_app {
     my $config = YAML::LoadFile(
         catfile($app, "$prefix.yml")
     );
-    $config->{'connection_info'}->[0] = 'dbi:SQLite:' . catfile($temp, $dir, 'data', 'mango.db');
+    $config->{'connection_info'}->[0] = 'dbi:SQLite:' . catfile($temp, @dir, 'data', 'mango.db');
     YAML::DumpFile(catfile($app, "$prefix.yml"), $config);
 
     chdir($cwd);
@@ -236,7 +236,7 @@ sub mk_app {
 
     @INC = @lib::ORIG_INC;
 
-    return $temp;
+    return catdir($temp, @dir);
 };
 
 1;

@@ -61,8 +61,9 @@ sub COMPONENT {
         my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
 
         my $form = $self->_load_form_from_file($c, $file);
-        if ($form->action !~ /server\.pl$/) {
-            $self->forms->{$form->action} = $form;
+
+        if ($form->{'action'}) {
+            $form->action("$_");
         } else {
             $form->action("/$action/");
         };

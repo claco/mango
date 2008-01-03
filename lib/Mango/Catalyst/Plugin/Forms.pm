@@ -31,7 +31,11 @@ sub forms {
 
     if (my $form = $self->_forms->{$name}) {
         $form = $form->clone;
-        $form->action($self->request->uri->as_string) unless $form->action;
+
+        ## hack around form action // under Cat::Test/Mech
+        if ($form->{'action'} || $form->action =~ /^\/\//) {
+            $form->action($self->request->uri->as_string);
+        };
         $form->params($self->request);
         $form->localizer(
             sub {$self->localize(@_)}
