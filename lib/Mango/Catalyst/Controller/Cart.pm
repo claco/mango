@@ -168,3 +168,24 @@ sub update : Local Template('cart/index') {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Carts - Catalyst controller for cart information
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Carts provides the web interface for shopping cart
+information.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Carts>, L<Mango::Provider::Carts>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+

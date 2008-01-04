@@ -35,6 +35,8 @@ BEGIN {
 
 ## load forms using class2prefix
 {
+    local $ENV{'LANG'} = 'en';
+
     my $c = Mango::Test::Catalyst->new({
         config => {
             home => catdir(qw/t var/)
@@ -57,7 +59,7 @@ BEGIN {
     is_deeply($results->errors, [
         'CONSTRAINT_ID_NOT_BLANK',
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
@@ -76,7 +78,7 @@ BEGIN {
     ok(!$results->success);
     is_deeply($results->errors, [
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
@@ -99,7 +101,7 @@ BEGIN {
     is_deeply($results->errors, [
         'CONSTRAINT_ID_NOT_BLANK',
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
@@ -111,6 +113,8 @@ BEGIN {
 
 ## load forms using form_directory
 {
+    local $ENV{'LANG'} = 'en';
+
     Mango::Catalyst::Controller::Form->config(
         form_directory => catdir(qw/share forms admin products/)
     );
@@ -136,7 +140,7 @@ BEGIN {
     is_deeply($results->errors, [
         'CONSTRAINT_ID_NOT_BLANK',
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
@@ -155,7 +159,7 @@ BEGIN {
     ok(!$results->success);
     is_deeply($results->errors, [
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);
@@ -178,7 +182,7 @@ BEGIN {
     is_deeply($results->errors, [
         'CONSTRAINT_ID_NOT_BLANK',
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);

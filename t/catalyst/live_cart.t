@@ -5,27 +5,28 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 14;
+    use Mango::Test tests => 77;
     use Path::Class 'file';
 
     use_ok('Mango::Provider::Products');
 
-    my $temp = Mango::Test->mk_app;
     my $provider = Mango::Provider::Products->new({
         connection_info => ['dbi:SQLite:' . file(
-            $temp, 'data', 'mango.db'
+            Mango::Test->mk_app, 'data', 'mango.db'
         )]
     });
-    
-    diag( $provider->schema->resultset('Users')->search->count );
-    diag( $provider->schema->resultset('Products')->search->count );
-    my $product = $provider->create({
+    $provider->create({
         sku => 'ABC-123',
         price => 1.23,
-        description => 'ABC Product'
+        name => 'ABC Product',
+        description => 'ABC Product Description'
     });
-    diag( $provider->schema->resultset('Products')->search->count );
-
+    $provider->create({
+        sku => 'DEF-345',
+        price => 10.00,
+        name => 'DEF Product',
+        description => 'DEF Product Description'
+    });
     undef $provider;
 };
 
@@ -38,6 +39,7 @@ BEGIN {
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
     $m->content_like(qr/cart is empty/i);
+
 
     ## add missing part/sku
     $m->follow_link_ok({text => 'Products'});
@@ -55,6 +57,7 @@ BEGIN {
     $m->title_like(qr/cart/i);
     $m->content_like(qr/part.*could not be found/i);
 
+
     ## add existing part/sku
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
@@ -69,5 +72,133 @@ BEGIN {
         });
     };
     $m->title_like(qr/cart/i);
-    warn $m->content;
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="right">$2.46</td>');
+
+
+    ## update quantity
+    $m->submit_form_ok({
+        form_name => 'cart_update',
+        fields    => {
+            quantity => 3
+        }
+    });
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="right">$3.69</td>');
+
+
+    ## update with non numeric
+    $m->submit_form_ok({
+        form_name => 'cart_update',
+        fields    => {
+            quantity => 'a'
+        }
+    });
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/quantity must be.*number/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="right">$3.69</td>');
+
+
+    ## add another item
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_add',
+            fields    => {
+                sku => 'DEF-345',
+                quantity => 2
+            }
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="right">$3.69</td>');
+    $m->content_contains('<td align="left">DEF-345</td>');
+    $m->content_contains('<td align="left">DEF Product Description</td>');
+    $m->content_contains('<td align="right">$10.00</td>');
+    $m->content_contains('<td align="right">$20.00</td>');
+    $m->content_contains('<td align="right">$23.69</td>');
+
+
+    ## delete an item
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_delete'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="right">$3.69</td>');
+    $m->content_contains('<td align="left">DEF-345</td>');
+    $m->content_contains('<td align="left">DEF Product Description</td>');
+    $m->content_contains('<td align="right">$10.00</td>');
+    $m->content_contains('<td align="right">$20.00</td>');
+
+
+    ## can't save as anonymous
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_save'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/must be logged in/i);
+
+
+    ## can't save if name is missing
+    $m->follow_link_ok({text => 'Login'});
+    $m->submit_form_ok({
+        form_name => 'login',
+        fields    => {
+            username => 'admin',
+            password => 'admin'
+        }
+    });
+    $m->title_like(qr/login/i);
+    $m->content_like(qr/login successful/i);
+    $m->follow_link_ok({text => 'Cart'});
+    $m->title_like(qr/cart/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_save',
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/name field is required/i);
+    
+
+    ## clear the cart
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_clear'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="right">$3.69</td>');
+    $m->content_lacks('<td align="left">DEF-345</td>');
+    $m->content_lacks('<td align="left">DEF Product Description</td>');
+    $m->content_lacks('<td align="right">$10.00</td>');
+    $m->content_lacks('<td align="right">$20.00</td>');
+    $m->content_like(qr/cart is empty/i);
 };

@@ -34,3 +34,31 @@ sub index : Form('login') Template('login/index') {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Login - Catalyst controller for logins
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Login provides the web interface for
+logging into the site.
+
+=head1 ACTIONS
+
+=head2 index : /login/
+
+Authenticates the current user using the supplied username/password.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Plugin::Authentication>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+

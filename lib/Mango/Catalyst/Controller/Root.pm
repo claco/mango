@@ -25,3 +25,20 @@ sub end : ActionClass('RenderView') {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Root - Catalyst controller for the homepage
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Root provides the web interface for
+the homepage.
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+

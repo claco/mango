@@ -20,3 +20,31 @@ sub index : Template('logout/index') {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Logout - Catalyst controller for logouts
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Logout provides the web interface for
+logging out of the site.
+
+=head1 ACTIONS
+
+=head2 index : /logout/
+
+Logs the current user out of the site.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Plugin::Authentication>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+

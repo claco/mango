@@ -42,7 +42,7 @@ BEGIN {
     my $errors = $results->errors;
     is_deeply($errors, [
         'CONSTRAINT_SKU_NOT_BLANK',
-        'CONSTRAINT_NAME_NOT_BLANK',
+        'The name field is required.',
         'CONSTRAINT_DESCRIPTION_NOT_BLANK',
         'CONSTRAINT_PRICE_NOT_BLANK'
     ]);

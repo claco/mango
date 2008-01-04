@@ -79,6 +79,8 @@ BEGIN {
         'The username or password are incorrect.',
     LOGIN_SUCCEEDED =>
         'Login successful!',
+    LOGIN_REQUIRED =>
+        'You must be logged in first!',
     LOGOUT_SUCCEEDED =>
         'Logout successful!',
     ALREADY_LOGGED_IN =>
@@ -143,8 +145,12 @@ BEGIN {
         'The username field is required.',
     CONSTRAINT_PASSWORD_NOT_BLANK =>
         'The password field is required.',
+    CONSTRAINT_NAME_NOT_BLANK =>
+        'The name field is required.',
     CONSTRAINT_SKU_EXISTS =>
         'The sku or part requested could not be found.',
+    CONSTRAINT_QUANTITY_UINT =>
+        'Quantity must be a positive number.'
 );
 
 1;

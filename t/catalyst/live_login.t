@@ -21,6 +21,7 @@ BEGIN {
     $m->content_unlike(qr/already logged in/i);
     ok(! $m->find_link(text => 'Logout'));
 
+
     ## empty username/password
     $m->submit_form_ok({
         form_name => 'login',
@@ -34,6 +35,7 @@ BEGIN {
     $m->content_like(qr/password field is required/i);
     ok(! $m->find_link(text => 'Logout'));
 
+
     ## fail login
     $m->submit_form_ok({
         form_name => 'login',
@@ -45,6 +47,7 @@ BEGIN {
     $m->title_like(qr/login/i);
     $m->content_like(qr/username or password.*incorrect/i);
     ok(! $m->find_link(text => 'Logout'));
+
 
     ## login
     $m->submit_form_ok({
@@ -59,6 +62,7 @@ BEGIN {
     ok(! $m->find_link(text => 'Login'));
     ok($m->find_link(text => 'Logout'));
 
+
     ## no form, already logged in
     $m->reload;
     {
@@ -68,6 +72,7 @@ BEGIN {
     $m->title_like(qr/login/i);
     $m->content_like(qr/already logged in/i);
     ok($m->find_link(text => 'Logout'));
+
 
     ## logout
     $m->follow_link_ok({text => 'Logout'});
