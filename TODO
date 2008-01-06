@@ -6,3 +6,4 @@ $Id$
 - Change admins to use instance instead of load
 - fixed instance found checks to if deined
 - use chained in index
+- factor Handel into ::Handel provider so Mango::Cart/Wishlistcan be dumb objects just like the rest

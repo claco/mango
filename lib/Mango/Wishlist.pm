@@ -30,6 +30,17 @@ __PACKAGE__->storage->setup({
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
+sub items {
+    my ($self, $filter, $options) = @_;
+    $options ||= {};
+
+    $options->{'join'} = 'product';
+    $options->{'+select'} = 'product.price';
+    $options->{'+as'} = 'price';
+
+    return $self->SUPER::items($filter, $options);
+};
+
 sub type {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
 };

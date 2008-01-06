@@ -1,14 +1,66 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_WISHLISTS') %]
 
 [% IF NOT wishlist %]
-	[% c.loc('WISHLIST_NOT_FOUND') %]
+	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
 [% ELSE %]
-	<h2>[% HTML.escape(wishlist.name) %]</h2>
+    [% page.title = wishlist.name -%]
 	<ul>
-	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">Edit</a></li>
+	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">[% c.localize('LINK_TEXT_EDIT') %]</a></li>
 	</ul>
-	[% INCLUDE 'includes/errors' %]
-	[% form.render %]
+    [% HTML.escape(wishlist.description) %]
+
+    [% IF wishlist.count %]
+        <table border="0" cellpadding="3" cellspacing="5">
+            <tr>
+                <th align="left">[% c.localize('LABEL_SKU') %]</th>
+                <th align="left">[% c.localize('LABEL_DESCRIPTION') %]</th>
+                <th align="center">[% c.localize('LABEL_QUANTITY') %]</th>
+                <th align="right">[% c.localize('LABEL_UNIT_PRICE') %]</th>
+                <th align="right">[% c.localize('LABEL_TOTAL') %]</th>
+                <th colspan="2"></th>
+            </tr>
+	   [% FOREACH item = wishlist.items %]
+            <tr>
+	           <td align="left">[% HTML.escape(item.sku) %]</td>
+	           <td align="left">[% HTML.escape(item.description) %]</td>
+	           <td align="center">
+		          [% SET form = c.forms('cart_update') %]
+		          [% CALL form.id(form.id _ '_' _ item.id) %]
+		          [% form.render('values', [item.id, item.quantity]) %]
+	           </td>
+	           <td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
+	           <td align="right">[% HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
+	           <td></td>
+	           <td>
+		          [% SET form = c.forms('cart_delete') %]
+		          [% CALL form.id(form.id _ '_' _ item.id) %]
+		          [% form.render('values', [item.id, item.quantity]) %]
+	           </td>
+            </tr>
+	   [% END %]
+            <tr>
+                <td colspan="7" height="20"></td>
+            </tr>
+            <tr>
+                <th colspan="4" align="right">[% c.localize('LABEL_SUBTOTAL') %]:</th>
+                <td align="right">[% HTML.escape(cart.subtotal.as_string('FMT_SYMBOL')) %]</td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="7" align="right">
+                    [% c.forms('cart_clear').render %]
+                    <form action="[% c.uri_for('/checkout/') %]" method="POST">
+                        <input type="submit" value="Checkout" />
+                    </form>
+                </td>
+            </tr>
+        </table>
+        [% c.forms('cart_save').render %]
+        <p>
+	       <a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
+        </p>
+    [% ELSE %]
+        <p>[% c.localize('CART_IS_EMPTY') %]</p>
+    [% END %]
 [% END %]
 

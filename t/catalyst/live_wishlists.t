@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 23;
+    use Mango::Test tests => 24;
     use Path::Class 'file';
 
     use_ok('Mango::Provider::Products');
@@ -29,6 +29,8 @@ BEGIN {
 
     ## add sku to cart
     $m->get_ok('http://localhost/');
+    ok(! $m->find_link(text => 'Wishlists'));
+
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
     {

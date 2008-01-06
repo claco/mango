@@ -68,6 +68,9 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->belongs_to(wishlist => 'Mango::Schema::Wishlist',
     {'foreign.id' => 'self.wishlist_id'}
 );
+__PACKAGE__->might_have(product => 'Mango::Schema::Product',
+    {'foreign.sku' => 'self.sku'}
+);
 __PACKAGE__->default_values({
     created => sub {DateTime->now},
     updated => sub {DateTime->now}
