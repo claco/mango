@@ -178,6 +178,32 @@ Mango::Catalyst::Controller::Carts - Catalyst controller for cart information
 Mango::Catalyst::Controller::Carts provides the web interface for shopping cart
 information.
 
+=head1 ACTIONS
+
+=head2 add : /cart/add/
+
+Adds and item to the cart.
+
+=head2 clear : /cart/clear/
+
+Removes all items from the cart.
+
+=head2 delete : /cart/delete/
+
+Remove an item for the cart.
+
+=head2 index : /cart/
+
+Displays the contents of the cart.
+
+=head2 restore : /cart/restore/
+
+Restores a wishlist into the cart.
+
+=head2 update : /cart/update/
+
+Updates and item in the cart.
+
 =head1 SEE ALSO
 
 L<Mango::Catalyst::Model::Carts>, L<Mango::Provider::Carts>
@@ -188,4 +214,3 @@ L<Mango::Catalyst::Model::Carts>, L<Mango::Provider::Carts>
     CPAN ID: CLACO
     claco@chrislaco.com
     http://today.icantfocus.com/blog/
-

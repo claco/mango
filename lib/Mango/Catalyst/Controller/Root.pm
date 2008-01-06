@@ -35,6 +35,20 @@ Mango::Catalyst::Controller::Root - Catalyst controller for the homepage
 Mango::Catalyst::Controller::Root provides the web interface for
 the homepage.
 
+=head1 ACTIONS
+
+=head2 default : /
+
+Displays the not found page for non exisistant urls.
+
+=head2 end
+
+Sends the request to the RenderView action.
+
+=head2 index : /
+
+Displays the current homepage.
+
 =head1 AUTHOR
 
     Christopher H. Laco

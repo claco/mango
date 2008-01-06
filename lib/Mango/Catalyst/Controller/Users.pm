@@ -227,3 +227,35 @@ sub delete : Chained('load') PathPart Args(0) Template('users/delete') {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Users - Catalyst controller for displaying users
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Users provides the web interface for
+display users and their information.
+
+=head1 ACTIONS
+
+=head2 default : /
+
+Displays the not found page for non exisistant urls.
+
+=head2 end
+
+Sends the request to the RenderView action.
+
+=head2 index : /
+
+Displays the current homepage.
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+
