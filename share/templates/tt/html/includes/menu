@@ -3,7 +3,7 @@
 [% IF c.user_exists %]
 	<li><a href="[% c.uri_for_resource('logout') %]/">[% c.localize('LINK_TEXT_LOGOUT') %]</a></li>
     <li><a href="[% c.uri_for_resource('admin') %]/">[% c.localize('LINK_TEXT_ADMIN') %]</a></li>
-    <li><a href="[% c.uri_for_resource('user/wishlists') %]/">[% c.localize('LINK_TEXT_WISHLISTS') %]</a></li>
+    <li><a href="[% c.uri_for_resource('wishlists') %]/">[% c.localize('LINK_TEXT_WISHLISTS') %]</a></li>
 [% ELSE %]
     <li><a href="[% c.uri_for_resource('login') %]/">[% c.localize('LINK_TEXT_LOGIN') %]</a></li>
 [% END %]

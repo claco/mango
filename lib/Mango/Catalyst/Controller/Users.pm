@@ -8,17 +8,10 @@ BEGIN {
     use Mango ();
     use Path::Class ();
     
-    __PACKAGE__->form_directory(
-        Path::Class::Dir->new(Mango->share, 'forms', 'users')
+    __PACKAGE__->config(
+        resource_name  => 'users',
+        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'users')
     );
-};
-
-sub COMPONENT {
-    my $self = shift->NEXT::COMPONENT(@_);
-
-    $self->register_as_resource('users');
-
-    return $self;
 };
 
 sub index : Chained PathPrefix Args(0) ActionClass('REST') Template('users/index') {

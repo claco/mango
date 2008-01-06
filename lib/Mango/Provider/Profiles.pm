@@ -33,6 +33,27 @@ sub create {
     return $self->SUPER::create($data);
 };
 
+sub search {
+    my ($self, $filter, $options) = @_;
+
+    $filter ||= {};
+    $options ||= {};
+
+    if (my $user = delete $filter->{'user'}) {
+        if (Scalar::Util::blessed($user)) {
+            if ($user->isa('Mango::User')) {
+                $filter->{'user_id'} = $user->id;
+            } else {
+                Mango::Exception->throw('NOT_A_USER');
+            };
+        } else {
+            $filter->{'user_id'} = $user;
+        };
+    };
+
+    return $self->SUPER::search($filter, $options);
+};
+
 sub delete {
     my ($self, $filter) = @_;
 
@@ -59,27 +80,6 @@ sub delete {
     };
 
     return $self->SUPER::delete($filter);
-};
-
-sub search {
-    my ($self, $filter, $options) = @_;
-
-    $filter ||= {};
-    $options ||= {};
-
-    if (my $user = delete $filter->{'user'}) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
-                $filter->{'user_id'} = $user->id;
-            } else {
-                Mango::Exception->throw('NOT_A_USER');
-            };
-        } else {
-            $filter->{'user_id'} = $user;
-        };
-    };
-
-    return $self->SUPER::search($filter, $options);
 };
 
 1;

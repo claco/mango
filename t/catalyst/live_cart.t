@@ -27,7 +27,6 @@ BEGIN {
         name => 'DEF Product',
         description => 'DEF Product Description'
     });
-    undef $provider;
 };
 
 

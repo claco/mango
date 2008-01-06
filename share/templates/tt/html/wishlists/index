@@ -1,0 +1,13 @@
+[% USE HTML %]
+[% page.title = c.localize('PAGE_TITLE_WISHLISTS') %]
+[% INCLUDE includes/errors %]
+
+[% IF wishlists.count %]
+	[% WHILE (wishlist = wishlists.next) %]
+        <div class="wishlist">
+            <a href="[% c.uri_for_resource('wishlists', 'view', [wishlist.id]) %]/">[% wishlist.name %]</a>
+        </div>
+	[% END %]
+[% ELSE %]
+    <p>[% c.localize('NO_WISHLISTS') %]</p>
+[% END %]

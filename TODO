@@ -1,4 +1,8 @@
 $Id$
 - Added method to set config->mango->conrollers-name
 - Added rating/s() and comments() to Object using Ratings/Comments models
-
+- Cleanup blessed
+- Cleanup loc->localize
+- Change admins to use instance instead of load
+- fixed instance found checks to if deined
+- use chained in index

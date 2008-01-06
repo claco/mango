@@ -262,16 +262,15 @@ sub mk_controllers {
     my $self = shift;
     my $c = $self->{'c'};
 
-    $self->mk_dir(dir($c, 'Admin'));
-    $self->mk_dir(dir($c, 'Admin', 'Products'));
-    $self->mk_dir(dir($c, 'REST'));
-
     ## root
     unlink file($c, 'Root.pm');
     $self->render_file('controller_root',
         file($c, 'Root.pm'));
 
     ## admin
+    $self->mk_dir(dir($c, 'Admin'));
+    $self->mk_dir(dir($c, 'Admin', 'Products'));
+
     $self->render_file('controller_admin',
         file($c, 'Admin.pm'));
     $self->render_file('controller_admin_roles',
@@ -283,19 +282,28 @@ sub mk_controllers {
     $self->render_file('controller_admin_products_attributes',
         file($c, 'Admin', 'Products', 'Attributes.pm'));
 
-    ## public
-    $self->render_file('controller_cart',
-        file($c, 'Cart.pm'));
+    ## current user
     $self->render_file('controller_login',
         file($c, 'Login.pm'));
     $self->render_file('controller_logout',
         file($c, 'Logout.pm'));
+    $self->render_file('controller_cart',
+        file($c, 'Cart.pm'));
+    $self->render_file('controller_wishlists',
+        file($c, 'Wishlists.pm'));
+
+    ## public
+    $self->mk_dir(dir($c, 'Users'));
+
     $self->render_file('controller_products',
         file($c, 'Products.pm'));
-    $self->render_file('controller_users',
-        file($c, 'Users.pm'));
+    #$self->render_file('controller_users',
+    #    file($c, 'Users.pm'));
+    #$self->render_file('controller_users_wishlists',
+    #    file($c, 'Users', 'Wishlists.pm'));
 
     ## rest
+    $self->mk_dir(dir($c, 'REST'));
 };
 
 =head1 SEE ALSO
@@ -453,13 +461,13 @@ BEGIN {
 };
 
 1;
-__controller_user_wishlists__
-package [% name %]::Controller::User::Wishlists;
+__controller_wishlists__
+package [% name %]::Controller::Wishlists;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::User::Wishlists/;
+    use base qw/Mango::Catalyst::Controller::Wishlists/;
 };
 
 1;
@@ -500,6 +508,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Users/;
+};
+
+1;
+__controller_users_wishlists__
+package [% name %]::Controller::Users::Wishlists;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Users::Wishlists/;
 };
 
 1;

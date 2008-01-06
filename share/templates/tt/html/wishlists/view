@@ -1,0 +1,14 @@
+[% USE HTML %]
+[% page.title = c.localize('PAGE_TITLE_WISHLISTS') %]
+
+[% IF NOT wishlist %]
+	[% c.loc('WISHLIST_NOT_FOUND') %]
+[% ELSE %]
+	<h2>[% HTML.escape(wishlist.name) %]</h2>
+	<ul>
+	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">Edit</a></li>
+	</ul>
+	[% INCLUDE 'includes/errors' %]
+	[% form.render %]
+[% END %]
+

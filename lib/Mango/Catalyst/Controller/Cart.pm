@@ -134,10 +134,8 @@ sub save : Local Template('cart/index') {
 
         $c->user->cart->clear;
 
-        $c->res->redirect(
-            $c->uri_for($c->controller(
-                $c->config->{'mango'}->{'controllers'}->{'user'}->{'wishlists'}
-            )->action_for('index')) . '/'
+        $c->response->redirect(
+            $c->uri_for_resource('wishlists') . '/'
         );
     };
 
