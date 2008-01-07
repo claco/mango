@@ -1,6 +1,7 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+0.01000_07 Mon Jan 7 19:07:23 2008
     - Added Catalyst::View::TT/Session/Cookie/Store to PREREQ
     - Fixed problem in tests with latest Error.pm
     - Updated XML::Atom PREREQ and test
@@ -18,6 +19,7 @@ This file documents the revision history for Perl extension Mango.
     - Form I18N is now FIELD_LABEL_$FIELD instead of LABEL_$FIELD
     - Form I18N is now BUTTON_LABEL_$FIELD instead of LABEL_$FIELD
     - Form I18N is now CONSTRAINT_$CONSTRAINT instead of $FIELD_$CONTSTRAINT
+    - Wishlist admin works mostly, with tests
 
 0.01000_06 Sep 09 20:01:22 2007
     - Fixed Template->share when Mango has never been installed
