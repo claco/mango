@@ -91,6 +91,12 @@ BEGIN {
         'The password field is required.',
     CART_IS_EMPTY =>
         'Your shopping cart is empty.',
+    WISHLIST_IS_EMPTY =>
+        'This wishlist is empty.',
+    NO_WISHLISTS =>
+        'You currently have no wishlists.',
+    NO_DESCRIPTION_AVAILABLE =>
+        'No description available.',
 
 
 
@@ -105,6 +111,10 @@ BEGIN {
         'Logout',
     PAGE_TITLE_PRODUCTS =>
         'Products',
+    PAGE_TITLE_WISHLISTS =>
+        'Wishlists',
+    PAGE_TITLE_WISHLISTS_EDIT =>
+        'Editing [_1]',
 
 
     ## link text
@@ -122,6 +132,8 @@ BEGIN {
         'Products',
     LINK_TEXT_WISHLISTS =>
         'Wishlists',
+    LINK_TEXT_EDIT =>
+        'Edit',
 
 
     ## field label text

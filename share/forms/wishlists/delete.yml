@@ -1,0 +1,16 @@
+# $Id: /local/CPAN/Mango/share/forms/cart/delete.yml 1123 2008-01-03T04:02:55.699073Z claco  $
+---
+id: wishlists_delete
+name: wishlists_delete
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 0
+submit: BUTTON_LABEL_DELETE
+fields:
+  - id:
+      type: hidden
+      constraints:
+        - NOT_BLANK
+        - UINT
+

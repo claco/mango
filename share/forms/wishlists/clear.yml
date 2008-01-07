@@ -1,0 +1,9 @@
+# $Id$
+---
+id: wishlists_clear
+name: wishlists_clear
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 0
+submit: BUTTON_LABEL_CLEAR

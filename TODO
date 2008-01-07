@@ -7,3 +7,4 @@ $Id$
 - fixed instance found checks to if deined
 - use chained in index
 - factor Handel into ::Handel provider so Mango::Cart/Wishlistcan be dumb objects just like the rest
+- add fluff columns to products, wishlist items, profiles etc (images, comments, etc)

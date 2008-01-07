@@ -1,4 +1,5 @@
 [% USE HTML %]
+[% INCLUDE includes/errors %]
 
 [% IF NOT wishlist %]
 	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
@@ -7,6 +8,11 @@
 	<ul>
 	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">[% c.localize('LINK_TEXT_EDIT') %]</a></li>
 	</ul>
+    [% c.forms('wishlists_delete').render(
+        'values', [wishlist.id],
+        'action', c.uri_for_resource('wishlists', 'delete', [wishlist.id]) _ '/'
+    ) %]
+                    
     [% HTML.escape(wishlist.description) %]
 
     [% IF wishlist.count %]
@@ -24,17 +30,21 @@
 	           <td align="left">[% HTML.escape(item.sku) %]</td>
 	           <td align="left">[% HTML.escape(item.description) %]</td>
 	           <td align="center">
-		          [% SET form = c.forms('cart_update') %]
+		          [% SET form = c.forms('wishlists_items_update') %]
 		          [% CALL form.id(form.id _ '_' _ item.id) %]
-		          [% form.render('values', [item.id, item.quantity]) %]
+		          [% form.render('values', [item.id, item.quantity], 
+		                         'action', c.uri_for_resource('wishlists/items', 'update', [wishlist.id, item.id]) _ '/'
+		          ) %]
 	           </td>
 	           <td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
 	           <td align="right">[% HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
 	           <td></td>
 	           <td>
-		          [% SET form = c.forms('cart_delete') %]
+		          [% SET form = c.forms('wishlists_items_delete') %]
 		          [% CALL form.id(form.id _ '_' _ item.id) %]
-		          [% form.render('values', [item.id, item.quantity]) %]
+		          [% form.render('values', [item.id, item.quantity], 
+		                         'action', c.uri_for_resource('wishlists/items', 'delete', [wishlist.id, item.id]) _ '/'
+		          ) %]
 	           </td>
             </tr>
 	   [% END %]
@@ -43,24 +53,23 @@
             </tr>
             <tr>
                 <th colspan="4" align="right">[% c.localize('LABEL_SUBTOTAL') %]:</th>
-                <td align="right">[% HTML.escape(cart.subtotal.as_string('FMT_SYMBOL')) %]</td>
+                <td align="right">[% HTML.escape(wishlist.subtotal.as_string('FMT_SYMBOL')) %]</td>
                 <td colspan="2"></td>
             </tr>
             <tr>
-                <td colspan="7" align="right">
-                    [% c.forms('cart_clear').render %]
-                    <form action="[% c.uri_for('/checkout/') %]" method="POST">
-                        <input type="submit" value="Checkout" />
-                    </form>
+                <td colspan="6"></td>
+                <td>
+                    [% c.forms('wishlists_clear').render(
+                        'action', c.uri_for_resource('wishlists', 'clear', [wishlist.id]) _ '/'
+                    ) %]
                 </td>
             </tr>
         </table>
-        [% c.forms('cart_save').render %]
         <p>
 	       <a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
         </p>
     [% ELSE %]
-        <p>[% c.localize('CART_IS_EMPTY') %]</p>
+        <p>[% c.localize('WISHLIST_IS_EMPTY') %]</p>
     [% END %]
 [% END %]
 

@@ -26,7 +26,7 @@ sub begin : Private {
 
 sub index : Chained('/') PathPrefix Args(0) Template('wishlists/index') {
     my ($self, $c) = @_;
-    my $wishlists = $c->model('wishlists')->search({
+    my $wishlists = $c->model('Wishlists')->search({
         user => $c->user->id
     }, {
         page => $self->current_page,
@@ -60,27 +60,87 @@ sub view : Chained('instance') PathPart('') Args(0) Template('wishlists/view') {
 
 };
 
+sub clear : Chained('instance') PathPart Args(0) Template('wishlists/view') {
+    my ($self, $c) = @_;
+    my $form = $self->form;
+    my $wishlist = $c->stash->{'wishlist'};
+
+    if ($self->submitted && $self->validate->success) {
+        $wishlist->clear;
+    };
+
+    $c->response->redirect(
+        $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+    );
+
+    return;
+};
+
 sub edit : Chained('instance') PathPart Args(0) Template('wishlists/edit') {
     my ($self, $c) = @_;
     my $wishlist = $c->stash->{'wishlist'};
-#    my $form = $self->form;
+    my $form = $self->form;
 
-#    $form->values({
-#        id          => $role->id,
-#        name        => $role->name,
-#        description => $role->description,
-#        created     => $role->created . '',
-#        updated     => $role->updated . ''
-#    });
+    $form->values({
+        id          => $wishlist->id,
+        name        => $wishlist->name,
+        description => $wishlist->description,
+        created     => $wishlist->created . '',
+        updated     => $wishlist->updated . ''
+    });
 
-#    if ($self->submitted && $self->validate->success) {
-#        $role->description($form->field('description'));
-#        $role->update;
-#
-#        $form->values({
-#            updated     => $role->updated . ''
-#        });
-#    };
+    if ($self->submitted && $self->validate->success) {
+        $wishlist->name($form->field('name'));
+        $wishlist->description($form->field('description'));
+        $wishlist->update;
+
+        $form->values({
+            updated     => $wishlist->updated . ''
+        });
+
+        $c->response->redirect(
+            $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+        );
+    };
+};
+
+sub update : Chained('instance') PathPart Args(0) Template('wishlists/view') {
+    my ($self, $c) = @_;
+    my $form = $self->form;
+    my $wishlist = $c->stash->{'wishlist'};
+
+    if ($self->submitted && $self->validate->success) {
+        my $item = $wishlist->items({
+            id => $form->field('id')
+        })->first;
+
+        if ($item) {
+            $item->quantity($form->field('quantity'));
+            $item->update;
+        };
+
+        $c->response->redirect(
+            $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+        );
+    };
+
+    return;
+};
+
+sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
+    my ($self, $c) = @_;
+    my $form = $self->form;
+    my $wishlist = $c->stash->{'wishlist'};
+
+    if ($self->submitted && $self->validate->success) {
+        $wishlist->destroy;
+
+        $c->response->redirect(
+            $c->uri_for_resource('wishlists', 'index') . '/'
+        );
+    };
+
+    return;
 };
 
 1;

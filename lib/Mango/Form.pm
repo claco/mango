@@ -43,7 +43,7 @@ sub action {
     my ($self, $action) = @_;
 
     if ($action) {
-        $self->_form->action($action . '');
+        $self->_form->{'action'} = $action . '';
     };
 
     return $self->_form->action;
