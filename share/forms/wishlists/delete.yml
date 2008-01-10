@@ -7,10 +7,3 @@ javascript: 0
 stylesheet: 1
 sticky: 0
 submit: BUTTON_LABEL_DELETE
-fields:
-  - id:
-      type: hidden
-      constraints:
-        - NOT_BLANK
-        - UINT
-

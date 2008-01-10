@@ -143,5 +143,21 @@ sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
     return;
 };
 
+sub restore : Chained('instance') PathPart Args(0) Template('wishlists/view') {
+    my ($self, $c) = @_;
+    my $form = $self->form;
+    my $wishlist = $c->stash->{'wishlist'};
+
+    if ($self->submitted && $self->validate->success) {
+        $c->user->cart->restore($wishlist, $form->field('mode'));
+
+        $c->response->redirect(
+            $c->uri_for_resource('cart') . '/'
+        );
+    };
+
+    return;
+};
+
 1;
 __END__

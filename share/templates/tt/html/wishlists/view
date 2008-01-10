@@ -9,8 +9,10 @@
 	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">[% c.localize('LINK_TEXT_EDIT') %]</a></li>
 	</ul>
     [% c.forms('wishlists_delete').render(
-        'values', [wishlist.id],
         'action', c.uri_for_resource('wishlists', 'delete', [wishlist.id]) _ '/'
+    ) %]
+    [% c.forms('wishlists_restore').render(
+        'action', c.uri_for_resource('wishlists', 'restore', [wishlist.id]) _ '/'
     ) %]
                     
     [% HTML.escape(wishlist.description) %]

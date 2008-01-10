@@ -30,6 +30,10 @@ __PACKAGE__->storage->setup({
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
+sub name {};
+
+sub description {};
+
 sub type {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
 };

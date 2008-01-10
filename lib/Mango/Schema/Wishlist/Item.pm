@@ -69,7 +69,8 @@ __PACKAGE__->belongs_to(wishlist => 'Mango::Schema::Wishlist',
     {'foreign.id' => 'self.wishlist_id'}
 );
 __PACKAGE__->might_have(product => 'Mango::Schema::Product',
-    {'foreign.sku' => 'self.sku'}
+    {'foreign.sku'    => 'self.sku'},
+    {'cascade_delete' => 0}
 );
 __PACKAGE__->default_values({
     created => sub {DateTime->now},

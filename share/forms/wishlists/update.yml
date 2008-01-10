@@ -10,6 +10,7 @@ submit: BUTTON_LABEL_UPDATE
 fields:
   - id:
       type: hidden
+      force: 1
       constraints:
         - NOT_BLANK
         - UINT

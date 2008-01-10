@@ -8,3 +8,5 @@ $Id$
 - use chained in index
 - factor Handel into ::Handel provider so Mango::Cart/Wishlistcan be dumb objects just like the rest
 - add fluff columns to products, wishlist items, profiles etc (images, comments, etc)
+- test url 404s when substituting ids /wishlist/33333/item/333333333, etc
+- test non deletes of other peoples wishlists when passing ids that exist for other users
