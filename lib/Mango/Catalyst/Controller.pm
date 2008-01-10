@@ -32,7 +32,7 @@ sub _parse_Chained_attr {
         ## Path::Class eval ../ for me
         local $URI::ABS_REMOTE_LEADING_DOTS = 1;
         $value = URI->new(
-            Path::Class::Dir->new($self->action_namespace, $value)->stringify
+            Path::Class::Dir->new($self->action_namespace, $value)->as_foreign('Unix')->stringify
         )->abs('http://localhost')->path('foo');
     };
 
