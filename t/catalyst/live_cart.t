@@ -33,6 +33,7 @@ BEGIN {
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
 
+
     ## cart is empty
     $m->get_ok('http://localhost/');
     $m->follow_link_ok({text => 'Cart'});

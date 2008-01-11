@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 96;
+    use Mango::Test tests => 198;
     use Path::Class 'file';
 
     use_ok('Mango::Provider::Products');
@@ -88,8 +88,7 @@ BEGIN {
     ## save cart
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
-
-    my $r = $m->submit_form_ok({
+    $m->submit_form_ok({
         form_name => 'cart_save',
         fields => {
             name => 'My New Wishlist',
@@ -226,4 +225,186 @@ BEGIN {
     $m->content_lacks('My Updated Wishlist');
     $m->content_lacks('My Updated Description');
     $m->content_like(qr/no wishlists/i);
+
+
+    ## restore wishlist into cart: append=3
+    $m->follow_link_ok({text => 'Cart'});
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/cart is empty/i);
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_add',
+            fields    => {
+                sku => 'ABC-123',
+                quantity => 1
+            }
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->submit_form_ok({
+        form_name => 'cart_save',
+        fields => {
+            name => 'My New Wishlist',
+        }
+    });
+    $m->follow_link_ok({text => 'My New Wishlist'});
+    $m->title_like(qr/My New Wishlist/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_add',
+            fields    => {
+                sku => 'DEF-345',
+                quantity => 1
+            }
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="left">DEF-345</td>');
+    $m->content_contains('<td align="left">DEF Product Description</td>');
+    $m->content_contains('<td align="right">$10.00</td>');
+    $m->follow_link_ok({text => 'Wishlists'});
+    $m->follow_link_ok({text => 'My New Wishlist'});
+    $m->title_like(qr/My New Wishlist/i);
+    $m->submit_form_ok({
+        form_name => 'wishlists_restore',
+        fields    => {
+            mode => 3
+        }
+    });
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="left">DEF-345</td>');
+    $m->content_contains('<td align="left">DEF Product Description</td>');
+    $m->content_contains('<td align="right">$10.00</td>');
+    $m->content_contains('<td align="right">$11.23</td>');
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_clear'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="left">DEF-345</td>');
+    $m->content_lacks('<td align="left">DEF Product Description</td>');
+    $m->content_lacks('<td align="right">$10.00</td>');
+    $m->content_lacks('<td align="right">$11.23</td>');
+    $m->content_like(qr/cart is empty/i);
+
+
+    ## restore wishlist into cart: merge=2
+    $m->follow_link_ok({text => 'Cart'});
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/cart is empty/i);
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_add',
+            fields    => {
+                sku => 'ABC-123',
+                quantity => 1
+            }
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->follow_link_ok({text => 'Wishlists'});
+    $m->follow_link_ok({text => 'My New Wishlist'});
+    $m->title_like(qr/My New Wishlist/i);
+    $m->submit_form_ok({
+        form_name => 'wishlists_restore',
+        fields    => {
+            mode => 2
+        }
+    });
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_contains('<td align="right">$2.46</td>');
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_clear'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="right">$2.46</td>');
+    $m->content_like(qr/cart is empty/i);
+
+
+    ## restore wishlist into cart: replace=1
+    $m->follow_link_ok({text => 'Cart'});
+    $m->title_like(qr/cart/i);
+    $m->content_like(qr/cart is empty/i);
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_add',
+            fields    => {
+                sku => 'DEF-345',
+                quantity => 1
+            }
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">DEF-345</td>');
+    $m->content_contains('<td align="left">DEF Product Description</td>');
+    $m->content_contains('<td align="right">$10.00</td>');
+    $m->follow_link_ok({text => 'Wishlists'});
+    $m->follow_link_ok({text => 'My New Wishlist'});
+    $m->title_like(qr/My New Wishlist/i);
+    $m->submit_form_ok({
+        form_name => 'wishlists_restore',
+        fields    => {
+            mode => 1
+        }
+    });
+    $m->title_like(qr/cart/i);
+    $m->content_contains('<td align="left">ABC-123</td>');
+    $m->content_contains('<td align="left">ABC Product Description</td>');
+    $m->content_contains('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="left">DEF-345</td>');
+    $m->content_lacks('<td align="left">DEF Product Description</td>');
+    $m->content_lacks('<td align="right">$10.00</td>');
+    {
+        local $SIG{__WARN__} = sub {};
+        $m->submit_form_ok({
+            form_name => 'cart_clear'
+        });
+    };
+    $m->title_like(qr/cart/i);
+    $m->content_lacks('<td align="left">ABC-123</td>');
+    $m->content_lacks('<td align="left">ABC Product Description</td>');
+    $m->content_lacks('<td align="right">$1.23</td>');
+    $m->content_lacks('<td align="right">$2.46</td>');
+    $m->content_like(qr/cart is empty/i);
 };

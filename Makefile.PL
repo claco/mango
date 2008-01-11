@@ -9,7 +9,7 @@ license 'perl';
 perl_version '5.008001';
 all_from 'lib/Mango.pm';
 
-requires 'Handel' => '1.00008';
+requires 'Handel' => '1.00009';
 requires 'DBIx::Class' => '0.08008';
 requires 'Class::Accessor::Grouped' => '0.06000';
 requires 'Clone' => '0.27';

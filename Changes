@@ -1,6 +1,8 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added wishlist restore plus tests
+
 0.01000_07 Mon Jan 7 19:07:23 2008
     - Added Catalyst::View::TT/Session/Cookie/Store to PREREQ
     - Fixed problem in tests with latest Error.pm
