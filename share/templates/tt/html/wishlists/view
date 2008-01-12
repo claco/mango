@@ -6,13 +6,13 @@
 [% ELSE %]
     [% page.title = wishlist.name -%]
 	<ul>
-	   <li><a href="[% c.uri_for_resource('wishlists', 'edit', [wishlist.id]) %]/">[% c.localize('LINK_TEXT_EDIT') %]</a></li>
+	   <li><a href="[% c.uri_for_resource('mango/wishlists', 'edit', [wishlist.id]) %]/">[% c.localize('LINK_TEXT_EDIT') %]</a></li>
 	</ul>
     [% c.forms('wishlists_delete').render(
-        'action', c.uri_for_resource('wishlists', 'delete', [wishlist.id]) _ '/'
+        'action', c.uri_for_resource('mango/wishlists', 'delete', [wishlist.id]) _ '/'
     ) %]
     [% c.forms('wishlists_restore').render(
-        'action', c.uri_for_resource('wishlists', 'restore', [wishlist.id]) _ '/'
+        'action', c.uri_for_resource('mango/wishlists', 'restore', [wishlist.id]) _ '/'
     ) %]
                     
     [% HTML.escape(wishlist.description) %]
@@ -34,8 +34,8 @@
 	           <td align="center">
 		          [% SET form = c.forms('wishlists_items_update') %]
 		          [% CALL form.id(form.id _ '_' _ item.id) %]
-		          [% form.render('values', [item.id, item.quantity], 
-		                         'action', c.uri_for_resource('wishlists/items', 'update', [wishlist.id, item.id]) _ '/'
+		          [% form.render('values', [item.quantity], 
+		                         'action', c.uri_for_resource('mango/wishlists/items', 'update', [wishlist.id, item.id]) _ '/'
 		          ) %]
 	           </td>
 	           <td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
@@ -45,7 +45,7 @@
 		          [% SET form = c.forms('wishlists_items_delete') %]
 		          [% CALL form.id(form.id _ '_' _ item.id) %]
 		          [% form.render('values', [item.id, item.quantity], 
-		                         'action', c.uri_for_resource('wishlists/items', 'delete', [wishlist.id, item.id]) _ '/'
+		                         'action', c.uri_for_resource('mango/wishlists/items', 'delete', [wishlist.id, item.id]) _ '/'
 		          ) %]
 	           </td>
             </tr>
@@ -62,7 +62,7 @@
                 <td colspan="6"></td>
                 <td>
                     [% c.forms('wishlists_clear').render(
-                        'action', c.uri_for_resource('wishlists', 'clear', [wishlist.id]) _ '/'
+                        'action', c.uri_for_resource('mango/wishlists', 'clear', [wishlist.id]) _ '/'
                     ) %]
                 </td>
             </tr>

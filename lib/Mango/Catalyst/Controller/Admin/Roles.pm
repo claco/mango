@@ -8,7 +8,7 @@ BEGIN {
     use Path::Class ();
 
     __PACKAGE__->config(
-        resource_name  => 'admin/roles',
+        resource_name  => 'mango/admin/roles',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'roles')
     );
 };

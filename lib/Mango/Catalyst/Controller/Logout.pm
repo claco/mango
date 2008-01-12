@@ -6,7 +6,7 @@ BEGIN {
     use base qw/Mango::Catalyst::Controller/;
 
     __PACKAGE__->config(
-        resource_name  => 'logout'
+        resource_name  => 'mango/logout'
     );
 };
 

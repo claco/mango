@@ -284,6 +284,7 @@ sub mk_controllers {
         file($c, 'Admin', 'Products', 'Attributes.pm'));
 
     ## current user
+    $self->mk_dir(dir($c, 'Cart'));
     $self->mk_dir(dir($c, 'Wishlists'));
 
     $self->render_file('controller_login',
@@ -292,6 +293,8 @@ sub mk_controllers {
         file($c, 'Logout.pm'));
     $self->render_file('controller_cart',
         file($c, 'Cart.pm'));
+    $self->render_file('controller_cart_items',
+        file($c, 'Cart', 'Items.pm'));
     $self->render_file('controller_wishlists',
         file($c, 'Wishlists.pm'));
     $self->render_file('controller_wishlists_items',
@@ -465,6 +468,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Cart/;
+};
+
+1;
+__controller_cart_items__
+package [% name %]::Controller::Cart::Items;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Cart::Items/;
 };
 
 1;

@@ -9,7 +9,7 @@ BEGIN {
     use Path::Class ();
 
     __PACKAGE__->config(
-        resource_name  => 'admin/products/attributes',
+        resource_name  => 'mango/admin/products/attributes',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'products', 'attributes')
     );
 };

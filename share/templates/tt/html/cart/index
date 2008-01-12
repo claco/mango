@@ -17,17 +17,23 @@
 	<td align="left">[% HTML.escape(item.sku) %]</td>
 	<td align="left">[% HTML.escape(item.description) %]</td>
 	<td align="center">
-		[% SET form = c.forms('cart_update') %]
+		[% SET form = c.forms('cart_items_update') %]
 		[% CALL form.id(form.id _ '_' _ item.id) %]
-		[% form.render('values', [item.id, item.quantity]) %]
+		[% form.render(
+			'action', c.uri_for_resource('mango/cart/items', 'update', [item.id]) _ '/',
+			'values', [item.quantity]
+		) %]
 	</td>
 	<td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
 	<td align="right">[% HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
 	<td></td>
 	<td>
-		[% SET form = c.forms('cart_delete') %]
+		[% SET form = c.forms('cart_items_delete') %]
 		[% CALL form.id(form.id _ '_' _ item.id) %]
-		[% form.render('values', [item.id, item.quantity]) %]
+		[% form.render(
+			'action', c.uri_for_resource('mango/cart/items', 'delete', [item.id]) _ '/',
+			'values', [item.id, item.quantity]
+		) %]
 	</td>
         </tr>
 	[% END %]

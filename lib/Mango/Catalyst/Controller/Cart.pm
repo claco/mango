@@ -9,15 +9,17 @@ BEGIN {
     use Path::Class::Dir ();
 
     __PACKAGE__->config(
-        resource_name  => 'cart',
+        resource_name  => 'mango/cart',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'cart')
     );
 };
 
-sub begin : Private {
+sub auto : Private {
     my ($self, $c) = @_;
 
     $c->stash->{'cart'} = $c->user->cart;
+
+    return 1;
 };
 
 sub index : Template('cart/index') {
@@ -26,9 +28,16 @@ sub index : Template('cart/index') {
     return;
 };
 
+sub instance : Chained('/') PathPrefix CaptureArgs(0) {
+    my ($self, $c) = @_;
+
+    return;
+};
+
 sub add : Local Template('cart/index') {
     my ($self, $c) = @_;
     my $form = $self->form;
+    my $cart = $c->stash->{'cart'};
     my $product;
 
     $form->exists('sku', sub {
@@ -38,7 +47,7 @@ sub add : Local Template('cart/index') {
     });
 
     if ($self->submitted && $self->validate->success) {
-        $c->user->cart->add({
+        $cart->add({
             sku => $product->sku,
             description => $product->description,
             price => $product->price,
@@ -56,9 +65,10 @@ sub add : Local Template('cart/index') {
 sub clear : Local Template('cart/index') {
     my ($self, $c) = @_;
     my $form = $self->form;
+    my $cart = $c->stash->{'cart'};
 
     if ($self->submitted && $self->validate->success) {
-        $c->user->cart->clear;
+        $cart->clear;
     };
 
     $c->res->redirect(
@@ -68,54 +78,10 @@ sub clear : Local Template('cart/index') {
     return;
 };
 
-sub delete : Local Template('cart/index') {
-    my ($self, $c) = @_;
-    my $form = $self->form;
-
-    if ($self->submitted && $self->validate->success) {
-        $c->user->cart->delete({
-            id => $form->field('id')
-        });
-
-        $c->res->redirect(
-            $c->uri_for($self->action_for('index')) . '/'
-        );
-    };
-
-    return;
-};
-
-sub restore : Local Template('cart/index') {
-    my ($self, $c) = @_;
-
-    if ($c->req->method eq 'POST') {
-        if ($c->forward('validate')) {
-            if (my $cart = $c->forward('create')) {
-                $cart->restore({
-                    id      => $c->req->param('id'),
-                    shopper => $c->session->{'shopper'},
-                    type    => CART_TYPE_SAVED
-                }, $c->req->param('mode') || CART_MODE_APPEND);
-
-                $c->res->redirect(
-                    $c->uri_for($self->action_for('index')) . '/'
-                );
-            };
-        } else {
-            $c->forward('list');
-        };
-    } else {
-        $c->res->redirect(
-            $c->uri_for($self->action_for('index')) . '/'
-        );
-    };
-
-    return;
-};
-
 sub save : Local Template('cart/index') {
     my ($self, $c) = @_;
     my $form = $self->form;
+    my $cart = $c->stash->{'cart'};
 
     if (!$c->user_exists) {
         $c->stash->{'errors'} = [$c->localize('LOGIN_REQUIRED')];
@@ -128,36 +94,14 @@ sub save : Local Template('cart/index') {
             name => $form->field('name')
         });
 
-        foreach my $item ($c->user->cart->items) {
+        foreach my $item ($cart->items) {
             $wishlist->add($item);
         };
 
-        $c->user->cart->clear;
+        $cart->clear;
 
         $c->response->redirect(
-            $c->uri_for_resource('wishlists') . '/'
-        );
-    };
-
-    return;
-};
-
-sub update : Local Template('cart/index') {
-    my ($self, $c) = @_;
-    my $form = $self->form;
-
-    if ($self->submitted && $self->validate->success) {
-        my $item = $c->user->cart->items({
-            id => $form->field('id')
-        })->first;
-
-        if ($item) {
-            $item->quantity($form->field('quantity'));
-            $item->update;
-        };
-
-        $c->res->redirect(
-            $c->uri_for($self->action_for('index')) . '/'
+            $c->uri_for_resource('mango/wishlists', 'list') . '/'
         );
     };
 

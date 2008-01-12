@@ -9,7 +9,7 @@ BEGIN {
     use Path::Class ();
     
     __PACKAGE__->config(
-        resource_name  => 'users',
+        resource_name  => 'mango/users',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'users')
     );
 };

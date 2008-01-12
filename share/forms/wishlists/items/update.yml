@@ -8,11 +8,6 @@ stylesheet: 1
 sticky: 0
 submit: BUTTON_LABEL_UPDATE
 fields:
-  - id:
-      type: hidden
-      constraints:
-        - NOT_BLANK
-        - UINT
   - quantity:
       type: text
       size: 4

@@ -1,18 +1,13 @@
-# $Id$
+# $Id: /local/CPAN/Mango/share/forms/cart/update.yml 1123 2008-01-03T04:02:55.699073Z claco  $
 ---
-id: cart_update
-name: cart_update
+id: cart_items_update
+name: cart_items_update
 method: POST
 javascript: 0
 stylesheet: 1
 sticky: 0
 submit: BUTTON_LABEL_UPDATE
 fields:
-  - id:
-      type: hidden
-      constraints:
-        - NOT_BLANK
-        - UINT
   - quantity:
       type: text
       size: 4

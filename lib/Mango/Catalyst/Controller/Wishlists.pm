@@ -9,12 +9,12 @@ BEGIN {
     use Path::Class::Dir ();
 
     __PACKAGE__->config(
-        resource_name  => 'wishlists',
+        resource_name  => 'mango/wishlists',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'wishlists')
     );
 };
 
-sub begin : Private {
+sub auto : Private {
     my ($self, $c) = @_;
 
     if (!$c->user_exists) {
@@ -22,9 +22,11 @@ sub begin : Private {
         $c->stash->{'template'} = 'errors/401';
         $c->detach;
     };
+
+    return 1;
 };
 
-sub index : Chained('/') PathPrefix Args(0) Template('wishlists/index') {
+sub list : Chained('/') PathPrefix Args(0) Template('wishlists/list') {
     my ($self, $c) = @_;
     my $wishlists = $c->model('Wishlists')->search({
         user => $c->user->id
@@ -70,7 +72,7 @@ sub clear : Chained('instance') PathPart Args(0) Template('wishlists/view') {
     };
 
     $c->response->redirect(
-        $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+        $c->uri_for_resource('mango/wishlists', 'view', [$wishlist->id]) . '/'
     );
 
     return;
@@ -99,7 +101,7 @@ sub edit : Chained('instance') PathPart Args(0) Template('wishlists/edit') {
         });
 
         $c->response->redirect(
-            $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+            $c->uri_for_resource('mango/wishlists', 'view', [$wishlist->id]) . '/'
         );
     };
 };
@@ -120,7 +122,7 @@ sub update : Chained('instance') PathPart Args(0) Template('wishlists/view') {
         };
 
         $c->response->redirect(
-            $c->uri_for_resource('wishlists', 'view', [$wishlist->id]) . '/'
+            $c->uri_for_resource('mango/wishlists', 'view', [$wishlist->id]) . '/'
         );
     };
 
@@ -136,7 +138,7 @@ sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
         $wishlist->destroy;
 
         $c->response->redirect(
-            $c->uri_for_resource('wishlists', 'index') . '/'
+            $c->uri_for_resource('mango/wishlists', 'index') . '/'
         );
     };
 
@@ -152,7 +154,7 @@ sub restore : Chained('instance') PathPart Args(0) Template('wishlists/view') {
         $c->user->cart->restore($wishlist, $form->field('mode'));
 
         $c->response->redirect(
-            $c->uri_for_resource('cart') . '/'
+            $c->uri_for_resource('mango/cart') . '/'
         );
     };
 

@@ -12,6 +12,9 @@
 			<div id="header">
 				<h1>[% site.title OR name %]</h1>
 				[% IF page.subtitle %]<h2>[% page.subtitle %]</h2>[% END %]
+				[% IF c.user_exists %]
+					Welcome [% c.user.profile.first_name OR c.user.username %]
+				[% END %]
 				[% INCLUDE 'includes/menu' %]
 			</div>
 			<div id="contents">

@@ -8,7 +8,7 @@ BEGIN {
     use Path::Class::Dir ();
 
     __PACKAGE__->config(
-        resource_name  => 'settings',
+        resource_name  => 'mango/settings',
         form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'settings')
     );
 };
@@ -25,10 +25,6 @@ sub begin : Private {
 
 sub profile : Local Template('settings/profile') {
     my ($self, $c) = @_;
-
-warn Data::Dumper::Dumper($c->session);
-warn $c->user;
-
     my $form = $self->form;
     my $user = $c->user;
     my $profile = $user->profile;
