@@ -8,6 +8,3 @@
 	[% INCLUDE 'includes/errors' %]
 	[% form.render %]
 [% END %]
-
-
-

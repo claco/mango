@@ -113,6 +113,8 @@ BEGIN {
         'Products',
     PAGE_TITLE_WISHLISTS =>
         'Wishlists',
+    PAGE_TITLE_SETTINGS_PROFILE =>
+        'Profile',
     PAGE_TITLE_WISHLISTS_EDIT =>
         'Editing [_1]',
 
@@ -132,6 +134,8 @@ BEGIN {
         'Products',
     LINK_TEXT_WISHLISTS =>
         'Wishlists',
+    LINK_TEXT_SETTINGS_PROFILE =>
+        'Profile',
     LINK_TEXT_EDIT =>
         'Edit',
 

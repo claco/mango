@@ -7,6 +7,7 @@ our $VERSION = $Mango::VERSION;
 BEGIN {
     use base qw/Class::Accessor::Fast/;
 
+    use Clone ();
     use Mango ();
     use Mango::Catalyst::Plugin::Authentication::User ();
     use Mango::Catalyst::Plugin::Authentication::CachedUser ();
@@ -87,13 +88,14 @@ sub from_session {
     my $uname = $self->config->{'user_model'};
     my $umodel = $c->model($uname);
     Mango::Exception->throw('MODEL_NOT_FOUND', $uname) unless $umodel;
-    my $user = bless $data->{'user'}, $umodel->result_class;
+    my $user = bless Clone::clone($data->{'user'}), $umodel->result_class;
 
     ## restore profile as profile model result class
     my $pname = $self->config->{'profile_model'};
     my $pmodel = $c->model($pname);
     Mango::Exception->throw('MODEL_NOT_FOUND', $pname) unless $pmodel;
-    my $profile = bless $data->{'profile'}, $pmodel->result_class;
+    my $profile = bless Clone::clone($data->{'profile'}), $pmodel->result_class;
+    $profile->meta->provider($pmodel->provider);
 
     my $restored = Mango::Catalyst::Plugin::Authentication::CachedUser->new(
         $c, $self->config, $user

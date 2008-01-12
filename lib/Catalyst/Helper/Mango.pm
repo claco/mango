@@ -195,6 +195,7 @@ sub mk_config {
         default_realm => 'mango',
         realms => {
             mango => {
+                auto_update_user => 0,
                 credential => {
                     class => 'Password',
                     password_field => 'password',
@@ -295,6 +296,8 @@ sub mk_controllers {
         file($c, 'Wishlists.pm'));
     $self->render_file('controller_wishlists_items',
         file($c, 'Wishlists', 'Items.pm'));
+    $self->render_file('controller_settings',
+        file($c, 'Settings.pm'));
 
     ## public
     $self->mk_dir(dir($c, 'Users'));
@@ -502,6 +505,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Logout/;
+};
+
+1;
+__controller_settings__
+package [% name %]::Controller::Settings;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Settings/;
 };
 
 1;

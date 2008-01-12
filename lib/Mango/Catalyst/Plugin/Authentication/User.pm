@@ -46,6 +46,12 @@ sub supported_features {
 	};
 };
 
+sub refresh {
+    my $self = shift;
+
+    $self->_context->session->{'__user'}->{'profile'} = {$self->profile->get_columns};
+};
+
 sub roles {
     my $self = shift;
     my $name = $self->config->{'role_model'};
