@@ -4,7 +4,7 @@
 
 [% IF wishlists.count %]
 	[% WHILE (wishlist = wishlists.next) %]
-        <h2><a href="[% c.uri_for_resource('wishlists', 'view', [wishlist.id]) %]/">[% wishlist.name %]</a></h2>
+        <h2><a href="[% c.uri_for_resource('mango/wishlists', 'view', [wishlist.id]) %]/">[% wishlist.name %]</a></h2>
         <p>
             [% HTML.escape(wishlist.description) or c.localize('NO_DESCRIPTION_AVAILABLE') %]
         </p>
