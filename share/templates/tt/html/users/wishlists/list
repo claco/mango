@@ -1,0 +1,19 @@
+[% USE HTML %]
+[% page.title = c.localize('PAGE_TITLE_USERS_WISHLISTS', profile.first_name OR user.username) %]
+
+<h2>[% HTML.escape(user.username) %]</h2>
+[% INCLUDE 'includes/users/menu/' %]
+
+[% IF wishlists.count %]
+	[% WHILE (wishlist = wishlists.next) %]
+        <h2><a href="[% c.uri_for_resource('mango/users/wishlists', 'view', [user.username, wishlist.id]) %]/">[% HTML.escape(wishlist.name) %]</a></h2>
+        <p>
+            [% HTML.escape(wishlist.description) or c.localize('NO_DESCRIPTION_AVAILABLE') %]
+        </p>
+	[% END %]
+    <p>
+	<a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
+    </p>
+[% ELSE %]
+    <p>[% c.localize('NO_WISHLISTS') %]</p>
+[% END %]

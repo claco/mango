@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: attributes_edit
-name: attributes_edit
+id: admin_products_attributes_edit
+name: admin_products_attributes_edit
 method: POST
 javascript: 0
 stylesheet: 1

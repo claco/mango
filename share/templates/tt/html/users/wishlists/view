@@ -1,9 +1,13 @@
 [% USE HTML %]
-[% INCLUDE includes/errors %]
+
+<h2>[% HTML.escape(user.username) %]</h2>
+[% INCLUDE 'includes/users/menu/' %]
 
 [% IF NOT wishlist %]
-	[% c.loc('WISHLIST_NOT_FOUND') %]
+	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
 [% ELSE %]
+	[% page.title = wishlist.name %]
+
     <h2>[% HTML.escape(wishlist.name) %]</h2>
     [% IF wishlist.count %]
         <table border="0" cellpadding="3" cellspacing="5">
@@ -20,8 +24,8 @@
             <td align="left">[% HTML.escape(item.sku) %]</td>
             <td align="left">[% HTML.escape(item.description) %]</td>
             <td align="center">[% HTML.escape(item.quantity) %]</td>
-            <td align="right">[%# HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
-            <td align="right">[%# HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
+            <td align="right">[% HTML.escape(item.price.as_string('FMT_SYMBOL')) %]</td>
+            <td align="right">[% HTML.escape(item.total.as_string('FMT_SYMBOL')) %]</td>
             <td></td>
             <td>
                     [% SET form = c.forms('cart_delete') %]

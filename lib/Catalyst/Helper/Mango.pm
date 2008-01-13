@@ -139,6 +139,16 @@ sub mk_database {
         });
         print "created admin user/pass ($adminuser:$adminpass)\n";
 
+        $schema->resultset('Profiles')->create({
+            id => 1,
+            user_id => 1,
+            first_name => 'Admin',
+            last_name => 'User',
+            created => DateTime->now,
+            updated => DateTime->now
+        });
+        print "created admin profile\n";
+
         $schema->resultset('Roles')->create({
             id => 1,
             name => $adminrole,
@@ -307,10 +317,10 @@ sub mk_controllers {
 
     $self->render_file('controller_products',
         file($c, 'Products.pm'));
-    #$self->render_file('controller_users',
-    #    file($c, 'Users.pm'));
-    #$self->render_file('controller_users_wishlists',
-    #    file($c, 'Users', 'Wishlists.pm'));
+    $self->render_file('controller_users',
+        file($c, 'Users.pm'));
+    $self->render_file('controller_users_wishlists',
+        file($c, 'Users', 'Wishlists.pm'));
 
     ## rest
     $self->mk_dir(dir($c, 'REST'));

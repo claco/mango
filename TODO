@@ -4,7 +4,7 @@ $Id$
 - Cleanup blessed
 - Cleanup loc->localize
 - Change admins to use instance instead of load
-- fixed instance found checks to if deined
+- fixed instance found checks to if defined
 - use chained in index
 - factor Handel into ::Handel provider so Mango::Cart/Wishlistcan be dumb
 	objects just like the rest
@@ -14,4 +14,3 @@ $Id$
 - test non deletes of other peoples wishlists when passing ids that exist for 
 	other users
 - clean up Auth/Store/User stuff, esp $user->refreshß
-- convert resource names to mango/name

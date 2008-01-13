@@ -1,0 +1,4 @@
+<ul>
+	<li><a href="[% c.uri_for_resource('mango/users', 'view', [user.username]) %]/">[% c.localize('LINK_TEXT_USERS_VIEW', profile.first_name OR user.username) %]</a></li>
+	<li><a href="[% c.uri_for_resource('mango/users/wishlists', 'list', [user.username]) %]/">[% c.localize('LINK_TEXT_USERS_WISHLISTS', profile.first_name OR user.username) %]</a></li>
+</ul>

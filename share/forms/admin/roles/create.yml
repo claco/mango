@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: roles_create
-name: roles_create
+id: admin_roles_create
+name: admin_roles_create
 method: POST
 javascript: 0
 stylesheet: 1

@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: attributes_delete
-name: attributes_delete
+id: admin_products_attributes_delete
+name: admin_products_attributes_delete
 method: POST
 javascript: 0
 stylesheet: 1

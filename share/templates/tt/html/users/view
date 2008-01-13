@@ -1,0 +1,12 @@
+[% USE HTML -%]
+
+[% IF NOT user %]
+	[% page.title = c.localize('USER_NOT_FOUND') %]
+[% ELSE %]
+	[% page.title = c.localize('PAGE_TITLE_USERS_VIEW', profile.first_name OR user.username) %]
+
+	<h2>[% HTML.escape(profile.first_name OR user.username) %]</h2>
+	[% INCLUDE 'includes/users/menu/' %]
+
+	Name: [% profile.first_name %] [% profile.last_name %]
+[% END %]

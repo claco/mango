@@ -1,19 +1,37 @@
+# Avoid version control files.
 \bRCS\b
 \bCVS\b
 ,v$
+,B$
+,D$
 \B\.svn\b
-^blib/
-^pm_to_blib
-^MakeMaker-\d
-Makefile$
-Makefile.old$
+aegis.log$
+\bconfig$
+\bbuild$
+\.DS_Store$
+
+# Avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\b_build
 Build.PL
 Build.bat
-Build
-_build
-\.db
-t/TEST$
-t/SMOKE$
-^blibdirs\.ts
-Mango.tws
+
+# Avoid temp and backup files.
+~$
+\.gz$
+\.old$
+\.bak$
+\.swp$
+\.tdy$
+\.tmp$
+\#$
+\b\.#
 Mango.kpf
+Mango

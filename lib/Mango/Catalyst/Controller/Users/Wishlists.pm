@@ -14,30 +14,32 @@ BEGIN {
     );
 };
 
-sub index : Template('user/wishlists/index') {
+sub list : Chained('../instance') PathPart('wishlists') Args(0) Template('users/wishlists/list') {
     my ($self, $c) = @_;
+    my $user = $c->stash->{'user'};
+    my $wishlists = $c->model('Wishlists')->search({
+        user => $user
+    }, {
+        page => $self->current_page,
+        rows => $self->entries_per_page
+    });
+    my $pager = $wishlists->pager;
 
-    if ($c->user_exists) {
-        $c->stash->{'wishlists'} = $c->model('Wishlists')->search({
-            user => $c->user->get_object
-        });
-    };
+    $c->stash->{'wishlists'} = $wishlists;
+    $c->stash->{'pager'} = $pager;
 
     return;
 };
 
-sub default : Template('user/wishlists/details') {
-    my ($self, $c, @args) = @_;
-    my $id = $args[-1];
-
-    $c->forward('load', [$id]);
-};
-
-sub load : Chained('/') PathPrefix CaptureArgs(1) {
+sub instance : Chained('../instance') PathPart('wishlists') CaptureArgs(1) {
     my ($self, $c, $id) = @_;
-    my $wishlist = $c->model('Wishlists')->get_by_id($id);
+    my $user = $c->stash->{'user'};
+    my $wishlist = $c->model('Wishlists')->search({
+        user => $user,
+        id   => $id
+    })->first;
 
-    if ($wishlist) {
+    if (defined $wishlist) {
         $c->stash->{'wishlist'} = $wishlist;
     } else {
         $c->response->status(404);
@@ -45,8 +47,10 @@ sub load : Chained('/') PathPrefix CaptureArgs(1) {
     };
 };
 
-sub details : Chained('load') PathPart Args(0) Template('user/wishlists/details') {
+sub view : Chained('instance') PathPart('') Args(0) Template('users/wishlists/view') {
     my ($self, $c) = @_;
+
+    return;
 };
 
 1;

@@ -33,6 +33,7 @@ BEGIN {
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
 
+
     ## add sku to cart
     $m->get_ok('http://localhost/');
     ok(! $m->find_link(text => 'Wishlists'));

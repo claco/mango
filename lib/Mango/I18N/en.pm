@@ -97,7 +97,12 @@ BEGIN {
         'You currently have no wishlists.',
     NO_DESCRIPTION_AVAILABLE =>
         'No description available.',
-
+    USER_NOT_FOUND =>
+        'The user requested could not be found.',
+    WISHLIST_NOT_FOUND =>
+        'The wishlist requested could not be found.',
+    USERNAME_EXISTS =>
+        'The username requested already exists.',
 
 
     ## page titles
@@ -117,6 +122,12 @@ BEGIN {
         'Profile',
     PAGE_TITLE_WISHLISTS_EDIT =>
         'Editing [_1]',
+    PAGE_TITLE_USERS_VIEW =>
+        '[_1]\'s Profile',
+    PAGE_TITLE_USERS_WISHLISTS =>
+        '[_1]\'s Wishlists',
+    PAGE_TITLE_USERS_CREATE =>
+        'Sign Up!',
 
 
     ## link text
@@ -138,6 +149,12 @@ BEGIN {
         'Profile',
     LINK_TEXT_EDIT =>
         'Edit',
+    LINK_TEXT_USERS_VIEW =>
+        '[_1]\'s Profile' =>
+    LINK_TEXT_USERS_WISHLISTS =>
+        '[_1]\'s Wishlists',
+    LINK_TEXT_USERS_CREATE =>
+        'Sign Up!',
 
 
     ## field label text

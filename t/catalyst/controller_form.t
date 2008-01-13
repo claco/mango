@@ -51,7 +51,7 @@ BEGIN {
     is($form->action, 'http://foo/edit');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_edit'} = 1;
+    $c->request->{'_submitted_admin_products_edit'} = 1;
     ok($form->submitted);
     my $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');
@@ -71,7 +71,7 @@ BEGIN {
     is($form->action, 'http://foo/create');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_create'} = 1;
+    $c->request->{'_submitted_admin_products_create'} = 1;
     ok($form->submitted);
     $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');
@@ -87,13 +87,13 @@ BEGIN {
     ## action
     $c->action->reverse('form/edit');
     $c->request->uri(URI->new('http://foo/edit/new'));
-    delete $c->request->{'_submitted_products_edit'};
+    delete $c->request->{'_submitted_admin_products_edit'};
     $form = $controller->form;
     isa_ok($form, 'Mango::Form');
     is($form->action, 'http://foo/edit/new');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_edit'} = 1;
+    $c->request->{'_submitted_admin_products_edit'} = 1;
     ok($form->submitted);
     $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');
@@ -132,7 +132,7 @@ BEGIN {
     is($form->action, 'http://foo/edit');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_edit'} = 1;
+    $c->request->{'_submitted_admin_products_edit'} = 1;
     ok($form->submitted);
     my $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');
@@ -152,7 +152,7 @@ BEGIN {
     is($form->action, 'http://foo/create');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_create'} = 1;
+    $c->request->{'_submitted_admin_products_create'} = 1;
     ok($form->submitted);
     $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');
@@ -168,13 +168,13 @@ BEGIN {
     ## action
     $c->action->reverse('form/edit');
     $c->request->uri(URI->new('http://foo/edit/new'));
-    delete $c->request->{'_submitted_products_edit'};
+    delete $c->request->{'_submitted_admin_products_edit'};
     $form = $controller->form;
     isa_ok($form, 'Mango::Form');
     is($form->action, 'http://foo/edit/new');
     ok(!$form->submitted);
 
-    $c->request->{'_submitted_products_edit'} = 1;
+    $c->request->{'_submitted_admin_products_edit'} = 1;
     ok($form->submitted);
     $results = $form->validate;
     isa_ok($results, 'Mango::Form::Results');

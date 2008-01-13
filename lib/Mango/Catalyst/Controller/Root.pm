@@ -16,6 +16,7 @@ sub index : Template('index') {
 sub default : Template('errors/404') {
     my ($self, $c) = @_;
 
+    $c->response->status(404);
 };
 
 sub end : ActionClass('RenderView') {

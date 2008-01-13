@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: admin_users_create
-name: admin_users_create
+id: users_create
+name: users_create
 method: POST
 javascript: 0
 stylesheet: 1
@@ -47,6 +47,3 @@ fields:
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
-  - roles:
-      type: checkbox
-      multiple: 1

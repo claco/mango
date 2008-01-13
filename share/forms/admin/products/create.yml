@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: products_create
-name: products_create
+id: admin_products_create
+name: admin_products_create
 method: POST
 javascript: 0
 stylesheet: 1

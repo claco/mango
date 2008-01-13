@@ -1,7 +1,7 @@
 # $Id$
 ---
-id: roles_delete
-name: roles_delete
+id: admin_roles_delete
+name: admin_roles_delete
 method: POST
 javascript: 0
 stylesheet: 1

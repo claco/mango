@@ -14,6 +14,7 @@ BEGIN {
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
 
+
     ## not logged in
     $m->get_ok('http://localhost/');
     $m->follow_link_ok({text => 'Login'});

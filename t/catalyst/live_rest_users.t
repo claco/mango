@@ -16,6 +16,7 @@ BEGIN {
 {
     my $m = Test::WWW::Mechanize::Catalyst->new;
 
+
     ## REST using friendly view name
     my $r = $m->get('/users/?view=yaml');
     is($r->code, 200);
