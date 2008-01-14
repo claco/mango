@@ -15,7 +15,34 @@ BEGIN {
 
 sub index : Template('products/index') {
     my ($self, $c) = @_;
+    my $tags = $c->model('Products')->tags({
+        
+    }, {
+        order_by => 'tag.name'
+    });
 
+    $c->stash->{'tags'} = $tags;
+
+    return;
+};
+
+sub tags : Local Template('products/index') {
+    my ($self, $c, @tags) = @_;
+
+    return unless scalar @tags;
+
+    my $products = $c->model('Products')->search({
+        tags => \@tags
+    }, {
+        page => $self->current_page,
+        rows => $self->entries_per_page
+    });
+    my $pager = $products->pager;
+
+    $c->stash->{'products'} = $products;
+    $c->stash->{'pager'} = $pager;
+
+    return;
 };
 
 1;

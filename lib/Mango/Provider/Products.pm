@@ -305,9 +305,14 @@ sub tags {
         $pfilter->{"tag.$key"} = delete $filter->{$key};
     };
 
+    $options->{'group_by'} = ['tag.id', 'tag.name', 'tag.created', 'tag.updated'];
+    $options->{'+select'} = [{'count' => 'tag.name'}];
+    $options->{'+as'} = ['count'];
+
     my @results = map {
         $self->tag_class->new({
             $_->get_inflated_columns,
+            count => $_->get_column('count'),
             meta => {
                 provider => $self
             }

@@ -5,3 +5,15 @@
 
 
 [% c.forms('cart_add').render('values', ['NOEXISTO']) %]
+<hr>
+
+[% WHILE (tag = tags.next) %]
+	[% tag.name %]<br />
+	[% tag.count %]<br />
+[% END %]
+
+<hr>
+
+[% WHILE (product = products.next) %]
+	[% product.sku %]
+[% END %]

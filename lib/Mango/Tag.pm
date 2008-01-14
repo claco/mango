@@ -11,7 +11,7 @@ BEGIN {
 };
 
 sub count {
-    return 0;
+    return shift->{'count'} || 0;
 };
 
 sub destroy {
