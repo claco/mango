@@ -1,6 +1,8 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added related_tags to Products Provider
+
 0.01000_08 Sat Jan 12 22:20:37 2008
     - Added wishlist restore plus tests
     - Added Users/Wishlists public views with tests

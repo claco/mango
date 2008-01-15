@@ -15,9 +15,7 @@ BEGIN {
 
 sub index : Template('products/index') {
     my ($self, $c) = @_;
-    my $tags = $c->model('Products')->tags({
-        
-    }, {
+    my $tags = $c->model('Products')->tags({}, {
         order_by => 'tag.name'
     });
 

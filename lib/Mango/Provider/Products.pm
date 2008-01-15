@@ -332,6 +332,35 @@ sub tags {
     };
 };
 
+sub related_tags {
+    my ($self, $filter, $options) = @_;
+
+    $filter ||= {};
+    $options ||= {};
+    $filter->{'products'} ||= {};
+
+    my $tags = delete $filter->{'tags'} || [];
+    my @ids = map {
+        $_->id 
+    } $self->search({
+        tags => $tags
+    }, {
+        select => 'me.id'
+    })->all;
+
+    $filter->{'products'}->{'id'} = \@ids;
+    $filter->{'tag.name'} = {'!=' => $tags};
+    my @results = $self->tags($filter, $options)->all;
+
+    if (wantarray) {
+        return @results;
+    } else {
+        return Mango::Iterator->new({
+            data => \@results
+        });
+    };
+};
+
 1;
 __END__
 
