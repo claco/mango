@@ -1,19 +1,16 @@
+[% USE HTML %]
 [% page.title = c.localize('PAGE_TITLE_PRODUCTS') %]
-[% INCLUDE 'includes/errors' %]
 
-[% c.forms('cart_add').render('values', ['ABC-123']) %]
-
-
-[% c.forms('cart_add').render('values', ['NOEXISTO']) %]
-<hr>
-
-[% WHILE (tag = tags.next) %]
-	[% tag.name %]<br />
-	[% tag.count %]<br />
-[% END %]
-
-<hr>
+[% tagcloud.html %]
 
 [% WHILE (product = products.next) %]
-	[% product.sku %]
+	<div class="product">
+		<h2><a href="[% c.uri_for(product.sku) %]/">[% HTML.escape(product.name) %]</a></h2>
+		<p>Part Number: [% HTML.escape(product.sku) %]</p>
+		<p>[% HTML.escape(product.description) %]</p>
+		[% c.forms('cart_add').render(
+			'id', 'cart_add_' _ product.id,
+			'values', [product.sku]
+		) %]	
+	</div>
 [% END %]
