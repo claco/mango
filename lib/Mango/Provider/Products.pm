@@ -348,9 +348,12 @@ sub related_tags {
         select => 'me.id'
     })->all;
 
-    $filter->{'products'}->{'id'} = \@ids;
-    $filter->{'tag.name'} = {'!=' => $tags};
-    my @results = $self->tags($filter, $options)->all;
+    my @results;
+    if (@ids) {
+        $filter->{'products'}->{'id'} = \@ids;
+        $filter->{'tag.name'} = [-and => map {{'!=' => $_}} @{$tags}];
+        @results = $self->tags($filter, $options)->all;
+    };
 
     if (wantarray) {
         return @results;

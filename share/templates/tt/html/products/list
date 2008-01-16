@@ -7,6 +7,7 @@
 	<div class="product">
 		<h2><a href="[% c.uri_for(product.sku) %]/">[% HTML.escape(product.name) %]</a></h2>
 		<p>Part Number: [% HTML.escape(product.sku) %]</p>
+		<p>[% HTML.escape(product.price.as_string('FMT_SYMBOL')) %]</p>
 		<p>[% HTML.escape(product.description) %]</p>
 		[% c.forms('cart_add').render(
 			'id', 'cart_add_' _ product.id,

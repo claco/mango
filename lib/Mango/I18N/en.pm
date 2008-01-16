@@ -103,6 +103,8 @@ BEGIN {
         'The wishlist requested could not be found.',
     USERNAME_EXISTS =>
         'The username requested already exists.',
+    PRODUCT_NOT_FOUND =>
+        'The product requested could not be found.',
 
 
     ## page titles

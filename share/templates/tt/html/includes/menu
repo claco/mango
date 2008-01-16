@@ -10,5 +10,5 @@
     <li><a href="[% c.uri_for_resource('mango/users', 'create') %]/">[% c.localize('LINK_TEXT_USERS_CREATE') %]</a></li>
 [% END %]
     <li><a href="[% c.uri_for_resource('mango/cart') %]/">[% c.localize('LINK_TEXT_CART') %]</a></li>
-    <li><a href="[% c.uri_for_resource('mango/products') %]/">[% c.localize('LINK_TEXT_PRODUCTS') %]</a></li>
+    <li><a href="[% c.uri_for_resource('mango/products', 'list') %]/">[% c.localize('LINK_TEXT_PRODUCTS') %]</a></li>
 </ul>

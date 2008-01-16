@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 198;
+    use Mango::Test tests => 204;
     use Path::Class 'file';
 
     use_ok('Mango::Provider::Products');
@@ -19,13 +19,15 @@ BEGIN {
         sku => 'ABC-123',
         price => 1.23,
         name => 'ABC Product',
-        description => 'ABC Product Description'
+        description => 'ABC Product Description',
+        tags => [qw/tag1/]
     });
     $provider->create({
         sku => 'DEF-345',
         price => 10.00,
         name => 'DEF Product',
-        description => 'DEF Product Description'
+        description => 'DEF Product Description',
+        tags => [qw/tag2/]
     });
 };
 
@@ -40,6 +42,7 @@ BEGIN {
 
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag1'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
@@ -52,6 +55,7 @@ BEGIN {
     };
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag2'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
@@ -234,6 +238,7 @@ BEGIN {
     $m->content_like(qr/cart is empty/i);
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag1'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
@@ -261,6 +266,7 @@ BEGIN {
     $m->content_contains('<td align="right">$1.23</td>');
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag2'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
@@ -318,6 +324,7 @@ BEGIN {
     $m->content_like(qr/cart is empty/i);
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag1'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
@@ -366,6 +373,7 @@ BEGIN {
     $m->content_like(qr/cart is empty/i);
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag2'});
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({

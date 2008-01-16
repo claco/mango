@@ -18,6 +18,7 @@ requires 'CGI::FormBuilder';
 requires 'File::ShareDir';
 requires 'DateTime';
 requires 'Error';
+requires 'HTML::TagCloud::Sortable';
 requires 'Locale::Maketext';
 requires 'Scalar::Util';
 requires 'Set::Scalar';
