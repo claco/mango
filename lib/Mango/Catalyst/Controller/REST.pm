@@ -69,7 +69,7 @@ sub ACCEPT_CONTEXT {
         );
     };
 
-    ## type param overrides headerß
+    ## type param overrides header
     my $type = $c->request->param('content-type');
     if ($type) {
         $c ->request->content_type($type);
@@ -94,7 +94,7 @@ sub end : ActionClass('Serialize') {
 
 sub entity {
     my ($self, $data, $pager) = @_;
-    my $key = $self->{'serialize'}->{'stash_key'};
+    my $key = $self->{'stash_key'};
 
     if (defined $data) {
         if (Scalar::Util::blessed $pager && $pager->isa('Data::Page')) {

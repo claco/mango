@@ -1,6 +1,11 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added Atom/RSS Feeds to Wishlists
+    - Added Atom/RSS Feeds to Products(tags)
+    - Fixed REST->entity() to use new config
+    - Stop importing blessed in Feed View
+
 0.01000_09 Tue Jan 15 22:51:56 2008
     - Added related_tags to Products Provider
     - Products controller now works for tag browsing, view, with tests
