@@ -11,7 +11,7 @@ all_from 'lib/Mango.pm';
 
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Action::REST' => '0.60';
-requires 'Catalyst::Component::ACCEPT_CONTEXT' => '0.03';
+requires 'Catalyst::Component::ACCEPT_CONTEXT' => '0.05';
 requires 'Catalyst::Devel' => '1.02';
 requires 'Catalyst::Plugin::Authentication' => '0.09999';
 requires 'Catalyst::Plugin::Authentication::Credential::HTTP';

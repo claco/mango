@@ -61,6 +61,10 @@ sub ACCEPT_CONTEXT {
     my $self = shift;
     my $c = shift;
 
+    if (! $c->request->header('Accept')) {
+        $c->request->content_type($self->{'default'});
+    };
+
     ## friendly view name overrides header
     my $view = $c->request->param('view');
     if ($view) {
