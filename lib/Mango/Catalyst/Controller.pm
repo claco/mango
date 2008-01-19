@@ -39,6 +39,29 @@ sub _parse_Chained_attr {
     return Chained => $value || $self->action_namespace;
 };
 
+sub _parse_Feed_attr {
+    my ($self, $c, $name, $value) = @_;
+
+    return Feed => $value;
+};
+
+sub end : ActionClass('Serialize') {
+    my $self = shift;
+    my $c = shift;
+    my %feeds = map { lc($_) => 1 } @{$c->action->attributes->{'Feed'} || []};
+
+    if (exists $feeds{'atom'}) {
+        $self->enable_atom_feed unless
+            $c->stash->{'links'}->{'alternate'}->{'atom'};
+    };
+    if (exists $feeds{'rss'}) {
+        $self->enable_rss_feed unless
+            $c->stash->{'links'}->{'alternate'}->{'rss'};
+    };
+
+    return $self->NEXT::end($c, @_);
+};
+
 sub register_as_resource {
     my ($self, $name) = @_;
     my $class = ref $self || $self;
@@ -50,12 +73,35 @@ sub register_as_resource {
 
 sub current_page {
     my $c = shift->context;
-    return $c->request->param('current_page') || 1;
+    return $c->request->param('current_page') ||
+        $c->request->param('page') || 1;
 };
 
 sub entries_per_page {
     my $c = shift->context;
-    return $c->request->param('entries_per_page') || 10;
+    return $c->request->param('entries_per_page') ||
+        $c->request->param('rows') || 10;
+};
+
+sub enable_feeds {
+    my $self = shift;
+
+    $self->enable_atom_feed;
+    $self->enable_rss_feed;
+};
+
+sub enable_atom_feed {
+    my $self = shift;
+    my $c = $self->context;
+
+    $c->stash->{'links'}->{'alternate'}->{'atom'} = $c->request->uri_with({view => 'Atom'});
+};
+
+sub enable_rss_feed {
+    my $self = shift;
+    my $c = $self->context;
+
+    $c->stash->{'links'}->{'alternate'}->{'rss'} = $c->request->uri_with({view => 'RSS'});
 };
 
 1;

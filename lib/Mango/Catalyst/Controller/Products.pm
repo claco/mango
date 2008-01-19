@@ -51,7 +51,7 @@ sub view : Chained('instance') PathPart('') Args(0) Template('products/view') {
 
 };
 
-sub tags : Local Template('products/list') {
+sub tags : Local Template('products/list') Feed('Atom') Feed('RSS')  {
     my ($self, $c, @tags) = @_;
 
     return unless scalar @tags;
@@ -63,26 +63,45 @@ sub tags : Local Template('products/list') {
         rows => $self->entries_per_page
     });
     my $pager = $products->pager;
-    $c->stash->{'products'} = $products;
-    $c->stash->{'pager'} = $pager;
-
-
-    my $tags = $c->model('Products')->related_tags({
-        tags => \@tags
-    }, {
-        order_by => 'tag.name'
-    });
-    $c->stash->{'tags'} = $tags;
-
-    my $tagcloud = HTML::TagCloud::Sortable->new;
-    foreach my $tag ($tags->all) {
-        $tagcloud->add({
-            name => $tag->name,
-            count => $tag->count,
-            url => $c->uri_for('tags', @tags, $tag->name) . '/'
+  
+    if ($self->wants_feed) {
+        $self->entity({
+            title => 'Products: ' . join('. ', @tags),
+            link =>  $c->uri_for('tags', @tags) . '/',
+            entries => [
+                map {{
+                    id => $_->id,
+                    title => $_->name,
+                    title => $_->sku,
+                    link => $c->uri_for_resource('mango/products', 'view', [$_->sku]) . '/',
+                    content => '<p>Price: ' . $_->price->as_string('FMT_SYMBOL') . '</p><p>' . ($_->description || 'No description available.') . '</p>',
+                    issued => $_->created,
+                    modified => $_->updated
+                }} $products->all
+            ]
         });
+        $c->detach;
+    } else {
+        $c->stash->{'products'} = $products;
+        $c->stash->{'pager'} = $pager;
+        
+        my $tags = $c->model('Products')->related_tags({
+            tags => \@tags
+        }, {
+            order_by => 'tag.name'
+        });
+        $c->stash->{'tags'} = $tags;
+
+        my $tagcloud = HTML::TagCloud::Sortable->new;
+        foreach my $tag ($tags->all) {
+            $tagcloud->add({
+                name => $tag->name,
+                count => $tag->count,
+                url => $c->uri_for('tags', @tags, $tag->name) . '/'
+            });
+        };
+        $c->stash->{'tagcloud'} = $tagcloud;
     };
-    $c->stash->{'tagcloud'} = $tagcloud;
 
     return;
 };

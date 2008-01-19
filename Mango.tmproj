@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>Changes</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -20,44 +18,10 @@
 	<key>fileHierarchyDrawerWidth</key>
 	<integer>353</integer>
 	<key>metaData</key>
-	<dict>
-		<key>Changes</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>41</integer>
-				<key>line</key>
-				<integer>6</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>lib/Mango/Catalyst/Controller/Users/Wishlists.pm</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>29</integer>
-				<key>line</key>
-				<integer>85</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>55</integer>
-		</dict>
-	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>lib/Mango/Catalyst/Controller/Users/Wishlists.pm</string>
-		<string>Changes</string>
-	</array>
+	<dict/>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{451, 45}, {1347, 884}}</string>
+	<string>{{406, 245}, {1364, 904}}</string>
 </dict>
 </plist>

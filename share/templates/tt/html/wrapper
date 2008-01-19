@@ -6,6 +6,12 @@
 		<title>[% site.title OR name OR c.config.site.name %]: [% page.title %]</title>
 		<!--<link rel="stylesheet" href="/static/style/basic.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="/static/style/mango.css" type="text/css" media="screen" />-->
+		[% IF links.alternate.rss -%]
+			<link rel="alternate" type="application/rss+xml" title="RSS" href="[% links.alternate.rss %]" />
+		[% END -%]
+		[% IF links.alternate.atom -%]
+			<link rel="alternate" type="application/atom+xml" title="Atom" href="[% links.alternate.atom %]" />
+		[% END -%]
 	</head>
 	<body id="[% HTML.escape(site.id OR c.config.site.id) %]">
 		<div id="container">
@@ -25,6 +31,18 @@
 				</div>
 			</div>
 			<div id="footer">
+				[% IF links.alternate.rss OR links.alternate.atom %]
+		        <p>
+					Also available in:
+					[% IF links.alternate.atom -%]
+		            	<a href="[% links.alternate.atom %]">Atom</a>
+					[% END -%]
+					[% IF links.alternate.rss AND links.alternate.atom- %] | [% END -%]
+					[% IF links.alternate.rss -%]
+		            	<a href="[% links.alternate.rss %]">RSS</a>
+					[% END -%]
+		        </p>
+				[% END %]
 				<p>
 					Powered by <a href="http://mangoframework.com/">Mango</a>.
 				</p>

@@ -6,6 +6,7 @@ BEGIN {
     use base qw/Mango::Catalyst::Controller/;
     use Handel::Constants qw/:cart/;
     use Mango ();
+    use DateTime ();
     use Path::Class ();
 
     __PACKAGE__->config(
@@ -14,7 +15,7 @@ BEGIN {
     );
 };
 
-sub list : Chained('../instance') PathPart('wishlists') Args(0) Template('users/wishlists/list') {
+sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom') Feed('RSS') Template('users/wishlists/list') {
     my ($self, $c) = @_;
     my $user = $c->stash->{'user'};
     my $profile = $c->model('Profiles')->search({user => $user})->first;
@@ -30,7 +31,7 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Template('users/
         $self->entity({
             title => $profile->full_name . '\'s Wishlists',
             link =>  $c->uri_for_resource('mango/users/wishlists', 'list', [$user->username]) . '/',
-            modified => $wishlists->first->updated,
+            modified => $wishlists->first ? $wishlists->first->updated : DateTime->now,
             entries => [
                 map {{
                     id => $_->id,
@@ -68,7 +69,7 @@ sub instance : Chained('../instance') PathPart('wishlists') CaptureArgs(1) {
     };
 };
 
-sub view : Chained('instance') PathPart('') Args(0) Template('users/wishlists/view') {
+sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS') Template('users/wishlists/view') {
     my ($self, $c) = @_;
 
     if ($self->wants_feed) {
@@ -78,7 +79,7 @@ sub view : Chained('instance') PathPart('') Args(0) Template('users/wishlists/vi
         $self->entity({
             title => $profile->full_name . '\'s Wishlist: ' . $wishlist->name,
             link =>  $c->uri_for_resource('mango/users/wishlists', 'view', [$user->username, $wishlist->id]) . '/',
-            modified => $wishlist->items->first->updated,
+            modified => $wishlist->updated,
             entries => [
                 map {{
                     id => $_->id,

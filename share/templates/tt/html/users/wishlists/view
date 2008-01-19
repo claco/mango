@@ -35,9 +35,6 @@
             </tr>
             [% END %]
         </table>
-        <p>
-            <a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
-        </p>
     [% ELSE %]
         <p>This wishlist is empty.</p>
     [% END %]

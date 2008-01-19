@@ -43,6 +43,7 @@ requires 'Module::Starter' => '1.42';
 requires 'Path::Class';
 requires 'Scalar::Util';
 requires 'Set::Scalar';
+requires 'Test::WWW::Mechanize::Catalyst';
 requires 'XML::Atom' => '0.27';
 requires 'XML::Feed' => '0.12';
 requires 'XML::RSS' => '1.31';

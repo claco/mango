@@ -11,9 +11,6 @@
             [% HTML.escape(wishlist.description) or c.localize('NO_DESCRIPTION_AVAILABLE') %]
         </p>
 	[% END %]
-    <p>
-	<a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
-    </p>
 [% ELSE %]
     <p>[% c.localize('NO_WISHLISTS') %]</p>
 [% END %]

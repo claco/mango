@@ -1,8 +1,10 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+0.01000_10 Fri Jan 18 22:27:19 2008
     - Added Atom/RSS Feeds to Wishlists
     - Added Atom/RSS Feeds to Products(tags)
+    - Added Feed() action attribute and enable_(feeds|atom|rss)_feed
     - Fixed REST->entity() to use new config
     - Stop importing blessed in Feed View
 
