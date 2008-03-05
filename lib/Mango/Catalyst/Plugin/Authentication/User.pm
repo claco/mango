@@ -208,6 +208,10 @@ Normally, a Mango::Profile is returned. If you are using a custom profile model
 that has set its C<result_class> to a custom subclass of Mango::Profile, that
 class will be used instead.
 
+=head2 refresh
+
+Updates the session store with the current user objects data.
+
 =head2 roles
 
 Returns a list containing the names of all of the roles the current user

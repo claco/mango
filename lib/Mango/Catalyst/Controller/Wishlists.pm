@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Wishlists;
 use strict;
 use warnings;
@@ -106,29 +107,6 @@ sub edit : Chained('instance') PathPart Args(0) Template('wishlists/edit') {
     };
 };
 
-sub update : Chained('instance') PathPart Args(0) Template('wishlists/view') {
-    my ($self, $c) = @_;
-    my $form = $self->form;
-    my $wishlist = $c->stash->{'wishlist'};
-
-    if ($self->submitted && $self->validate->success) {
-        my $item = $wishlist->items({
-            id => $form->field('id')
-        })->first;
-
-        if ($item) {
-            $item->quantity($form->field('quantity'));
-            $item->update;
-        };
-
-        $c->response->redirect(
-            $c->uri_for_resource('mango/wishlists', 'view', [$wishlist->id]) . '/'
-        );
-    };
-
-    return;
-};
-
 sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
     my ($self, $c) = @_;
     my $form = $self->form;
@@ -163,3 +141,58 @@ sub restore : Chained('instance') PathPart Args(0) Template('wishlists/view') {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Wishlists - Catalyst controller for current users wishlists
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Wishlists provides the web interface for the
+current users wishlists.
+
+=head1 ACTIONS
+
+=head2 auto
+
+Checks to see if the current user is authenticated and sends a 401 http status
+code if they are not.
+
+=head2 clear : /wishlists/<id>/clear/
+
+Removes all items in the specified wishlist for the current user.
+
+=head2 delete : /wishlists/<id>/delete/
+
+Deletes the specified wishlist for the current user.
+
+=head2 edit : /wishlists/<id>/edit/
+
+Updates the specified wishlist for the current user.
+
+=head2 instance : /wishlists/<id>/
+
+Loads the specified wishlist for the current user.
+
+=head2 list : /wishlists/
+
+Displays a list of the wishlists for the current user.
+
+=head2 restore : /wishlists/<id>/restore/
+
+Copies the specified wishlists items in the current users cart.
+
+=head2 view : /wishlists/<id>/
+
+Displays the specified wishlist for the current user.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Carts>, L<Mango::Provider::Carts>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller;
 use strict;
 use warnings;
@@ -140,6 +141,30 @@ component is loaded.
 =head2 current_page
 
 Returns the current page number from params or 1 if no page is specified.
+
+=head2 enable_feeds
+
+Generates links to atom/rss feeds for the current action uri and adds them to
+the stash, where the default wrapper adds them to the <head> section as
+alternate content.
+
+=head2 enable_atom_feed
+
+Generates a link to an atom feed for the current action uri and adds it to the
+stash, where the default wrapper adds it to the <head> section as alternate
+content.
+
+This method is automatically called for any action that has the Feed('Atom')
+attribute applied to it.
+
+=head2 enable_rss_feed
+
+Generates a link to an rss feed for the current action uri and adds it to the
+stash, where the default wrapper adds it to the <head> section as alternate
+content.
+
+This method is automatically called for any action that has the Feed('RSS')
+attribute applied to it.
 
 =head2 entries_per_page
 

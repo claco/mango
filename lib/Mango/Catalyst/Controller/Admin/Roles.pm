@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Admin::Roles;
 use strict;
 use warnings;
@@ -107,67 +108,43 @@ __END__
 
 =head1 NAME
 
-Mango::Tag - Module representing a [folksonomy] tag
+Mango::Catalyst::Controller::Admin::Roles - Catalyst controller for role admin
 
 =head1 SYNOPSIS
 
-    my $tags = $product->tags;
-    
-    while (my $tag = %tags->next) {
-        print $tag->name;
-    };
+    package MyApp::Controllers::Admin::Roles;
+    use base qw/Mango::Catalyst::Controllers::Admin::Roles/;
 
 =head1 DESCRIPTION
 
-Mango::Tag represents a tag assigned to products.
+Mango::Catalyst::Controller::Admin::Roles is the controller
+used to edit user roles.
 
-=head1 METHODS
+=head1 ACTIONS
 
-=head2 count
+=head2 index : /admin/roles/
 
-Returns the number of instances this tag.
+Displays the list of roles.
 
-B<This is not currently implemented and always returns 0>.
+=head2 create : /admin/roles/create/
 
-=head2 created
+Creates a new role.
 
-Returns the date and time in UTC the tag was created as a DateTime
-object.
+=head2 delete : /admin/roles/<id>/delete/
 
-    print $user->created;
+Deletes the specified role.
 
-=head2 destroy
+=head2 edit : /admin/roles/<id>/edit/
 
-B<This is not currently implemented>.
+Updates the specified role.
 
-=head2 id
+=head2 load : /admin/role/<id>/
 
-Returns the id of the current tag.
-
-    print $tag->id;
-
-=head2 name
-
-=over
-
-=item Arguments: $name
-
-=back
-
-Gets/sets the name of the current tag.
-
-    print $tag->name;
-
-=head2 updated
-
-Returns the date and time in UTC the tag was last updated as a DateTime
-object.
-
-    print $user->updated;
+Loads a specific role.
 
 =head1 SEE ALSO
 
-L<Mango::Object>, L<Mango::Product>
+L<Mango::Catalyst::Model::Roles>, L<Mango::Provider::Roles>
 
 =head1 AUTHOR
 

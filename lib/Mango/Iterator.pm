@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Iterator;
 use strict;
 use warnings;

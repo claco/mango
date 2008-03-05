@@ -78,7 +78,7 @@ Mango::Catalyst::Plugin::Authentication - Custom Catalyst Authentication Plugin
     use Catalyst qw/
         -Debug
         ConfigLoader
-        +Mango::Catalyst::Plugin::Authentication
+        +Mango::Catalyst::Plugin::Application
         Static::Simple
     /;
 
@@ -100,6 +100,8 @@ anonymous user information in the same way:
 
 When authenticating users, the C<mango> realm will be used, which in turn uses
 Mango::Catalyst::Plugin::Authentication::Store to authenticate users.
+
+This plugin also supports HTTP Authentication using Basic and Digest.
 
 =head1 CONFIGURATION
 
@@ -131,6 +133,38 @@ See L<Mango::Catalyst::Plugin::Authentication::Store> for further information
 about what the available configuration options mean.
 
 =head1 METHODS
+
+=head2 authenticate
+
+=over
+
+=item Arguments: \%info (optional)
+
+=back
+
+Authenticates the user using the specified username/password:
+
+    if ($c->authenticate({
+        username => $username,
+        password => $password
+    })) {
+        ...
+    };
+
+If not information is supplied, HTTP Authentication will be tried instead:
+
+    if ($c->authenticate) {
+        ...
+    };
+
+=head2 is_admin
+
+Returns true if the current user is authenticate and is the admin role.
+This should probably be moved into the custom user subclass.
+
+=head2 unauthorized
+
+Sets the template and http status to 401 Unauthorized.
 
 =head2 user
 

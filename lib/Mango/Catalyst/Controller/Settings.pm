@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Settings;
 use strict;
 use warnings;
@@ -47,3 +48,31 @@ sub profile : Local Template('settings/profile') {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Settings - Catalyst controller for users settings
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Settings provides the web interface for
+users to change their website settings/preferences.
+
+=head1 ACTIONS
+
+=head2 profile : /settings/profile/
+
+Updates the users profile information.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Profiles>, L<Mango::Provider::Profiles>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+

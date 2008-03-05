@@ -238,6 +238,55 @@ has been added:
         json      => JSON
         yml, yaml => YAML
 
+=head1 METHODS
+
+=head2 entity
+
+=over
+
+=item Arguments: $data, $pager
+
+=back
+
+Gets/sets the entity data used for RESTish requests and responses.
+
+=head2 wants_atom
+
+Returns true if the client is requesting an atom feed.
+
+=head2 wants_feed
+
+Returns true if the client is requesting a feed (atom/rss).
+
+=head2 wants_rss
+
+Returns true if the client is requesting an rss feed.
+
+=head2 wants_browser
+
+Returns true if the client appears to be a a web browser and/or is requesting
+html-like resources.
+
+=head2 wants_html
+
+Returns true if the client is requesting html.
+
+=head2 wants_xhtml
+
+Returns true if the client is requesting xhtml.
+
+=head2 wants_json
+
+Returns true if the client is requesting json.
+
+=head2 wants_yaml
+
+Returns true if the client is requesting yaml.
+
+=head2 wants_text
+
+Returns true if the client is requesting text.
+
 =head1 SEE ALSO
 
 L<Catalyst::Action::REST>

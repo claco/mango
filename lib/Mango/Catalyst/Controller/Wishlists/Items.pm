@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Wishlists::Items;
 use strict;
 use warnings;
@@ -67,3 +68,38 @@ sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
 };
  
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Wishlists::Items - Catalyst controller for wishlist item information
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Wishlists::Items provides the web interface for
+the current users wishlist items.
+
+=head1 ACTIONS
+
+=head2 delete : /wishlists/<id>/items/<id>/delete/
+
+Removes the specified item from the specified wishlist.
+
+=head2 instance : /wishlists/<id>/items/<id>/
+
+Loads the specified wishlist item form the specified wishlist.
+
+=head2 update : /wishlists/<id>/items/<id>/update/
+
+Updates the specified item in the specified wishlist.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Controller::Wishlists>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

@@ -60,6 +60,10 @@ Gets/sets the first name of the current profile.
 
     print $profile->first_name;
 
+=head2 full_name
+
+Returns the full name ("$firstname $lastname") for the current profile.
+
 =head2 id
 
 Returns the id of the current profile.

@@ -1,6 +1,9 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added just enough pod to get spelling/coverage happy.
+        Needs serious cleanup.
+
 0.01000_10 Fri Jan 18 22:27:19 2008
     - Added Atom/RSS Feeds to Wishlists
     - Added Atom/RSS Feeds to Products(tags)

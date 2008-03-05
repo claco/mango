@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Cart;
 use strict;
 use warnings;
@@ -130,21 +131,17 @@ Adds and item to the cart.
 
 Removes all items from the cart.
 
-=head2 delete : /cart/delete/
-
-Remove an item for the cart.
-
 =head2 index : /cart/
 
 Displays the contents of the cart.
 
+=head2 instance : /cart/
+
+Loads the current users cart.
+
 =head2 restore : /cart/restore/
 
 Restores a wishlist into the cart.
-
-=head2 update : /cart/update/
-
-Updates and item in the cart.
 
 =head1 SEE ALSO
 

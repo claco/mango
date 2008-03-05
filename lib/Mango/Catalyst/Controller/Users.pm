@@ -86,17 +86,17 @@ display users and their information.
 
 =head1 ACTIONS
 
-=head2 default : /
+=head2 create : /users/create/
 
-Displays the not found page for non exisistant urls.
+Creates, or 'signs up' a new user.
 
-=head2 end
+=head2 instance : /users/<username>/
 
-Sends the request to the RenderView action.
+Loads the specified user.
 
-=head2 index : /
+=head2 view : /users/<username>/
 
-Displays the current homepage.
+Displays information for the specified user.
 
 =head1 AUTHOR
 

@@ -668,6 +668,17 @@ those products tags.
 
 =back
 
+=head2 related_tags
+
+=over
+
+=item Arguments: \%filter
+
+=back
+
+Returns a list or iterator of tags related to the specified products/tags,
+excluding the already selected tags.
+
 =head2 update
 
 =over

@@ -90,7 +90,7 @@ __END__
 
 =head1 NAME
 
-Mango::Catalyst::Model::Provider - Catalyst::Model/Mango::Provider glue
+Mango::Catalyst::Model::Provider - Catalyst model for Mango::Provider classes
 
 =head1 DESCRIPTION
 

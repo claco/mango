@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Root;
 use strict;
 use warnings;
@@ -40,7 +41,7 @@ the homepage.
 
 =head2 default : /
 
-Displays the not found page for non exisistant urls.
+Displays the not found page for non-exisistent urls.
 
 =head2 end
 

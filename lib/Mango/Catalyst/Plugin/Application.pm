@@ -38,3 +38,58 @@ sub uri_for_resource {
 };
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Plugin::Application - Catalyst plugin loading all Mango specific plugins
+
+=head1 SYNOPSIS
+
+    use Catalyst qw/
+        -Debug
+        ConfigLoader
+        Mango::Catalyst::Plugin::Application
+        Static::Simple
+    /;
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Plugin::Application loads all Mango related plugins into a
+Catalyst application.
+
+=head1 METHODS
+
+=head2 register_resource
+
+=over
+
+=item Arguments: $name, $class
+
+=back
+
+Associates the specified class with the given name so controllers can be
+referred to by a nickname with Mango code when the class name is unknown or
+may change in subclasses.
+
+=head2 uri_for_resource
+
+=over
+
+=item Arguments: $name, $action, @args
+
+=back
+
+Looks up the class name for the specified resource and returns a uri for the
+given action using C<uri_for>.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Plugin::Authentication>, L<Mango::Catalyst::Plugin::I18N>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

@@ -20,6 +20,18 @@ add_stopwords(<DATA>);
 all_pod_files_spelling_ok();
 
 __DATA__
+RESTish
+urls
+exisistent
+RenderView
+logins
+logouts
+responses
+uri
+json
+yaml
+rss
+atom
 param
 MyApp
 myapp

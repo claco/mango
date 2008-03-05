@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Admin::Products::Attributes;
 use strict;
 use warnings;
@@ -129,67 +130,43 @@ __END__
 
 =head1 NAME
 
-Mango::Tag - Module representing a [folksonomy] tag
+Mango::Catalyst::Controller::Admin::Products::Attributes - Catalyst controller for product attribute admin
 
 =head1 SYNOPSIS
 
-    my $tags = $product->tags;
-    
-    while (my $tag = %tags->next) {
-        print $tag->name;
-    };
+    package MyApp::Controllers::Admin::Products::Attributes;
+    use base qw/Mango::Catalyst::Controllers::Admin::Products::Attributes/;
 
 =head1 DESCRIPTION
 
-Mango::Tag represents a tag assigned to products.
+Mango::Catalyst::Controller::Admin::Products::Attributes is the controller
+used to edit a specific products attributes.
 
-=head1 METHODS
+=head1 ACTIONS
 
-=head2 count
+=head2 index : products/<id>/attributes
 
-Returns the number of instances this tag.
+Displays the list of attributes for a specific product.
 
-B<This is not currently implemented and always returns 0>.
+=head2 create : products/<id>/attributes/create
 
-=head2 created
+Adds an attribute to the given product.
 
-Returns the date and time in UTC the tag was created as a DateTime
-object.
+=head2 delete : products/<id>/attributes/<id>/delete
 
-    print $user->created;
+Deletes the specified attribute form the current product.
 
-=head2 destroy
+=head2 edit : products/<id>/attributes/<id>/edit
 
-B<This is not currently implemented>.
+Updates the specified attribute.
 
-=head2 id
+=head2 load : products/<id>/attributes/<id>
 
-Returns the id of the current tag.
-
-    print $tag->id;
-
-=head2 name
-
-=over
-
-=item Arguments: $name
-
-=back
-
-Gets/sets the name of the current tag.
-
-    print $tag->name;
-
-=head2 updated
-
-Returns the date and time in UTC the tag was last updated as a DateTime
-object.
-
-    print $user->updated;
+Loads a specific products attribute.
 
 =head1 SEE ALSO
 
-L<Mango::Object>, L<Mango::Product>
+L<Mango::Catalyst::Controller::Admin::Products>
 
 =head1 AUTHOR
 

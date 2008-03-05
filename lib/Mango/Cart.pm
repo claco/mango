@@ -297,6 +297,14 @@ object.
 Assigns the current cart to the specified user. This can be a Mango::User
 object or the user id.
 
+=head2 name
+
+This is a carry over from Handel and has no effect in Mango.
+
+=head2 description
+
+This is a carry over from Handel and has no effect in Mango.
+
 =head1 SEE ALSO
 
 L<Mango::Cart::Item>, L<Mango::Schema::Cart>

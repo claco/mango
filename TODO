@@ -14,3 +14,4 @@ $Id$
 - test non deletes of other peoples wishlists when passing ids that exist for 
 	other users
 - clean up Auth/Store/User stuff, esp $user->refreshß
+- Added OpenID

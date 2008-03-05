@@ -49,3 +49,50 @@ sub forms {
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Plugin::Forms - Catalyst plugin for application wide forms
+
+=head1 SYNOPSIS
+
+    use Catalyst qw/
+        -Debug
+        ConfigLoader
+        Mango::Catalyst::Plugin::Forms
+        Static::Simple
+    /;
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Plugin::Forms exposes all of the Mango forms loaded into the
+current Mango application.
+
+=head1 METHODS
+
+=head2 add_form
+
+=over
+
+=item Arguments: $form, $name
+
+=back
+
+Adds a form by name to the collection of application forms. If not specified,
+the name will be taken from the forms name attribute.
+
+=head2 forms
+
+Gets the collection of Mango::Form objects loaded into the current
+application.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Controller::Form>, L<Mango::Form>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

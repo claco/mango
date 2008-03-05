@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Products;
 use strict;
 use warnings;
@@ -121,9 +122,25 @@ displaying products.
 
 =head1 ACTIONS
 
-=head2 index : /
+=head2 instance : /products/<sku>/
 
-Displays the main product page.
+Loads a specific product.
+
+=head2 list : /products/
+
+Lists featured products and the tag cloud.
+
+=head2 tags : /products/tags/@tags
+
+Displays a list of products belonging to the specified set of tags.
+
+=head2 view : /products/<sku>/
+
+Displays details about the specified product.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Products>, L<Mango::Provider::Products>
 
 =head1 AUTHOR
 

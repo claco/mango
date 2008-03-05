@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Login;
 use strict;
 use warnings;

@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Admin::Products;
 use strict;
 use warnings;
@@ -153,67 +154,43 @@ __END__
 
 =head1 NAME
 
-Mango::Tag - Module representing a [folksonomy] tag
+Mango::Catalyst::Controller::Admin::Products - Catalyst controller for product admin
 
 =head1 SYNOPSIS
 
-    my $tags = $product->tags;
-    
-    while (my $tag = %tags->next) {
-        print $tag->name;
-    };
+    package MyApp::Controllers::Admin::Products;
+    use base qw/Mango::Catalyst::Controllers::Admin::Products/;
 
 =head1 DESCRIPTION
 
-Mango::Tag represents a tag assigned to products.
+Mango::Catalyst::Controller::Admin::Products is the controller
+used to edit products.
 
-=head1 METHODS
+=head1 ACTIONS
 
-=head2 count
+=head2 index : /admin/products/
 
-Returns the number of instances this tag.
+Displays the list of products.
 
-B<This is not currently implemented and always returns 0>.
+=head2 create : /admin/products/create/
 
-=head2 created
+Creates a new product.
 
-Returns the date and time in UTC the tag was created as a DateTime
-object.
+=head2 delete : /admin/products/<id>/delete/
 
-    print $user->created;
+Deletes the specified product.
 
-=head2 destroy
+=head2 edit : /admin/products/<id>/edit/
 
-B<This is not currently implemented>.
+Updates the specified product.
 
-=head2 id
+=head2 load : /admin/products/<id>/
 
-Returns the id of the current tag.
-
-    print $tag->id;
-
-=head2 name
-
-=over
-
-=item Arguments: $name
-
-=back
-
-Gets/sets the name of the current tag.
-
-    print $tag->name;
-
-=head2 updated
-
-Returns the date and time in UTC the tag was last updated as a DateTime
-object.
-
-    print $user->updated;
+Loads a specific product.
 
 =head1 SEE ALSO
 
-L<Mango::Object>, L<Mango::Product>
+L<Mango::Catalyst::Model::Products>, L<Mango::Provider::Products>
 
 =head1 AUTHOR
 
@@ -221,4 +198,3 @@ L<Mango::Object>, L<Mango::Product>
     CPAN ID: CLACO
     claco@chrislaco.com
     http://today.icantfocus.com/blog/
-

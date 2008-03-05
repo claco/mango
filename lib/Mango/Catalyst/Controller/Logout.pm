@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Logout;
 use strict;
 use warnings;

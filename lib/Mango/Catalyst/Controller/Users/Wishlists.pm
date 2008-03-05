@@ -1,3 +1,4 @@
+# $Id$
 package Mango::Catalyst::Controller::Users::Wishlists;
 use strict;
 use warnings;
@@ -100,3 +101,38 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS') Tem
 
 1;
 __END__
+
+=head1 NAME
+
+Mango::Catalyst::Controller::Users::Wishlists - Catalyst controller for displaying any users wishlists
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Controller::Users::Wishlists provides the web interface to
+display any users wishlists and their contents.
+
+=head1 ACTIONS
+
+=head2 instance : /users/<username>/wishlists/<id>/
+
+Loads the specified wishlist item for the specified user.
+
+=head2 list : /users/<username>/wishlists/
+
+Lists the available wishlists for the specified user.
+
+=head2 view : /users/<username>/wishlists/<id>/
+
+View the details for the specified wishlist for the specified user.
+
+=head1 SEE ALSO
+
+L<Mango::Catalyst::Model::Wishlists>, L<Mango::Provider::Wishlists>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/
+
