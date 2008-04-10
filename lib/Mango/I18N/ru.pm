@@ -1,4 +1,4 @@
-## no critic
+## no critic (ProhibitPackageVars)
 # $Id$
 package Mango::I18N::ru;
 use strict;
@@ -8,11 +8,9 @@ use vars qw/%Lexicon/;
 
 BEGIN {
     use base qw/Mango::I18N/;
-};
+}
 
-%Lexicon = (
-    Language => 'русском',
-);
+%Lexicon = ( Language => 'русском' );
 
 1;
 __END__

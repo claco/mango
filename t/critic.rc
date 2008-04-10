@@ -1,0 +1,35 @@
+# $Id$
+# Remember to Id keyword our files
+[Miscellanea::RequireRcsKeywords]
+keywords = Id
+
+[CodeLayout::RequireTidyCode]
+perltidyrc = t/perltidy.rc
+
+# Only in Mango.pm thank you
+[-Modules::RequireVersionVar]
+
+# Just the basics
+[Documentation::RequirePodSections]
+lib_sections = NAME | SYNOPSIS | DESCRIPTION | AUTHOR
+
+# delete is a perfectly fine name and index is in Catalyst
+[-Subroutines::ProhibitBuiltinHomonyms]
+
+# regex madness
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+
+# True, but helpful
+[-ClassHierarchies::ProhibitAutoloading]
+
+# lots of passing @_ along for the ride to the target
+[-Subroutines::RequireArgUnpacking]
+
+# How is q{} more efficient than ''
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+
+# definitely not print
+[InputOutput::RequireCheckedSyscalls]
+functions = open opendir read readline readdir close closedir

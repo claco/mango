@@ -6,15 +6,17 @@ use warnings;
 BEGIN {
     use base qw/DBIx::Class/;
     use DateTime ();
-};
+}
 
-__PACKAGE__->load_components(qw/
-    +Handel::Components::DefaultValues
-    +Handel::Components::Constraints
-    +Handel::Components::Validation
-    InflateColumn::DateTime
-    Core
-/);
+__PACKAGE__->load_components(
+    qw/
+      +Handel::Components::DefaultValues
+      +Handel::Components::Constraints
+      +Handel::Components::Validation
+      InflateColumn::DateTime
+      Core
+      /
+);
 __PACKAGE__->table('role');
 __PACKAGE__->source_name('Roles');
 __PACKAGE__->add_columns(
@@ -22,7 +24,7 @@ __PACKAGE__->add_columns(
         data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
-        extras            => {unsigned => 1}
+        extras            => { unsigned => 1 }
     },
     name => {
         data_type   => 'VARCHAR',
@@ -35,33 +37,29 @@ __PACKAGE__->add_columns(
         is_nullable => 1
     },
     created => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0,
-        extra         => {
-            timezone  => 'UTC'
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     },
     updated => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0,
-        extra         => {
-            timezone  => 'UTC'
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     }
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint(
-    name => [qw/name/]
-);
+__PACKAGE__->add_unique_constraint( name => [qw/name/] );
 __PACKAGE__->has_many(
     map_user_role => 'Mango::Schema::UserRole',
-    {'foreign.role_id' => 'self.id'}
+    { 'foreign.role_id' => 'self.id' }
 );
-__PACKAGE__->many_to_many(users => 'map_user_role', 'user');
-__PACKAGE__->default_values({
-    created => sub {DateTime->now},
-    updated => sub {DateTime->now}
-});
+__PACKAGE__->many_to_many( users => 'map_user_role', 'user' );
+__PACKAGE__->default_values(
+    {
+        created => sub { DateTime->now },
+        updated => sub { DateTime->now }
+    }
+);
 
 1;
 __END__

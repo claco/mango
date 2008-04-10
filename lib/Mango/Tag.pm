@@ -7,16 +7,18 @@ BEGIN {
     use base qw/Mango::Object/;
     use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('column', qw/name/);
-};
+    __PACKAGE__->mk_group_accessors( 'column', qw/name/ );
+}
 
 sub count {
     return shift->{'count'} || 0;
-};
+}
 
 sub destroy {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
-};
+
+    return;
+}
 
 1;
 __END__

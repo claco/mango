@@ -5,121 +5,119 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Provider/;
-    use Scalar::Util ();
-    use DateTime ();
+    use Scalar::Util    ();
+    use DateTime        ();
     use Mango::Iterator ();
     use Mango::Exception qw/:try/;
 
-    __PACKAGE__->mk_group_accessors('component_class', qw/schema_class/);
-    __PACKAGE__->mk_group_accessors('inherited', qw/
-        source_name
-        connection_info
-        updated_column
-        _resultset
-        _schema
-    /);
-};
+    __PACKAGE__->mk_group_accessors( 'component_class', qw/schema_class/ );
+    __PACKAGE__->mk_group_accessors(
+        'inherited', qw/
+          source_name
+          connection_info
+          updated_column
+          _resultset
+          _schema
+          /
+    );
+}
 __PACKAGE__->schema_class('Mango::Schema');
 __PACKAGE__->updated_column('updated');
 
 sub create {
-    my ($self, $data) = @_;
+    my ( $self, $data ) = @_;
     my $result = $self->resultset->create($data);
 
-    return $self->result_class->new({
-        $result->get_inflated_columns,
-        meta => {
-            provider => $self
-        }
-    });
-};
+    return $self->result_class->new(
+        { $result->get_inflated_columns, meta => { provider => $self } } );
+}
 
 sub delete {
-    my ($self, $filter) = @_;
+    my ( $self, $filter ) = @_;
 
-    if (Scalar::Util::blessed $filter) {
-        $filter = {id => $filter->id};
-    } elsif (ref $filter ne 'HASH') {
-        $filter = {id => $filter};
-    };
+    if ( Scalar::Util::blessed $filter) {
+        $filter = { id => $filter->id };
+    } elsif ( ref $filter ne 'HASH' ) {
+        $filter = { id => $filter };
+    }
 
     return $self->resultset->search($filter)->delete_all;
-};
+}
 
 sub resultset {
-    my ($self, $resultset) = @_;
+    my ( $self, $resultset ) = @_;
 
-    if (defined $resultset) {
+    if ( defined $resultset ) {
         $self->_resultset($resultset);
-    } elsif (!$self->_resultset) {
-        if (!$self->source_name) {
+    } elsif ( !$self->_resultset ) {
+        if ( !$self->source_name ) {
             Mango::Exception->throw('SCHEMA_SOURCE_NOT_SPECIFIED');
-        };
+        }
 
         try {
-            $self->_resultset($self->schema->resultset($self->source_name));
-        } except {
-            Mango::Exception->throw('SCHEMA_SOURCE_NOT_FOUND', $self->source_name);
+            $self->_resultset(
+                $self->schema->resultset( $self->source_name ) );
+        }
+        except {
+            Mango::Exception->throw( 'SCHEMA_SOURCE_NOT_FOUND',
+                $self->source_name );
         };
-    };
+    }
 
     return $self->_resultset;
-};
+}
 
 sub schema {
-    my ($self, $schema) = @_;
+    my ( $self, $schema ) = @_;
 
     if ($schema) {
         $self->_schema($schema);
-    } elsif (!$self->_schema) {
-        if (!$self->schema_class) {
+    } elsif ( !$self->_schema ) {
+        if ( !$self->schema_class ) {
             Mango::Exception->throw('SCHEMA_CLASS_NOT_SPECIFIED');
-        };
+        }
         $self->_schema(
-            $self->schema_class->connect(@{$self->connection_info || []})
+            $self->schema_class->connect( @{ $self->connection_info || [] } )
         );
-    };
+    }
 
     return $self->_schema;
-};
+}
 
 sub search {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
     $filter  ||= {};
     $options ||= {};
 
-    my $resultset = $self->resultset->search($filter, $options);
+    my $resultset = $self->resultset->search( $filter, $options );
     my @results = map {
-        $self->result_class->new({
-            $_->get_inflated_columns,
-            meta => {
-                provider => $self
-            }
-        })
+        $self->result_class->new(
+            { $_->get_inflated_columns, meta => { provider => $self } } )
     } $resultset->all;
 
     if (wantarray) {
         return @results;
     } else {
-        return Mango::Iterator->new({
-            provider => $self,
-            data => \@results,
-            pager => $options->{'page'} ? $resultset->pager : undef
-        });
-    };
-};
+        return Mango::Iterator->new(
+            {
+                provider => $self,
+                data     => \@results,
+                pager    => $options->{'page'} ? $resultset->pager : undef
+            }
+        );
+    }
+}
 
 sub update {
-    my ($self, $object) = @_;
+    my ( $self, $object ) = @_;
     my $updated_column = $self->updated_column;
 
-    $object->$updated_column(DateTime->now);
+    $object->$updated_column( DateTime->now );
 
-    return $self->resultset->find($object->id)->update(
-        {$object->get_columns}
-    );
-};
+    return $self->resultset->find( $object->id )
+      ->update( { $object->get_columns } );
+}
 
 1;
 __END__

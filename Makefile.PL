@@ -37,6 +37,7 @@ requires 'Handel' => '1.00009';
 requires 'HTML::TagCloud::Sortable';
 requires 'I18N::LangTags';
 requires 'I18N::LangTags::Detect';
+requires 'List::MoreUtils';
 requires 'Locale::Maketext';
 requires 'MIME::Types';
 requires 'Module::Starter' => '1.42';

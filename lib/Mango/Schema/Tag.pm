@@ -6,15 +6,17 @@ use warnings;
 BEGIN {
     use base qw/DBIx::Class/;
     use DateTime ();
-};
+}
 
-__PACKAGE__->load_components(qw/
-    +Handel::Components::DefaultValues
-    +Handel::Components::Constraints
-    +Handel::Components::Validation
-    InflateColumn::DateTime
-    Core
-/);
+__PACKAGE__->load_components(
+    qw/
+      +Handel::Components::DefaultValues
+      +Handel::Components::Constraints
+      +Handel::Components::Validation
+      InflateColumn::DateTime
+      Core
+      /
+);
 __PACKAGE__->table('tag');
 __PACKAGE__->source_name('Tags');
 __PACKAGE__->add_columns(
@@ -22,7 +24,7 @@ __PACKAGE__->add_columns(
         data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
-        extras            => {unsigned => 1}
+        extras            => { unsigned => 1 }
     },
     name => {
         data_type   => 'VARCHAR',
@@ -30,33 +32,29 @@ __PACKAGE__->add_columns(
         is_nullable => 0
     },
     created => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0,
-        extra         => {
-            timezone  => 'UTC'
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     },
     updated => {
-        data_type     => 'DATETIME',
-        is_nullable   => 0,
-        extra         => {
-            timezone  => 'UTC'
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     }
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint(
-    tag_name => [qw/name/]
-);
+__PACKAGE__->add_unique_constraint( tag_name => [qw/name/] );
 __PACKAGE__->has_many(
     map_product_tag => 'Mango::Schema::ProductTag',
-    {'foreign.tag_id' => 'self.id'}
+    { 'foreign.tag_id' => 'self.id' }
 );
-__PACKAGE__->many_to_many(products => 'map_product_tag', 'product');
-__PACKAGE__->default_values({
-    created => sub {DateTime->now},
-    updated => sub {DateTime->now}
-});
+__PACKAGE__->many_to_many( products => 'map_product_tag', 'product' );
+__PACKAGE__->default_values(
+    {
+        created => sub { DateTime->now },
+        updated => sub { DateTime->now }
+    }
+);
 
 1;
 __END__

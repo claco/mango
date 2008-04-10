@@ -5,11 +5,9 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Model::Provider/;
-};
+}
 
-__PACKAGE__->config(
-    provider_class => 'Mango::Provider::Wishlists'
-);
+__PACKAGE__->config( provider_class => 'Mango::Provider::Wishlists' );
 
 1;
 __END__
@@ -17,6 +15,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Model::Wishlists - Catalyst model for wishlist information
+
+=head1 SYNOPSIS
+
+    package MyApp::Model::Wishlists;
+    use base 'Mango::Catalyst::Model::Wishlists';
 
 =head1 DESCRIPTION
 

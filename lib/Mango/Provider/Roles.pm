@@ -6,101 +6,110 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
     use Mango::Exception ();
-    use Scalar::Util ();
-};
+    use Scalar::Util     ();
+}
 __PACKAGE__->result_class('Mango::Role');
 __PACKAGE__->source_name('Roles');
 
 *add_user = \&add_users;
 
 sub add_users {
-    my ($self, $role, @users) = @_;
+    my ( $self, $role, @users ) = @_;
 
-    if (Scalar::Util::blessed($role)) {
-        if ($role->isa('Mango::Role')) {
+    if ( Scalar::Util::blessed($role) ) {
+        if ( $role->isa('Mango::Role') ) {
             $role = $role->id;
         } else {
             Mango::Exception->throw('NOT_A_ROLE');
-        };
-    };
+        }
+    }
 
     foreach my $user (@users) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 $user = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
-        };
+            }
+        }
 
-        $self->schema->resultset('UsersRoles')->create({
-            user_id => $user,
-            role_id => $role
-        });
-    };
-};
+        $self->schema->resultset('UsersRoles')->create(
+            {
+                user_id => $user,
+                role_id => $role
+            }
+        );
+    }
+
+    return;
+}
 
 *remove_user = \&remove_users;
 
 sub remove_users {
-    my ($self, $role, @users) = @_;
+    my ( $self, $role, @users ) = @_;
 
-    if (Scalar::Util::blessed($role)) {
-        if ($role->isa('Mango::Role')) {
+    if ( Scalar::Util::blessed($role) ) {
+        if ( $role->isa('Mango::Role') ) {
             $role = $role->id;
         } else {
             Mango::Exception->throw('NOT_A_ROLE');
-        };
-    };
+        }
+    }
 
     my @ids;
     foreach my $user (@users) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 push @ids, $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             push @ids, $user;
-        };
-    };
-    $self->schema->resultset('UsersRoles')->search({
-        role_id => $role,
-        user_id => \@ids
-    })->delete;
-};
+        }
+    }
+    $self->schema->resultset('UsersRoles')->search(    ## no critic
+        {
+            role_id => $role,
+            user_id => \@ids
+        }
+    )->delete;
+
+    return;
+}
 
 sub search {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
-    if (my $user = delete $filter->{'user'}) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+    if ( my $user = delete $filter->{'user'} ) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 $filter->{'user.id'} = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             $filter->{'user.id'} = $user;
-        };
-        
+        }
+
         $options->{'distinct'} = 1;
-        if (defined $options->{'join'}) {
-            if (!ref $options->{'join'} || ref $options->{'join'} eq 'HASH') {
-                $options->{'join'} = [$options->{'join'}];
-            };
+        if ( defined $options->{'join'} ) {
+            if ( !ref $options->{'join'} || ref $options->{'join'} eq 'HASH' )
+            {
+                $options->{'join'} = [ $options->{'join'} ];
+            }
         } else {
             $options->{'join'} = [];
-        };
-        push @{$options->{'join'}}, {'map_user_role' => 'user'};
-    };
+        }
+        push @{ $options->{'join'} }, { 'map_user_role' => 'user' };
+    }
 
-    return $self->SUPER::search($filter, $options);
-};
+    return $self->SUPER::search( $filter, $options );
+}
 
 1;
 __END__
@@ -134,8 +143,8 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Roles->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
-possible options.
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of
+other possible options.
 
 =head1 METHODS
 
@@ -210,8 +219,8 @@ Returns undef if no matching role can be found.
 
 =back
 
-Removes the specified users from the specified role. C<users> can be user objects
-or user ids and C<role> can be a role object or a role id.
+Removes the specified users from the specified role. C<users> can be user
+objects or user ids and C<role> can be a role object or a role id.
 
     my $role = $provider->get_by_id(23);
     $provider->remove_users($role, 23, $user);
@@ -239,7 +248,8 @@ in scalar context matching the specified filter.
         name => 'A%'
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 

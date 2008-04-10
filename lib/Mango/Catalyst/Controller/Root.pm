@@ -7,23 +7,27 @@ BEGIN {
     use base qw/Catalyst::Controller/;
 
     __PACKAGE__->config->{'namespace'} = '';
-};
+}
 
 sub index : Template('index') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-};
+    return;
+}
 
 sub default : Template('errors/404') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
     $c->response->status(404);
-};
+
+    return;
+}
 
 sub end : ActionClass('RenderView') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-};
+    return;
+}
 
 1;
 __END__
@@ -31,6 +35,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Controller::Root - Catalyst controller for the homepage
+
+=head1 SYNOPSIS
+
+    package MyApp::Controller::Root;
+    use base 'Mango::Catalyst::Controller::Root';
 
 =head1 DESCRIPTION
 

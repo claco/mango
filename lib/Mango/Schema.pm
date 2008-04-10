@@ -7,17 +7,15 @@ BEGIN {
     use base qw/DBIx::Class::Schema/;
 
     use Mango::Exception ();
-};
+}
 __PACKAGE__->load_classes;
 
 sub connect {
-    my ($class, $dsn, $user, $password, $attr) = @_;
+    my ( $class, $dsn, $user, $password, $attr ) = @_;
 
-    $attr ||= {
-        AutoCommit => 1
-    };
+    $attr ||= { AutoCommit => 1 };
 
-    my $schema = $class->next::method($dsn, $user, $password, $attr);
+    my $schema = $class->next::method( $dsn, $user, $password, $attr );
 
     $schema->exception_action(
         sub {
@@ -26,7 +24,7 @@ sub connect {
     );
 
     return $schema;
-};
+}
 
 1;
 __END__

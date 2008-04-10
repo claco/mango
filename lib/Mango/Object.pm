@@ -5,108 +5,109 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
+    use English '-no_match_vars';
     use Mango::Object::Meta;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/_meta_data _meta_object/);
-    __PACKAGE__->mk_group_accessors('column', qw/id created updated/);
-    __PACKAGE__->mk_group_accessors('component_class', qw/meta_class/);
-};
+    __PACKAGE__->mk_group_accessors( 'simple', qw/_meta_data _meta_object/ );
+    __PACKAGE__->mk_group_accessors( 'column', qw/id created updated/ );
+    __PACKAGE__->mk_group_accessors( 'component_class', qw/meta_class/ );
+}
 __PACKAGE__->meta_class('Mango::Object::Meta');
 
 sub new {
     my $class = shift;
-    my $self = bless(shift || {}, $class);
+    my $self = bless shift || {}, $class;
 
-    if (my $meta = delete $self->{'meta'}) {
+    if ( my $meta = delete $self->{'meta'} ) {
         $self->_meta_data($meta);
-    };
+    }
 
-    if (my $meta_class = delete $self->{'meta_class'}) {
+    if ( my $meta_class = delete $self->{'meta_class'} ) {
         $self->meta_class($meta_class);
-    };
+    }
 
     return $self;
-};
+}
 
 sub meta {
     my $self = shift;
 
-    if (!$self->_meta_object) {
-        if (!$self->_meta_data) {
-            $self->_meta_data({});
-        };
-        $self->_meta_object(
-            $self->meta_class->new($self->_meta_data)
-        );
-    };
+    if ( !$self->_meta_object ) {
+        if ( !$self->_meta_data ) {
+            $self->_meta_data( {} );
+        }
+        $self->_meta_object( $self->meta_class->new( $self->_meta_data ) );
+    }
 
     return $self->_meta_object;
-};
+}
 
 sub get_column {
-    my ($self, $column) = @_;
+    my ( $self, $column ) = @_;
 
     return $self->{$column};
-};
+}
 
 sub get_columns {
     my $self = shift;
     my %columns;
 
-    foreach my $column (keys %{$self}) {
+    foreach my $column ( keys %{$self} ) {
         next if $column =~ /^_/;
 
         $columns{$column} = $self->{$column};
-    };
+    }
 
     return %columns;
-};
+}
 
 sub set_column {
-    my ($self, $column, $value) = @_;
+    my ( $self, $column, $value ) = @_;
 
     return $self->{$column} = $value;
-};
+}
 
 sub destroy {
     my $self = shift;
 
     return $self->meta->provider->delete($self);
-};
+}
 
 sub update {
     my $self = shift;
 
     return $self->meta->provider->update($self);
-};
+}
 
 ## these need to go into CAG so I can stop repeating myself when using CAG
 ## in projects
 sub get_component_class {
-    my ($self, $field) = @_;
+    my ( $self, $field ) = @_;
 
     return $self->get_inherited($field);
-};
+}
 
 sub set_component_class {
-    my ($self, $field, $value) = @_;
+    my ( $self, $field, $value ) = @_;
 
     if ($value) {
         require Class::Inspector;
-        if (!Class::Inspector->loaded($value)) {
-            eval "use $value"; ## no critic
+        if ( !Class::Inspector->loaded($value) ) {
+            eval "use $value";    ## no critic
 
-            Mango::Exception->throw('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
-        };
+            if ($EVAL_ERROR) {
+                Mango::Exception->throw( 'COMPCLASS_NOT_LOADED', $field,
+                    $value, $EVAL_ERROR );
+            }
+        }
 
-        $self->set_inherited($field, $value);
+        $self->set_inherited( $field, $value );
     } else {
-        Mango::Exception->throw('COMPCLASS_NOT_SPECIFIED', $field);
-    };
+        Mango::Exception->throw( 'COMPCLASS_NOT_SPECIFIED', $field );
+    }
 
     return;
-};
-
+}
 1;
 __END__
 
@@ -135,8 +136,9 @@ L</update>, etc.
 
 =back
 
-Creates a new object, assigned each name/value pair to columns of the same name.
-In addition to using the column names, the following special keys are available:
+Creates a new object, assigned each name/value pair to columns of the same
+name. In addition to using the column names, the following special keys are
+available:
 
 =over
 

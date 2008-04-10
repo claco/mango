@@ -5,11 +5,9 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Model::Provider/;
-};
+}
 
-__PACKAGE__->config(
-    provider_class => 'Mango::Provider::Carts'
-);
+__PACKAGE__->config( provider_class => 'Mango::Provider::Carts' );
 
 1;
 __END__
@@ -17,6 +15,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Model::Carts - Catalyst model for cart information
+
+=head1 SYNOPSIS
+
+    package MyApp::Model::Carts;
+    use base 'Mango::Catalyst::Model::Carts';
 
 =head1 DESCRIPTION
 

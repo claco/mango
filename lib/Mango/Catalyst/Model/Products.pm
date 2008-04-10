@@ -5,11 +5,9 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Model::Provider/;
-};
+}
 
-__PACKAGE__->config(
-    provider_class => 'Mango::Provider::Products'
-);
+__PACKAGE__->config( provider_class => 'Mango::Provider::Products' );
 
 1;
 __END__
@@ -18,11 +16,16 @@ __END__
 
 Mango::Catalyst::Model::Products - Catalyst model for product information
 
+=head1 SYNOPSIS
+
+    package MyApp::Model::Products;
+    use base 'Mango::Catalyst::Model::Products';
+
 =head1 DESCRIPTION
 
-Mango::Catalyst::Model::Products provides glue between Mango::Provider::Products
-and Catalyst models. If you would like to use a different provider, simply set
-C<provider_class>:
+Mango::Catalyst::Model::Products provides glue between
+Mango::Provider::Products and Catalyst models. If you would like to use a
+different provider, simply set C<provider_class>:
 
     __PACKAGE__->provider_class('OtherProductProvider');
 

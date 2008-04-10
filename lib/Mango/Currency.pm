@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/Handel::Currency/;
-};
+}
 
 1;
 __END__

@@ -5,8 +5,10 @@ use warnings;
 
 BEGIN {
     use base qw/Error/;
+
+    use List::MoreUtils ();
     use Mango::I18N qw/translate/;
-};
+}
 
 my $lh = Mango::I18N->get_handle;
 
@@ -14,20 +16,21 @@ sub new {
     my $class = shift;
 
     ## use the errors style args
-    if (grep /^-/, @_) {
+    if ( List::MoreUtils::any( sub { $_ =~ /^-/ }, @_ ) ) {
         my %args = @_;
-        my $message = translate(delete $args{'-text'} || 'UNHANDLED_EXCEPTION');
+        my $message =
+          translate( delete $args{'-text'} || 'UNHANDLED_EXCEPTION' );
 
         return $class->SUPER::new(
-            -text => $message, %args
+            -text => $message,
+            %args
         );
-    ## just a message/params
+        ## just a message/params
     } else {
         return $class->SUPER::new(
-            -text => translate(shift || 'UNHANDLED_EXCEPTION', @_)
-        );
-    };
-};
+            -text => translate( shift || 'UNHANDLED_EXCEPTION', @_ ) );
+    }
+}
 
 1;
 __END__
@@ -44,8 +47,8 @@ Mango::Exception - Module representing an exception or error condition
 
 =head1 DESCRIPTION
 
-Mango:Exception is a subclass of Error that does some custom message processing
-for Mango based exceptions.
+Mango:Exception is a subclass of Error that does some custom message
+processing for Mango based exceptions.
 
 =head1 CONSTRUCTOR
 

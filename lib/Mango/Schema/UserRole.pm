@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use base qw/DBIx::Class/;
-};
+}
 
 __PACKAGE__->load_components(qw/Core/);
 __PACKAGE__->table('user_role');
@@ -15,23 +15,23 @@ __PACKAGE__->add_columns(
         data_type      => 'INT',
         is_nullable    => 0,
         is_foreign_key => 1,
-        extras         => {unsigned => 1}
+        extras         => { unsigned => 1 }
     },
     role_id => {
         data_type      => 'INT',
         is_nullable    => 0,
         is_foreign_key => 1,
-        extras         => {unsigned => 1}
+        extras         => { unsigned => 1 }
     },
 );
 __PACKAGE__->set_primary_key(qw/user_id role_id/);
 __PACKAGE__->belongs_to(
     user => 'Mango::Schema::User',
-    {'foreign.id' => 'self.user_id'}
+    { 'foreign.id' => 'self.user_id' }
 );
 __PACKAGE__->belongs_to(
     role => 'Mango::Schema::Role',
-    {'foreign.id' => 'self.role_id'}
+    { 'foreign.id' => 'self.role_id' }
 );
 
 1;

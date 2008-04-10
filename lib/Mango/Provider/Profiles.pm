@@ -6,81 +6,81 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
     use Mango::Exception ();
-};
+}
 __PACKAGE__->result_class('Mango::Profile');
 __PACKAGE__->source_name('Profiles');
 
 sub create {
-    my ($self, $data) = @_;
+    my ( $self, $data ) = @_;
     $data ||= {};
 
-    if (my $user = delete $data->{'user'}) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+    if ( my $user = delete $data->{'user'} ) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 $data->{'user_id'} = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             $data->{'user_id'} = $user;
-        };
-    };
+        }
+    }
 
-    if (!$data->{'user_id'}) {
+    if ( !$data->{'user_id'} ) {
         Mango::Exception->throw('NO_USER_SPECIFIED');
-    };
+    }
 
     return $self->SUPER::create($data);
-};
+}
 
 sub search {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
-    if (my $user = delete $filter->{'user'}) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+    if ( my $user = delete $filter->{'user'} ) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 $filter->{'user_id'} = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             $filter->{'user_id'} = $user;
-        };
-    };
+        }
+    }
 
-    return $self->SUPER::search($filter, $options);
-};
+    return $self->SUPER::search( $filter, $options );
+}
 
 sub delete {
-    my ($self, $filter) = @_;
+    my ( $self, $filter ) = @_;
 
-    if (Scalar::Util::blessed $filter) {
-        if ($filter->isa('Mango::Profile')) {
-            $filter = {id => $filter->id};
+    if ( Scalar::Util::blessed $filter) {
+        if ( $filter->isa('Mango::Profile') ) {
+            $filter = { id => $filter->id };
         } else {
             Mango::Exception->throw('NOT_A_PROFILE');
-        };
-    } elsif (ref $filter eq 'HASH') {
-        if (my $user = delete $filter->{'user'}) {
-            if (Scalar::Util::blessed($user)) {
-                if ($user->isa('Mango::User')) {
+        }
+    } elsif ( ref $filter eq 'HASH' ) {
+        if ( my $user = delete $filter->{'user'} ) {
+            if ( Scalar::Util::blessed($user) ) {
+                if ( $user->isa('Mango::User') ) {
                     $filter->{'user_id'} = $user->id;
                 } else {
                     Mango::Exception->throw('NOT_A_USER');
-                };
+                }
             } else {
                 $filter->{'user_id'} = $user;
-            };
-        };
+            }
+        }
     } else {
-        $filter = {id => $filter};
-    };
+        $filter = { id => $filter };
+    }
 
     return $self->SUPER::delete($filter);
-};
+}
 
 1;
 __END__
@@ -114,8 +114,8 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Profiles->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
-possible options.
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of
+other possible options.
 
 =head1 METHODS
 
@@ -137,7 +137,8 @@ Creates a new Mango::Profile object using the supplied data.
     
     print $role->name;
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -169,7 +170,8 @@ Deletes profiles from the provider matching the supplied filter.
         id => 23
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -219,7 +221,8 @@ in scalar context matching the specified filter.
         last_name => 'A%'
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 

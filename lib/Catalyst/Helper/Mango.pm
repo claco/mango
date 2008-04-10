@@ -1,3 +1,4 @@
+## no critic (RequirePodAtEnd)
 # $Id$
 package Catalyst::Helper::Mango;
 use strict;
@@ -10,7 +11,7 @@ BEGIN {
     use Path::Class qw/file dir/;
     use YAML;
     use Mango::Schema;
-};
+}
 
 =head1 NAME
 
@@ -27,18 +28,20 @@ Catalyst::Helper::Mango - Catalyst Helper for Mango applications
 
 =head1 DESCRIPTION
 
-Creates a new Mango application, or adds a Mango application into an existing Catalyst application.
+Creates a new Mango application, or adds a Mango application into an existing
+Catalyst application.
 
 =head1 METHODS
 
 =head2 mk_app
 
-Creates the entire Mango application from scratch using mango.pl and the Catalyst mk_app (catalyst.pl).
+Creates the entire Mango application from scratch using mango.pl and the
+Catalyst mk_app (catalyst.pl).
 
 =cut
 
 sub mk_app {
-    my ($self, $name) = @_;
+    my ( $self, $name ) = @_;
 
     ## make the Catalyst app
     $self->SUPER::mk_app($name);
@@ -47,34 +50,34 @@ sub mk_app {
     $self->mk_all;
 
     return;
-};
+}
 
 =head2 mk_stuff
 
-Adds the entire Mango application to an existing Catalyst application using C<myapp_create.pl Mango>.
+Adds the entire Mango application to an existing Catalyst application using
+C<myapp_create.pl Mango>.
 
 =cut
 
 sub mk_stuff {
-    my ($self, $helper) = @_;
-    my @app = (split(/\:\:/, $helper->{'app'}));
+    my ( $self, $helper ) = @_;
+    my @app = ( split /\:\:/, $helper->{'app'} );
 
-    $self = bless {%{$helper}}, ref $self || $self;
-    $self->{'dir'} = '.';
-    $self->{'app'} = dir(@app)->stringify;
-    $self->{'mod'} = dir('lib', @app)->stringify;
-    $self->{'name'} = $helper->{'app'};
-    $self->{'appprefix'} = Catalyst::Utils::appprefix($helper->{'app'});
-    $self->{'c'} = dir('lib', @app, 'Controller')->stringify;
-    $self->{'m'} = dir('lib', @app, 'Model')->stringify;
-    $self->{'v'} = dir('lib', @app, 'View')->stringify;
+    $self = bless { %{$helper} }, ref $self || $self;
+    $self->{'dir'}       = '.';
+    $self->{'app'}       = dir(@app)->stringify;
+    $self->{'mod'}       = dir( 'lib', @app )->stringify;
+    $self->{'name'}      = $helper->{'app'};
+    $self->{'appprefix'} = Catalyst::Utils::appprefix( $helper->{'app'} );
+    $self->{'c'}         = dir( 'lib', @app, 'Controller' )->stringify;
+    $self->{'m'}         = dir( 'lib', @app, 'Model' )->stringify;
+    $self->{'v'}         = dir( 'lib', @app, 'View' )->stringify;
 
     ## make everything
     $self->mk_all;
 
-
     return $self;
-};
+}
 
 =head2 mk_all
 
@@ -84,9 +87,9 @@ Creates the various Mango bits when called by mk_app or mk_stuff.
 
 sub mk_all {
     my $self = shift;
-    my $c = $self->{'c'};
-    my $m = $self->{'m'};
-    my $v = $self->{'v'};
+    my $c    = $self->{'c'};
+    my $m    = $self->{'m'};
+    my $v    = $self->{'v'};
 
     ## set defaults
     $self->{'adminuser'} ||= 'admin';
@@ -107,20 +110,22 @@ sub mk_all {
     $self->mk_views;
     $self->mk_controllers;
 
-};
+    return;
+}
 
 =head2 mk_database
 
-Adds the data directory and mango.db SQLite database if they don't already exist.
+Adds the data directory and mango.db SQLite database if they don't already
+exist.
 
 =cut
 
 sub mk_database {
     my $self = shift;
-    my $dir = dir($self->{'dir'}, 'data');
-    my $file = file($dir, 'mango.db');
+    my $dir  = dir( $self->{'dir'}, 'data' );
+    my $file = file( $dir, 'mango.db' );
 
-    if (! -e $file) {
+    if ( !-e $file ) {
         $self->mk_dir($dir);
         my $adminuser = $self->{'adminuser'};
         my $adminpass = $self->{'adminpass'};
@@ -130,42 +135,50 @@ sub mk_database {
         $schema->deploy;
         print "created \"$file\"\n";
 
-        $schema->resultset('Users')->create({
-            id => 1,
-            username => $adminuser,
-            password => $adminpass,
-            created => DateTime->now,
-            updated => DateTime->now
-        });
+        $schema->resultset('Users')->create(
+            {
+                id       => 1,
+                username => $adminuser,
+                password => $adminpass,
+                created  => DateTime->now,
+                updated  => DateTime->now
+            }
+        );
         print "created admin user/pass ($adminuser:$adminpass)\n";
 
-        $schema->resultset('Profiles')->create({
-            id => 1,
-            user_id => 1,
-            first_name => 'Admin',
-            last_name => 'User',
-            created => DateTime->now,
-            updated => DateTime->now
-        });
+        $schema->resultset('Profiles')->create(
+            {
+                id         => 1,
+                user_id    => 1,
+                first_name => 'Admin',
+                last_name  => 'User',
+                created    => DateTime->now,
+                updated    => DateTime->now
+            }
+        );
         print "created admin profile\n";
 
-        $schema->resultset('Roles')->create({
-            id => 1,
-            name => $adminrole,
-            description => 'Administrators',
-            created => DateTime->now,
-            updated => DateTime->now
-        });
+        $schema->resultset('Roles')->create(
+            {
+                id          => 1,
+                name        => $adminrole,
+                description => 'Administrators',
+                created     => DateTime->now,
+                updated     => DateTime->now
+            }
+        );
         print "created admin role ($adminrole)\n";
 
-        $schema->resultset('UsersRoles')->create({
-            user_id => 1,
-            role_id => 1
-        });
-    };
+        $schema->resultset('UsersRoles')->create(
+            {
+                user_id => 1,
+                role_id => 1
+            }
+        );
+    }
 
     return;
-};
+}
 
 =head2 mk_plugins
 
@@ -174,21 +187,22 @@ Adds the necessary plugins into MyApp.pm 'use Catalyst' code.
 =cut
 
 sub mk_plugins {
-    my $self = shift;
-    my $file = file($self->{'mod'} . '.pm');
+    my $self     = shift;
+    my $file     = file( $self->{'mod'} . '.pm' );
     my $contents = $file->slurp;
 
-    if ($contents !~ /\+Mango::Catalyst::Plugin/i) {
-        $contents =~ s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    Cache\n    Cache::Store::Memory\n    +Mango::Catalyst::Plugin::Application\n   /;
+    if ( $contents !~ /\+Mango::Catalyst::Plugin/i ) {
+        $contents =~
+s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    Cache\n    Cache::Store::Memory\n    +Mango::Catalyst::Plugin::Application\n   /;
 
         my $io = $file->open('>');
         $io->print($contents);
         $io->close;
         undef $io;
-    };
+    }
 
     return;
-};
+}
 
 =head2 mk_config
 
@@ -197,19 +211,19 @@ Adds the necessary config changes to myapp.yml.
 =cut
 
 sub mk_config {
-    my $self = shift;
-    my $file = file($self->{'dir'}, $self->{'appprefix'} . '.yml');
+    my $self   = shift;
+    my $file   = file( $self->{'dir'}, $self->{'appprefix'} . '.yml' );
     my $config = YAML::LoadFile($file);
 
     $config->{'authentication'} = {
         default_realm => 'mango',
-        realms => {
+        realms        => {
             mango => {
                 auto_update_user => 0,
-                credential => {
-                    class => 'Password',
+                credential       => {
+                    class          => 'Password',
                     password_field => 'password',
-                    password_type => 'clear'
+                    password_type  => 'clear'
                 },
                 store => {
                     class => '+Mango::Catalyst::Plugin::Authentication::Store'
@@ -218,14 +232,15 @@ sub mk_config {
         }
     };
     $config->{'connection_info'} = ['dbi:SQLite:data/mango.db'];
-    $config->{'default_view'} = 'XHTML';
-    $config->{'authorization'}->{'mango'}->{'admin_role'} = $self->{'adminrole'};
+    $config->{'default_view'}    = 'XHTML';
+    $config->{'authorization'}->{'mango'}->{'admin_role'} =
+      $self->{'adminrole'};
     $config->{'cache'}->{'backend'}->{'store'} = 'Memory';
 
-    YAML::DumpFile($file, $config);
+    YAML::DumpFile( $file, $config );
 
     return;
-};
+}
 
 =head2 mk_models
 
@@ -235,16 +250,18 @@ Adds the necessary models.
 
 sub mk_models {
     my $self = shift;
-    my $m = $self->{'m'};
+    my $m    = $self->{'m'};
 
-    $self->render_file('model_carts',     file($m, 'Carts.pm'));
-    $self->render_file('model_orders',    file($m, 'Orders.pm'));
-    $self->render_file('model_products',  file($m, 'Products.pm'));
-    $self->render_file('model_profiles',  file($m, 'Profiles.pm'));
-    $self->render_file('model_roles',     file($m, 'Roles.pm'));
-    $self->render_file('model_users',     file($m, 'Users.pm'));
-    $self->render_file('model_wishlists', file($m, 'Wishlists.pm'));
-};
+    $self->render_file( 'model_carts',     file( $m, 'Carts.pm' ) );
+    $self->render_file( 'model_orders',    file( $m, 'Orders.pm' ) );
+    $self->render_file( 'model_products',  file( $m, 'Products.pm' ) );
+    $self->render_file( 'model_profiles',  file( $m, 'Profiles.pm' ) );
+    $self->render_file( 'model_roles',     file( $m, 'Roles.pm' ) );
+    $self->render_file( 'model_users',     file( $m, 'Users.pm' ) );
+    $self->render_file( 'model_wishlists', file( $m, 'Wishlists.pm' ) );
+
+    return;
+}
 
 =head2 mk_views
 
@@ -254,14 +271,16 @@ Adds the necessary views.
 
 sub mk_views {
     my $self = shift;
-    my $v = $self->{'v'};
+    my $v    = $self->{'v'};
 
-    $self->render_file('view_atom',  file($v, 'Atom.pm'));
-    $self->render_file('view_html',  file($v, 'HTML.pm'));
-    $self->render_file('view_rss',   file($v, 'RSS.pm'));
-    $self->render_file('view_text',  file($v, 'Text.pm'));
-    $self->render_file('view_xhtml', file($v, 'XHTML.pm'));
-};
+    $self->render_file( 'view_atom',  file( $v, 'Atom.pm' ) );
+    $self->render_file( 'view_html',  file( $v, 'HTML.pm' ) );
+    $self->render_file( 'view_rss',   file( $v, 'RSS.pm' ) );
+    $self->render_file( 'view_text',  file( $v, 'Text.pm' ) );
+    $self->render_file( 'view_xhtml', file( $v, 'XHTML.pm' ) );
+
+    return;
+}
 
 =head2 mk_controllers
 
@@ -271,60 +290,55 @@ Adds the necessary controllers.
 
 sub mk_controllers {
     my $self = shift;
-    my $c = $self->{'c'};
+    my $c    = $self->{'c'};
 
     ## root
-    unlink file($c, 'Root.pm');
-    $self->render_file('controller_root',
-        file($c, 'Root.pm'));
+    unlink file( $c, 'Root.pm' );
+    $self->render_file( 'controller_root', file( $c, 'Root.pm' ) );
 
     ## admin
-    $self->mk_dir(dir($c, 'Admin'));
-    $self->mk_dir(dir($c, 'Admin', 'Products'));
+    $self->mk_dir( dir( $c, 'Admin' ) );
+    $self->mk_dir( dir( $c, 'Admin', 'Products' ) );
 
-    $self->render_file('controller_admin',
-        file($c, 'Admin.pm'));
-    $self->render_file('controller_admin_roles',
-        file($c, 'Admin', 'Roles.pm'));
-    $self->render_file('controller_admin_users',
-        file($c, 'Admin', 'Users.pm'));
-    $self->render_file('controller_admin_products',
-        file($c, 'Admin', 'Products.pm'));
-    $self->render_file('controller_admin_products_attributes',
-        file($c, 'Admin', 'Products', 'Attributes.pm'));
+    $self->render_file( 'controller_admin', file( $c, 'Admin.pm' ) );
+    $self->render_file( 'controller_admin_roles',
+        file( $c, 'Admin', 'Roles.pm' ) );
+    $self->render_file( 'controller_admin_users',
+        file( $c, 'Admin', 'Users.pm' ) );
+    $self->render_file( 'controller_admin_products',
+        file( $c, 'Admin', 'Products.pm' ) );
+    $self->render_file(
+        'controller_admin_products_attributes',
+        file( $c, 'Admin', 'Products', 'Attributes.pm' )
+    );
 
     ## current user
-    $self->mk_dir(dir($c, 'Cart'));
-    $self->mk_dir(dir($c, 'Wishlists'));
+    $self->mk_dir( dir( $c, 'Cart' ) );
+    $self->mk_dir( dir( $c, 'Wishlists' ) );
 
-    $self->render_file('controller_login',
-        file($c, 'Login.pm'));
-    $self->render_file('controller_logout',
-        file($c, 'Logout.pm'));
-    $self->render_file('controller_cart',
-        file($c, 'Cart.pm'));
-    $self->render_file('controller_cart_items',
-        file($c, 'Cart', 'Items.pm'));
-    $self->render_file('controller_wishlists',
-        file($c, 'Wishlists.pm'));
-    $self->render_file('controller_wishlists_items',
-        file($c, 'Wishlists', 'Items.pm'));
-    $self->render_file('controller_settings',
-        file($c, 'Settings.pm'));
+    $self->render_file( 'controller_login',  file( $c, 'Login.pm' ) );
+    $self->render_file( 'controller_logout', file( $c, 'Logout.pm' ) );
+    $self->render_file( 'controller_cart',   file( $c, 'Cart.pm' ) );
+    $self->render_file( 'controller_cart_items',
+        file( $c, 'Cart', 'Items.pm' ) );
+    $self->render_file( 'controller_wishlists', file( $c, 'Wishlists.pm' ) );
+    $self->render_file( 'controller_wishlists_items',
+        file( $c, 'Wishlists', 'Items.pm' ) );
+    $self->render_file( 'controller_settings', file( $c, 'Settings.pm' ) );
 
     ## public
-    $self->mk_dir(dir($c, 'Users'));
+    $self->mk_dir( dir( $c, 'Users' ) );
 
-    $self->render_file('controller_products',
-        file($c, 'Products.pm'));
-    $self->render_file('controller_users',
-        file($c, 'Users.pm'));
-    $self->render_file('controller_users_wishlists',
-        file($c, 'Users', 'Wishlists.pm'));
+    $self->render_file( 'controller_products', file( $c, 'Products.pm' ) );
+    $self->render_file( 'controller_users',    file( $c, 'Users.pm' ) );
+    $self->render_file( 'controller_users_wishlists',
+        file( $c, 'Users', 'Wishlists.pm' ) );
 
     ## rest
-    $self->mk_dir(dir($c, 'REST'));
-};
+    $self->mk_dir( dir( $c, 'REST' ) );
+
+    return;
+}
 
 =head1 SEE ALSO
 

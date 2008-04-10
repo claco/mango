@@ -10,122 +10,127 @@ BEGIN {
     use Mango::I18N ();
     use FormValidator::Simple 0.17 ();
     use FormValidator::Simple::Constants ();
-    use CGI::FormBuilder ();
-    use Clone ();
-    use YAML ();
+    use CGI::FormBuilder                 ();
+    use Clone                            ();
+    use YAML                             ();
 
-    __PACKAGE__->mk_group_accessors('simple', qw/labels messages profile validator _form localizer _unique _exists/);
-};
+    __PACKAGE__->mk_group_accessors( 'simple',
+        qw/labels messages profile validator _form localizer _unique _exists/
+    );
+}
 
 sub new {
-    my $class = shift;
-    my $args  = shift || {};
+    my $class  = shift;
+    my $args   = shift || {};
     my $source = $args->{'source'} || {};
 
     my $self = bless {
-        labels => $args->{'labels'} || {},
-        messages => $args->{'messages'} || {},
-        profile => $args->{'profile'} || [],
+        labels    => $args->{'labels'}    || {},
+        messages  => $args->{'messages'}  || {},
+        profile   => $args->{'profile'}   || [],
         validator => $args->{'validator'} || FormValidator::Simple->new,
         localizer => $args->{'localizer'} || \&Mango::I18N::translate,
-        _unique => $args->{'unique'} || {},
-        _exists => $args->{'exists'} || {}
+        _unique   => $args->{'unique'}    || {},
+        _exists   => $args->{'exists'}    || {}
     }, $class;
 
     $self->parse($source);
 
-    $self->values($args->{'values'}) if $args->{'values'};
+    if ( $args->{'values'} ) {
+        $self->values( $args->{'values'} );
+    }
 
     return $self;
-};
+}
 
 sub action {
-    my ($self, $action) = @_;
+    my ( $self, $action ) = @_;
 
     if ($action) {
-        $self->_form->{'action'} = $action . '';
-    };
+        $self->_form->{'action'} = "$action";
+    }
 
     return $self->_form->action;
-};
+}
 
 sub clone {
-    my $self = shift;
+    my $self      = shift;
     my $localizer = $self->localizer;
-    my $params = $self->params;
+    my $params    = $self->params;
 
     $self->params(undef);
     $self->localizer(undef);
-    
+
     my $form = Clone::clone($self);
-    
+
     $self->params($params);
     $self->localizer($localizer);
 
     return $form;
-};
+}
 
 sub field {
-    return shift->_form->field(@_);
-};
+    my $self = shift;
+
+    return $self->_form->field(@_);
+}
 
 sub render {
     my $self = shift;
     my $form = $self->_form;
 
-    foreach my $field ($form->fields) {
+    foreach my $field ( $form->fields ) {
         $field->label(
-            $self->localizer->($self->labels->{$field->name}, $field->name)
+            $self->localizer->(
+                $self->labels->{ $field->name },
+                $field->name
+            )
         );
-    };
-    $form->submit(
-        $self->localizer->($self->labels->{'submit'})
-    );
+    }
+    $form->submit( $self->localizer->( $self->labels->{'submit'} ) );
 
     ## keeps CGI::FB from bitching about empty basename
     local $ENV{'SCRIPT_NAME'} ||= '';
 
     return $form->render(@_);
-};
+}
 
 sub values {
-    my ($self, $values) = @_;
+    my ( $self, $values ) = @_;
 
     if ($values) {
         $self->_form->values($values);
-    };
+    }
 
-    return map {$_->name, ($_->value || undef)} $self->_form->fields;
-};
+    return map { $_->name, ( $_->value || undef ) } $self->_form->fields;
+}
 
 sub parse {
-    my ($self, $source) = @_;
+    my ( $self, $source ) = @_;
     my $config;
 
-    if (!ref $source) {
+    if ( !ref $source ) {
         $config = YAML::LoadFile($source);
-    } elsif (ref $source eq 'HASH') {
+    } elsif ( ref $source eq 'HASH' ) {
         $config = Clone::clone($source);
     } else {
         Mango::Exception->throw('UNKNOWN_FORM_SOURCE');
-    };
+    }
 
-    my $fields = delete $config->{'fields'};
+    my $fields      = delete $config->{'fields'};
     my $field_order = delete $config->{'field_order'};
-    $self->_form(
-        CGI::FormBuilder->new(%{$config})
-    );
+    $self->_form( CGI::FormBuilder->new( %{$config} ) );
 
-    foreach (@{$fields}) {
-        my ($name, $field) = %{$_};
-        my $label = 'FIELD_LABEL_' . uc $name;
+    foreach ( @{$fields} ) {
+        my ( $name, $field ) = %{$_};
+        my $label       = 'FIELD_LABEL_' . uc $name;
         my $constraints = delete $field->{'constraints'};
-        my $errors = delete $field->{'messages'};
+        my $errors      = delete $field->{'messages'};
 
         $self->labels->{$name} = $label;
 
         $self->_form->field(
-            name => $name,
+            name  => $name,
             label => $label,
             %{$field}
         );
@@ -134,73 +139,97 @@ sub parse {
             my @constraints;
             my @additional;
 
-            push @{$self->profile}, $name;
-            foreach my $constraint (@{$constraints}) {
-                my ($cname, @args) = split /, ?/, $constraint;
+            push @{ $self->profile }, $name;
+            foreach my $constraint ( @{$constraints} ) {
+                my ( $cname, @args ) = split /, ?/, $constraint;
                 $cname = uc $cname;
 
-                if ($cname =~ /(NOT_)?SAME_AS/) {
-                    my $mname = 'CONSTRAINT_' . uc $name . '_' . $cname . '_' . uc $args[0];
-                    $self->messages->{$mname}->{($1 || '') . 'DUPLICATION'} = $mname;
-                    push @additional, {$mname => [$name, @args]}, [($1 || '') . 'DUPLICATION'];
+                if ( $cname =~ /(NOT_)?SAME_AS/ ) {
+                    my $mname =
+                        'CONSTRAINT_'
+                      . uc $name . '_'
+                      . $cname . '_'
+                      . uc $args[0];
+                    $self->messages->{$mname}
+                      ->{ ( $1 || '' ) . 'DUPLICATION' } = $mname;
+                    push @additional, { $mname => [ $name, @args ] },
+                      [ ( $1 || '' ) . 'DUPLICATION' ];
                 } else {
-                    if ($cname eq 'UNIQUE' && !$self->unique($name)) {
-                        push(@args, $name) unless scalar @args;
-                        $self->unique($name, sub {
-                            return FormValidator::Simple::Constants::FALSE;
-                        });
-                    };
-                    if ($cname eq 'EXISTS' && !$self->exists($name)) {
-                        push(@args, $name) unless scalar @args;
-                        $self->exists($name, sub {
-                            return FormValidator::Simple::Constants::FALSE;
-                        });
-                    };
-                    $self->messages->{$name}->{$cname} = $errors->{$cname} || ('CONSTRAINT_' . uc $name . '_' . $cname);
-                    push @constraints, scalar @args ? [$cname, @args] : $cname;
-                };
-            };
-            push @{$self->profile}, \@constraints, @additional;
-        };
-    };
-    
-    $self->_form->submit('BUTTON_LABEL_SUBMIT') unless $config->{'submit'};
+                    if ( $cname eq 'UNIQUE' && !$self->unique($name) ) {
+                        if ( !scalar @args ) {
+                            push @args, $name;
+                        }
+
+                        $self->unique(
+                            $name,
+                            sub {
+                                return
+                                  FormValidator::Simple::Constants::FALSE;
+                            }
+                        );
+                    }
+                    if ( $cname eq 'EXISTS' && !$self->exists($name) ) {
+                        if ( !scalar @args ) {
+                            push @args, $name;
+                        }
+
+                        $self->exists(
+                            $name,
+                            sub {
+                                return
+                                  FormValidator::Simple::Constants::FALSE;
+                            }
+                        );
+                    }
+                    $self->messages->{$name}->{$cname} = $errors->{$cname}
+                      || ( 'CONSTRAINT_' . uc $name . '_' . $cname );
+                    push @constraints,
+                      scalar @args ? [ $cname, @args ] : $cname;
+                }
+            }
+            push @{ $self->profile }, \@constraints, @additional;
+        }
+    }
+
+    if ( !$config->{'submit'} ) {
+        $self->_form->submit('BUTTON_LABEL_SUBMIT');
+    }
     $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
 
-    $self->validator->set_messages({'.' => $self->messages});
+    $self->validator->set_messages( { '.' => $self->messages } );
 
     return;
-};
+}
 
 sub params {
     my $self = shift;
 
     if (@_) {
         $self->_form->{'params'} = shift;
-    };
+    }
 
     return $self->_form->{'params'};
-};
+}
 
 sub exists {
-    my ($self, $field, $code) = @_;
+    my ( $self, $field, $code ) = @_;
 
-    if (ref $code eq 'CODE') {
+    if ( ref $code eq 'CODE' ) {
         $self->_exists->{$field} = $code;
-    };
+    }
 
     return $self->_exists->{$field};
-};
+}
 
 sub unique {
-    my ($self, $field, $code) = @_;
+    my ( $self, $field, $code ) = @_;
 
-    if (ref $code eq 'CODE') {
+    if ( ref $code eq 'CODE' ) {
         $self->_unique->{$field} = $code;
-    };
+    }
 
     return $self->_unique->{$field};
-};
+}
 
 sub validate {
     my $self = shift;
@@ -208,58 +237,61 @@ sub validate {
 
     ## ugly. this will go when I move to Reaction :-)
     local *FormValidator::Simple::Validator::UNIQUE = sub {
-        my ($i, $params, $args) = @_;
+        my ( $i, $params, $args ) = @_;
         my $value = $params->[0];
         my $field = $args->[0];
 
-        my $result = $self->unique($field)->($self, $field, $value);
+        my $result = $self->unique($field)->( $self, $field, $value );
 
-        return $result ?
-            FormValidator::Simple::Constants::TRUE :
-            FormValidator::Simple::Constants::FALSE;
+        return $result
+          ? FormValidator::Simple::Constants::TRUE
+          : FormValidator::Simple::Constants::FALSE;
     };
     local *FormValidator::Simple::Validator::EXISTS = sub {
-        my ($i, $params, $args) = @_;
+        my ( $i, $params, $args ) = @_;
         my $value = $params->[0];
         my $field = $args->[0];
-  
-        my $result = $self->exists($field)->($self, $field, $value);
 
-        return $result ?
-            FormValidator::Simple::Constants::TRUE :
-            FormValidator::Simple::Constants::FALSE;
+        my $result = $self->exists($field)->( $self, $field, $value );
+
+        return $result
+          ? FormValidator::Simple::Constants::TRUE
+          : FormValidator::Simple::Constants::FALSE;
     };
 
     ## bah! why can't we just get $form->values?
     my %values = $self->values;
-    my $results = $self->validator->check(
-        \%values,
-        Clone::clone($self->profile)
-    );
+    my $results =
+      $self->validator->check( \%values, Clone::clone( $self->profile ) );
 
     my $messages = $results->messages('.');
     my @errors;
 
-    foreach my $message (@{$messages}) {
-        push @errors, $self->localizer->(split /, ?/, $message);
-    };
+    foreach my $message ( @{$messages} ) {
+        push @errors, $self->localizer->( split /, ?/, $message );
+    }
 
-    return Mango::Form::Results->new({
-        _results => $results,
-        errors => \@errors
-    });
-};
+    return Mango::Form::Results->new(
+        {
+            _results => $results,
+            errors   => \@errors
+        }
+    );
+}
 
 sub submitted {
-    return shift->_form->submitted;
-};
+    my $self = shift;
+
+    return $self->_form->submitted;
+}
 
 sub AUTOLOAD {
-    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
+    my $self = shift;
+    my ($method) = ( our $AUTOLOAD =~ /([^:]+)$/ );
     return if $method =~ /(DESTROY)/;
 
-    return shift->_form->$method(@_);
-};
+    return $self->_form->$method(@_);
+}
 
 1;
 __END__
@@ -362,8 +394,8 @@ SKU_NOT_BLANK. When the price failed the decimal check, PRICE_DECIMAL is
 returned, etc.
 
 You can override these defaults to use your own message key, or provide a
-complete text message itself using the C<messages> collection and assigning the
-new message to the same constraint name:
+complete text message itself using the C<messages> collection and assigning
+the new message to the same constraint name:
 
     - sku:
         type: text
@@ -417,8 +449,8 @@ Creates a new Mano::Form object. The following options are available:
 
 =item source
 
-A string containing the path to the config file, or a hash reference containing
-the same configuration data.
+A string containing the path to the config file, or a hash reference
+containing the same configuration data.
 
 =item validator
 
@@ -428,7 +460,8 @@ the same configuration data.
 
 =item localizer
 
-A code reference to be used to localize the field labels, buttons and messages.
+A code reference to be used to localize the field labels, buttons and
+messages.
 
 =item exists
 

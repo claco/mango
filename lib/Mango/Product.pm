@@ -6,56 +6,57 @@ use warnings;
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/sku name description price/);
-};
+        __PACKAGE__->mk_group_accessors( 'column',
+        qw/sku name description price/ );
+}
 
 sub add_attribute {
     my $self = shift;
 
-    return $self->meta->provider->add_attribute($self, @_);
-};
+    return $self->meta->provider->add_attribute( $self, @_ );
+}
 
 sub add_attributes {
     my $self = shift;
 
-    return $self->meta->provider->add_attributes($self, @_);
-};
+    return $self->meta->provider->add_attributes( $self, @_ );
+}
 
 sub attributes {
     my $self = shift;
 
-    return $self->meta->provider->search_attributes($self, @_);
-};
+    return $self->meta->provider->search_attributes( $self, @_ );
+}
 
 sub delete_attributes {
     my $self = shift;
 
-    return $self->meta->provider->delete_attributes($self, @_);
-};
+    return $self->meta->provider->delete_attributes( $self, @_ );
+}
 
 sub add_tag {
     my $self = shift;
 
-    return $self->meta->provider->add_tag($self, @_);
-};
+    return $self->meta->provider->add_tag( $self, @_ );
+}
 
 sub add_tags {
     my $self = shift;
 
-    return $self->meta->provider->add_tags($self, @_);
-};
+    return $self->meta->provider->add_tags( $self, @_ );
+}
 
 sub tags {
     my $self = shift;
 
-    return $self->meta->provider->search_tags($self, @_);
-};
+    return $self->meta->provider->search_tags( $self, @_ );
+}
 
 sub delete_tags {
     my $self = shift;
 
-    return $self->meta->provider->delete_tags($self, @_);
-};
+    return $self->meta->provider->delete_tags( $self, @_ );
+}
 
 1;
 __END__

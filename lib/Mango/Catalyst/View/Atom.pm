@@ -5,16 +5,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::View::Feed/;
-};
+}
 
 sub process {
-    my($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-    $self->NEXT::process($c, 'Atom');
+    $self->NEXT::process( $c, 'Atom' );
     $c->response->content_type('application/atom+xml; charset=utf-8');
 
     return 1;
-};
+}
 
 1;
 __END__

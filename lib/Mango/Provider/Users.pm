@@ -6,7 +6,7 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
     use Scalar::Util ();
-};
+}
 __PACKAGE__->result_class('Mango::User');
 __PACKAGE__->source_name('Users');
 
@@ -42,8 +42,8 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Users->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
-possible options.
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of
+other possible options.
 
 =head1 METHODS
 

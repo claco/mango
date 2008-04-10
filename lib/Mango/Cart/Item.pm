@@ -6,36 +6,42 @@ use warnings;
 BEGIN {
     use base qw/Handel::Cart::Item/;
     use Handel::Constraints ();
-    use DateTime ();
+    use DateTime            ();
+
     #use XML::Feed::Entry ();
-};
-__PACKAGE__->storage->setup({
-    autoupdate       => 0,
-    currency_class   => 'Mango::Currency',
-    schema_class     => 'Mango::Schema',
-    schema_source    => 'CartItems',
-    currency_columns => [qw/price/],
-    constraints      => {
-        quantity     => {'Check Quantity' => \&Handel::Constraints::constraint_quantity},
-        price        => {'Check Price'    => \&Handel::Constraints::constraint_price}
-    },
-    default_values   => {
-        price        => 0,
-        quantity     => 1,
-        created      => sub {DateTime->now},
-        updated      => sub {DateTime->now}
+}
+__PACKAGE__->storage->setup(
+    {
+        autoupdate       => 0,
+        currency_class   => 'Mango::Currency',
+        schema_class     => 'Mango::Schema',
+        schema_source    => 'CartItems',
+        currency_columns => [qw/price/],
+        constraints      => {
+            quantity => {
+                'Check Quantity' => \&Handel::Constraints::constraint_quantity
+            },
+            price =>
+              { 'Check Price' => \&Handel::Constraints::constraint_price }
+        },
+        default_values => {
+            price    => 0,
+            quantity => 1,
+            created  => sub { DateTime->now },
+            updated  => sub { DateTime->now }
+        }
     }
-});
+);
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub update {
     my $self = shift;
 
-    $self->updated(DateTime->now);
-  
+    $self->updated( DateTime->now );
+
     return $self->SUPER::update(@_);
-};
+}
 
 #sub as_entry {
 #    my ($self, $format) = @_;

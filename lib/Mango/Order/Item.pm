@@ -6,37 +6,43 @@ use warnings;
 BEGIN {
     use base qw/Handel::Order::Item/;
     use Handel::Constraints ();
-    use DateTime ();
-};
-__PACKAGE__->storage->setup({
-    autoupdate       => 0,
-    currency_class   => 'Mango::Currency',
-    schema_class     => 'Mango::Schema',
-    schema_source    => 'OrderItems',
-    currency_columns => [qw/price total/],
-    constraints      => {
-        quantity     => {'Check Quantity' => \&Handel::Constraints::constraint_quantity},
-        price        => {'Check Price'    => \&Handel::Constraints::constraint_price},
-        total        => {'Check Total'    => \&Handel::Constraints::constraint_price}
-    },
-    default_values   => {
-        price        => 0,
-        quantity     => 1,
-        total        => 0,
-        created      => sub {DateTime->now},
-        updated      => sub {DateTime->now}
+    use DateTime            ();
+}
+__PACKAGE__->storage->setup(
+    {
+        autoupdate       => 0,
+        currency_class   => 'Mango::Currency',
+        schema_class     => 'Mango::Schema',
+        schema_source    => 'OrderItems',
+        currency_columns => [qw/price total/],
+        constraints      => {
+            quantity => {
+                'Check Quantity' => \&Handel::Constraints::constraint_quantity
+            },
+            price =>
+              { 'Check Price' => \&Handel::Constraints::constraint_price },
+            total =>
+              { 'Check Total' => \&Handel::Constraints::constraint_price }
+        },
+        default_values => {
+            price    => 0,
+            quantity => 1,
+            total    => 0,
+            created  => sub { DateTime->now },
+            updated  => sub { DateTime->now }
+        }
     }
-});
+);
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub update {
     my $self = shift;
 
-    $self->updated(DateTime->now);
-  
+    $self->updated( DateTime->now );
+
     return $self->SUPER::update(@_);
-};
+}
 
 1;
 __END__

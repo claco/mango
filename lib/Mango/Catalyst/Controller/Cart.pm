@@ -6,108 +6,112 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
     use Handel::Constants qw/:cart/;
-    use Mango ();
+    use Mango            ();
     use Path::Class::Dir ();
 
     __PACKAGE__->config(
-        resource_name  => 'mango/cart',
-        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'cart')
+        resource_name => 'mango/cart',
+        form_directory =>
+          Path::Class::Dir->new( Mango->share, 'forms', 'cart' )
     );
-};
+}
 
 sub auto : Private {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
     $c->stash->{'cart'} = $c->user->cart;
 
     return 1;
-};
+}
 
 sub index : Template('cart/index') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
     return;
-};
+}
 
 sub instance : Chained('/') PathPrefix CaptureArgs(0) {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
     return;
-};
+}
 
 sub add : Local Template('cart/index') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
     my $form = $self->form;
     my $cart = $c->stash->{'cart'};
     my $product;
 
-    $form->exists('sku', sub {
-        $product = $c->model('Products')->get_by_sku($form->field('sku'));
+    $form->exists(
+        'sku',
+        sub {
+            $product =
+              $c->model('Products')->get_by_sku( $form->field('sku') );
 
-        return $product ? 1 : 0;
-    });
-
-    if ($self->submitted && $self->validate->success) {
-        $cart->add({
-            sku => $product->sku,
-            description => $product->description,
-            price => $product->price,
-            quantity => $form->field('quantity')
-        });
-
-        $c->res->redirect(
-            $c->uri_for($self->action_for('index')) . '/'
-        );
-    };
-
-    return;
-};
-
-sub clear : Local Template('cart/index') {
-    my ($self, $c) = @_;
-    my $form = $self->form;
-    my $cart = $c->stash->{'cart'};
-
-    if ($self->submitted && $self->validate->success) {
-        $cart->clear;
-    };
-
-    $c->res->redirect(
-        $c->uri_for($self->action_for('index')) . '/'
+            return $product ? 1 : 0;
+        }
     );
 
-    return;
-};
+    if ( $self->submitted && $self->validate->success ) {
+        $cart->add(
+            {
+                sku         => $product->sku,
+                description => $product->description,
+                price       => $product->price,
+                quantity    => $form->field('quantity')
+            }
+        );
 
-sub save : Local Template('cart/index') {
-    my ($self, $c) = @_;
+        $c->res->redirect( $c->uri_for( $self->action_for('index') ) . '/' );
+    }
+
+    return;
+}
+
+sub clear : Local Template('cart/index') {
+    my ( $self, $c ) = @_;
     my $form = $self->form;
     my $cart = $c->stash->{'cart'};
 
-    if (!$c->user_exists) {
-        $c->stash->{'errors'} = [$c->localize('LOGIN_REQUIRED')];
+    if ( $self->submitted && $self->validate->success ) {
+        $cart->clear;
+    }
+
+    $c->res->redirect( $c->uri_for( $self->action_for('index') ) . '/' );
+
+    return;
+}
+
+sub save : Local Template('cart/index') {
+    my ( $self, $c ) = @_;
+    my $form = $self->form;
+    my $cart = $c->stash->{'cart'};
+
+    if ( !$c->user_exists ) {
+        $c->stash->{'errors'} = [ $c->localize('LOGIN_REQUIRED') ];
         $c->detach;
-    };
+    }
 
-    if ($self->submitted && $self->validate->success) {
-        my $wishlist = $c->model('Wishlists')->create({
-            user => $c->user->get_object,
-            name => $form->field('name')
-        });
+    if ( $self->submitted && $self->validate->success ) {
+        my $wishlist = $c->model('Wishlists')->create(
+            {
+                user => $c->user->get_object,
+                name => $form->field('name')
+            }
+        );
 
-        foreach my $item ($cart->items) {
+        foreach my $item ( $cart->items ) {
             $wishlist->add($item);
-        };
+        }
 
         $cart->clear;
 
         $c->response->redirect(
-            $c->uri_for_resource('mango/wishlists', 'list') . '/'
-        );
-    };
+            $c->uri_for_resource( 'mango/wishlists', 'list' ) . '/' );
+    }
 
     return;
-};
+}
 
 1;
 __END__
@@ -116,10 +120,15 @@ __END__
 
 Mango::Catalyst::Controller::Carts - Catalyst controller for cart information
 
+=head1 SYNOPSIS
+
+    package MyApp::Controller::Cart;
+    use base 'Mango::Catalyst::Controller::Carts';
+
 =head1 DESCRIPTION
 
-Mango::Catalyst::Controller::Carts provides the web interface for shopping cart
-information.
+Mango::Catalyst::Controller::Carts provides the web interface for shopping
+cart information.
 
 =head1 ACTIONS
 

@@ -9,25 +9,26 @@ BEGIN {
     use base qw/Class::Accessor::Grouped/;
     use File::ShareDir ();
     use Path::Class qw/dir/;
-};
+}
 
 sub share {
-    my ($self, $share) = @_;
+    my ( $self, $share ) = @_;
 
     if ($share) {
-        $self->set_inherited('share', $share);
-    };
+        $self->set_inherited( 'share', $share );
+    }
 
     return
-        $ENV{'MANGO_SHARE'} ||
-        $self->get_inherited('share') ||
+         $ENV{'MANGO_SHARE'}
+      || $self->get_inherited('share')
+      ||
 
-        ## use share, unless errors on local -I no share
-        eval{File::ShareDir::module_dir('Mango')} ||
+      ## use share, unless errors on local -I no share
+      eval { File::ShareDir::module_dir('Mango') } ||
 
-        ## try for -Ilib/Mango.pm../../share
-        dir($INC{'Mango.pm'})->parent->parent->subdir('share');
-};
+      ## try for -Ilib/Mango.pm../../share
+      dir( $INC{'Mango.pm'} )->parent->parent->subdir('share');
+}
 
 1;
 __END__
@@ -35,6 +36,11 @@ __END__
 =head1 NAME
 
 Mango - An ecommerce solution using Catalyst, Handel and DBIx::Class
+
+=head1 SYNOPSIS
+
+    use Mango;
+    print Mango->share;
 
 =head1 DESCRIPTION
 

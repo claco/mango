@@ -6,12 +6,14 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider::DBIC/;
     use Mango::Exception ();
-    use Scalar::Util ();
-    use DateTime ();
+    use Scalar::Util     ();
+    use DateTime         ();
 
-    __PACKAGE__->mk_group_accessors('component_class', qw/attribute_class tag_class/);
-    __PACKAGE__->mk_group_accessors('inherited', qw/attribute_source_name tag_source_name/);
-};
+    __PACKAGE__->mk_group_accessors( 'component_class',
+        qw/attribute_class tag_class/ );
+    __PACKAGE__->mk_group_accessors( 'inherited',
+        qw/attribute_source_name tag_source_name/ );
+}
 __PACKAGE__->attribute_class('Mango::Attribute');
 __PACKAGE__->attribute_source_name('ProductAttributes');
 __PACKAGE__->tag_class('Mango::Tag');
@@ -20,349 +22,351 @@ __PACKAGE__->result_class('Mango::Product');
 __PACKAGE__->source_name('Products');
 
 sub get_by_sku {
-    my ($self, $sku) = @_;
+    my ( $self, $sku ) = @_;
 
-    return $self->search({
-        sku => $sku
-    })->first;
-};
+    return $self->search( { sku => $sku } )->first;
+}
 
 sub search {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
-    if (my $tags = delete $filter->{'tags'}) {
+    if ( my $tags = delete $filter->{'tags'} ) {
         my $count;
 
-        if (@{$tags}) {
-            foreach my $tag (@{$tags}) {
-                if (Scalar::Util::blessed $tag) {
-                    if ($tag->isa('Mango::Tag')) {
+        if ( @{$tags} ) {
+            foreach my $tag ( @{$tags} ) {
+                if ( Scalar::Util::blessed $tag) {
+                    if ( $tag->isa('Mango::Tag') ) {
                         $tag = $tag->name;
                     } else {
                         Mango::Exception->throw('NOT_A_TAG');
-                    };
-                };
+                    }
+                }
 
-                if (!$count) {
+                if ( !$count ) {
                     $count = 1;
                     $filter->{'tag.name'} = $tag;
                 } else {
-                    $filter->{'tag_' . $count . '.name'} = $tag;
-                };
-                $count++
-            };
+                    $filter->{ 'tag_' . $count . '.name' } = $tag;
+                }
+                $count++;
+            }
 
             $options->{'distinct'} = 1;
-            if (defined $options->{'join'}) {
-                if (!ref $options->{'join'} || ref $options->{'join'} eq 'HASH') {
-                    $options->{'join'} = [$options->{'join'}];
-                };
+            if ( defined $options->{'join'} ) {
+                if (  !ref $options->{'join'}
+                    || ref $options->{'join'} eq 'HASH' )
+                {
+                    $options->{'join'} = [ $options->{'join'} ];
+                }
             } else {
                 $options->{'join'} = [];
-            };
-            push @{$options->{'join'}}, map {{'map_product_tag' => 'tag'}} @{$tags};
-        };
-    };
+            }
+            push @{ $options->{'join'} },
+              map { { 'map_product_tag' => 'tag' } } @{$tags};
+        }
+    }
 
-    return $self->SUPER::search($filter, $options);
-};
+    return $self->SUPER::search( $filter, $options );
+}
 
 sub create {
-    my ($self, $data) = (shift, shift);
+    my ( $self, $data ) = ( shift, shift );
     my $attributes = delete $data->{'attributes'};
-    my $tags = delete $data->{'tags'};
-    my $product = $self->SUPER::create($data, @_);
+    my $tags       = delete $data->{'tags'};
+    my $product    = $self->SUPER::create( $data, @_ );
 
     if ($attributes) {
-        $product->add_attributes(@{$attributes});
-    };
+        $product->add_attributes( @{$attributes} );
+    }
     if ($tags) {
-        $product->add_tags(@{$tags});
-    };
+        $product->add_tags( @{$tags} );
+    }
 
     return $product;
-};
+}
 
 sub add_attribute {
     my @attributes = shift->add_attributes(@_);
 
     return shift @attributes;
-};
+}
 
 sub add_attributes {
-    my ($self, $product, @data) = @_;
-    my $resultset = $self->schema->resultset($self->attribute_source_name);
+    my ( $self, $product, @data ) = @_;
+    my $resultset = $self->schema->resultset( $self->attribute_source_name );
     my @added;
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
     foreach my $attribute (@data) {
-        if (Scalar::Util::blessed $attribute) {
-            if ($attribute->isa('Mango::Attribute')) {
-                $attribute = {$attribute->get_columns};
+        if ( Scalar::Util::blessed $attribute) {
+            if ( $attribute->isa('Mango::Attribute') ) {
+                $attribute = { $attribute->get_columns };
             } else {
                 Mango::Exception->throw('NOT_A_ATTRIBUTE');
-            };
-        };
+            }
+        }
         $attribute->{'product_id'} = $product;
 
-        push @added, $self->attribute_class->new({
-            $resultset->update_or_create($attribute, {key => 'product_attribute_name'})->get_inflated_columns,
-            meta => {
-                provider => $self,
-                parent => $product
+        push @added, $self->attribute_class->new(
+            {
+                $resultset->update_or_create( $attribute,
+                    { key => 'product_attribute_name' } )
+                  ->get_inflated_columns,
+                meta => {
+                    provider => $self,
+                    parent   => $product
+                }
             }
-        });
-    };
+        );
+    }
 
     return @added;
-};
+}
 
 sub search_attributes {
-    my ($self, $product, $filter, $options) = @_;
+    my ( $self, $product, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
     $filter->{'product_id'} = $product;
 
-    my $resultset = $self->schema->resultset($self->attribute_source_name)->search(
-        $filter, $options
-    );
+    my $resultset =
+      $self->schema->resultset( $self->attribute_source_name )
+      ->search( $filter, $options );
     my @results = map {
-        $self->attribute_class->new({
-            $_->get_inflated_columns,
-            meta => {
-                provider => $self,
-                parent => $product
+        $self->attribute_class->new(
+            {
+                $_->get_inflated_columns,
+                meta => {
+                    provider => $self,
+                    parent   => $product
+                }
             }
-        })
+          )
     } $resultset->all;
 
     if (wantarray) {
         return @results;
     } else {
-        return Mango::Iterator->new({
-            data => \@results,
-            pager => $options->{'page'} ? $resultset->pager : undef
-        });
-    };
-};
+        return Mango::Iterator->new(
+            {
+                data  => \@results,
+                pager => $options->{'page'} ? $resultset->pager : undef
+            }
+        );
+    }
+}
 
 sub delete_attributes {
-    my ($self, $product, $filter) = @_;
-    my $resultset = $self->schema->resultset($self->attribute_source_name);
+    my ( $self, $product, $filter ) = @_;
+    my $resultset = $self->schema->resultset( $self->attribute_source_name );
 
     $filter ||= {};
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
     $filter->{'product_id'} = $product;
 
     return $resultset->search($filter)->delete_all;
-};
+}
 
 sub update_attribute {
-    my ($self, $attribute) = @_;
-    my $resultset = $self->schema->resultset($self->attribute_source_name);
+    my ( $self, $attribute ) = @_;
+    my $resultset = $self->schema->resultset( $self->attribute_source_name );
     my $updated_column = $self->updated_column;
 
-    $attribute->$updated_column(DateTime->now);
+    $attribute->$updated_column( DateTime->now );
 
-    return $resultset->find($attribute->id)->update(
-        {$attribute->get_columns}
-    );
-};
+    return $resultset->find( $attribute->id )
+      ->update( { $attribute->get_columns } );
+}
 
 sub add_tag {
     my @tags = shift->add_tags(@_);
 
     return shift @tags;
-};
+}
 
 sub add_tags {
-    my ($self, $product, @data) = @_;
-    my $resultset = $self->schema->resultset($self->tag_source_name);
+    my ( $self, $product, @data ) = @_;
+    my $resultset = $self->schema->resultset( $self->tag_source_name );
     my @added;
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
     foreach my $tag (@data) {
-        if (Scalar::Util::blessed $tag) {
-            if ($tag->isa('Mango::Tag')) {
-                $tag = {$tag->get_columns};
+        if ( Scalar::Util::blessed $tag) {
+            if ( $tag->isa('Mango::Tag') ) {
+                $tag = { $tag->get_columns };
             } else {
                 Mango::Exception->throw('NOT_A_TAG');
-            };
-        } elsif (!ref $tag) {
-            $tag = {name => $tag};
-        };
+            }
+        } elsif ( !ref $tag ) {
+            $tag = { name => $tag };
+        }
 
-        next unless $tag->{'name'};
+        if ( !$tag->{'name'} ) {
+            next;
+        }
 
         my $newtag = $resultset->find_or_create($tag);
-        $newtag->related_resultset('map_product_tag')->find_or_create({
-            product_id => $product,
-            tag_id => $newtag->id
-        });
-        push @added, $self->tag_class->new({
-            $newtag->get_inflated_columns,
-            meta => {
-                provider => $self,
-                parent => $product
+        $newtag->related_resultset('map_product_tag')->find_or_create(
+            {
+                product_id => $product,
+                tag_id     => $newtag->id
             }
-        });
-    };
+        );
+        push @added, $self->tag_class->new(
+            {
+                $newtag->get_inflated_columns,
+                meta => {
+                    provider => $self,
+                    parent   => $product
+                }
+            }
+        );
+    }
 
     return @added;
-};
+}
 
 sub search_tags {
-    my ($self, $product, $filter, $options) = @_;
+    my ( $self, $product, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
-    $filter->{'products'} = {
-        'id' => $product
-    };
+    $filter->{'products'} = { 'id' => $product };
 
-    return $self->tags($filter, $options);
-};
+    return $self->tags( $filter, $options );
+}
 
 sub delete_tags {
-    my ($self, $product, $filter) = @_;
-    my $resultset = $self->schema->resultset($self->tag_source_name);
+    my ( $self, $product, $filter ) = @_;
+    my $resultset = $self->schema->resultset( $self->tag_source_name );
 
     $filter ||= {};
 
-    if (Scalar::Util::blessed($product)) {
-        if ($product->isa('Mango::Product')) {
+    if ( Scalar::Util::blessed($product) ) {
+        if ( $product->isa('Mango::Product') ) {
             $product = $product->id;
         } else {
             Mango::Exception->throw('NOT_A_PRODUCT');
-        };
-    };
+        }
+    }
 
-    return $resultset->search(
-        $filter
-    )->related_resultset('map_product_tag')->search({
-        'product_id' => $product
-    })->delete_all;
-};
+    return $resultset->search($filter)->related_resultset('map_product_tag')
+      ->search( { 'product_id' => $product } )->delete_all;
+}
 
 sub tags {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
-    $filter ||= {};
+    $filter  ||= {};
     $options ||= {};
 
     my $pfilter = delete $filter->{'products'} || {};
 
-    foreach my $key (keys %{$pfilter}) {
+    foreach my $key ( keys %{$pfilter} ) {
         next if $key =~ /^me\./;
         $pfilter->{"me.$key"} = delete $pfilter->{$key};
-    };
-    foreach my $key (keys %{$filter}) {
+    }
+    foreach my $key ( keys %{$filter} ) {
         next if $key =~ /^tag\./;
         $pfilter->{"tag.$key"} = delete $filter->{$key};
-    };
+    }
 
-    $options->{'group_by'} = ['tag.id', 'tag.name', 'tag.created', 'tag.updated'];
-    $options->{'+select'} = [{'count' => 'tag.name'}];
+    $options->{'group_by'} =
+      [ 'tag.id', 'tag.name', 'tag.created', 'tag.updated' ];
+    $options->{'+select'} = [ { 'count' => 'tag.name' } ];
     $options->{'+as'} = ['count'];
 
-    my @results = map {
-        $self->tag_class->new({
-            $_->get_inflated_columns,
-            count => $_->get_column('count'),
-            meta => {
-                provider => $self
+    my @results =    ## no critic
+      $self->resultset->search($pfilter)->related_resultset('map_product_tag')
+      ->related_resultset('tag')->search( $filter, $options )->all;
+
+    my @tags = map {
+        $self->tag_class->new(
+            {
+                $_->get_inflated_columns,
+                count => $_->get_column('count'),
+                meta  => { provider => $self }
             }
-        })
-    } $self->resultset->search(
-        $pfilter
-    )->related_resultset('map_product_tag')->related_resultset('tag')->search(
-        $filter, $options
-    )->all;
+          )
+    } @results;
 
     if (wantarray) {
-        return @results;
+        return @tags;
     } else {
-        return Mango::Iterator->new({
-            data => \@results
-        });
-    };
-};
+        return Mango::Iterator->new( { data => \@tags } );
+    }
+}
 
 sub related_tags {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
-    $filter ||= {};
-    $options ||= {};
+    $filter               ||= {};
+    $options              ||= {};
     $filter->{'products'} ||= {};
 
     my $tags = delete $filter->{'tags'} || [];
-    my @ids = map {
-        $_->id 
-    } $self->search({
-        tags => $tags
-    }, {
-        select => 'me.id'
-    })->all;
+    my @ids =
+      map { $_->id }
+      $self->search( { tags => $tags }, { select => 'me.id' } )->all;
 
     my @results;
     if (@ids) {
         $filter->{'products'}->{'id'} = \@ids;
-        $filter->{'tag.name'} = [-and => map {{'!=' => $_}} @{$tags}];
-        @results = $self->tags($filter, $options)->all;
-    };
+        $filter->{'tag.name'} = [ -and => map { { '!=' => $_ } } @{$tags} ];
+        @results = $self->tags( $filter, $options )->all;
+    }
 
     if (wantarray) {
         return @results;
     } else {
-        return Mango::Iterator->new({
-            data => \@results
-        });
-    };
-};
+        return Mango::Iterator->new( { data => \@results } );
+    }
+}
 
 1;
 __END__
@@ -397,8 +401,8 @@ sent to C<setup>.
 
     my $provider = Mango::Provider::Products->new;
 
-See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of other
-possible options.
+See L<Mango::Provider/new> and L<Mango::Provider::DBIC/new> for a list of
+other possible options.
 
 =head1 METHODS
 
@@ -411,8 +415,8 @@ possible options.
 =back
 
 Adds the specified attributes to the specified product. C<product> can be a
-Mango::Product object or a product id. C<attributes> can be a list of attribute
-data hashes or Mango::Attribute objects.
+Mango::Product object or a product id. C<attributes> can be a list of
+attribute data hashes or Mango::Attribute objects.
 
     $provider->add_attributes(23, {name => 'Attribute', value => 'Value'}, $attributeobect, ...)
 
@@ -456,7 +460,8 @@ Creates a new Mango::Product object using the supplied data.
     
     print $role->name;
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -506,7 +511,8 @@ Deletes products from the provider matching the supplied filter.
         id => 23
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -596,7 +602,8 @@ in scalar context matching the specified filter.
         sku => 'A%'
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -625,8 +632,8 @@ See L<DBIx::Class::Resultset/ATTRIBUTES> for a list of other possible options.
 
 =back
 
-Returns a list of Mango::Attribute objects in list context, or a Mango::Iterator
-in scalar context matching the specified filter.
+Returns a list of Mango::Attribute objects in list context, or a
+Mango::Iterator in scalar context matching the specified filter.
 
     $provider->search_attributes(23, {name => 'A'%});
 
@@ -650,8 +657,8 @@ in scalar context matching the specified filter.
 
     my $tags = $provider->tags;
 
-Only tags that are assigned to at least on product are returned. In addition to
-using the column names, the following special keys are available:
+Only tags that are assigned to at least on product are returned. In addition
+to using the column names, the following special keys are available:
 
 =over
 

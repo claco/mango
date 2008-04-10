@@ -6,65 +6,68 @@ our $VERSION = $Mango::VERSION;
 
 BEGIN {
     use base qw/
-        Catalyst::Plugin::Authentication
-        Catalyst::Plugin::Authentication::Credential::HTTP
-        Catalyst::Plugin::Authorization::Roles
-    /;
+      Catalyst::Plugin::Authentication
+      Catalyst::Plugin::Authentication::Credential::HTTP
+      Catalyst::Plugin::Authorization::Roles
+      /;
 
-    use Mango ();
+    use Mango       ();
     use Mango::I18N ();
-};
+}
 
 sub authenticate {
-    my ($c, $userinfo, $realmname) = @_;
-    my ($husername, $hpassword) = $c->request->headers->authorization_basic;
+    my ( $c, $userinfo, $realmname ) = @_;
+    my ( $husername, $hpassword ) = $c->request->headers->authorization_basic;
 
     $userinfo ||= {};
 
-    if (! $userinfo->{'username'}) {
+    if ( !$userinfo->{'username'} ) {
         $userinfo->{'username'} ||= $husername;
         $userinfo->{'password'} ||= $hpassword;
-        $userinfo->{'disable_sessions'} = 1
-    };
+        $userinfo->{'disable_sessions'} = 1;
+    }
 
-    return $c->NEXT::authenticate($userinfo, $realmname);
-};
+    return $c->NEXT::authenticate( $userinfo, $realmname );
+}
 
 sub user {
-    my $c = shift;
+    my $c       = shift;
     my $default = $c->config->{'authentication'}{'default_realm'};
-    my $realm = $c->get_auth_realm('mango');
+    my $realm   = $c->get_auth_realm('mango');
 
-    if (my $user = $c->NEXT::user(@_)) {
+    if ( my $user = $c->NEXT::user(@_) ) {
         return $user;
     } else {
-        if (!$realm) {
-            $c->log->warn(Mango::I18N::translate('REALM_NOT_FOUND'));
-        } elsif ($default ne 'mango') {
-            $c->log->warn(Mango::I18N::translate('REALM_NOT_MANGO'));
+        if ( !$realm ) {
+            $c->log->warn( Mango::I18N::translate('REALM_NOT_FOUND') );
+        } elsif ( $default ne 'mango' ) {
+            $c->log->warn( Mango::I18N::translate('REALM_NOT_MANGO') );
         } else {
             return $realm->{'store'}->anonymous_user($c);
-        };
-    };
+        }
+    }
 
     return;
-};
+}
 
 sub is_admin {
     my $c = shift;
     my $role = $c->config->{'mango'}->{'admin_role'} || 'admin';
 
     return $c->check_user_roles($role);
-};
+}
 
 sub unauthorized {
     my $c = shift;
 
     $c->response->status(401);
     $c->stash->{'template'} = 'errors/401';
-    $c->authorization_required(realm => $c->config->{'authentication'}->{'default_realm'});
+    $c->authorization_required(
+        realm => $c->config->{'authentication'}->{'default_realm'} );
     $c->detach;
-};
+
+    return;
+}
 
 1;
 __END__
@@ -125,9 +128,9 @@ Mango::Catalyst::Plugin::Authentication:
 
 If the C<default_realm> is not C<mango> or no realm named C<mango> is
 configured, all calls to L</user> simply return what the normal authentication
-process would return. For now, this means that any piece of code relying on the
-Mango specific helpers (c->user->cart, etc) will crash and burn. This may be
-fixed in later release with some elfin magic.
+process would return. For now, this means that any piece of code relying on
+the Mango specific helpers (c->user->cart, etc) will crash and burn. This may
+be fixed in later release with some elfin magic.
 
 See L<Mango::Catalyst::Plugin::Authentication::Store> for further information
 about what the available configuration options mean.

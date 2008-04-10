@@ -1,112 +1,130 @@
+## no critic (ProhibitMixedCaseSubs)
 # $Id$
 package Mango::Catalyst::Controller;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Mango::Catalyst::Controller::REST Mango::Catalyst::Controller::Form/;
-    use URI ();
+    use base
+      qw/Mango::Catalyst::Controller::REST Mango::Catalyst::Controller::Form/;
+    use URI              ();
     use Path::Class::Dir ();
-};
+}
 
 sub COMPONENT {
     my $self = shift->NEXT::COMPONENT(@_);
 
-    if (exists $self->{'resource_name'} && $self->{'resource_name'}) {
-        $self->register_as_resource($self->{'resource_name'});
-    };
+    if ( exists $self->{'resource_name'} && $self->{'resource_name'} ) {
+        $self->register_as_resource( $self->{'resource_name'} );
+    }
 
     return $self;
-};
+}
 
 sub _parse_PathPrefix_attr {
-    my ($self, $c, $name, $value) = @_;
+    my ( $self, $c, $name, $value ) = @_;
 
     return PathPart => $self->path_prefix;
-};
+}
 
 sub _parse_Chained_attr {
-    my ($self, $c, $name, $value) = @_;
+    my ( $self, $c, $name, $value ) = @_;
 
-    if ($value && $value =~ /\.\.\//) {
+    if ( $value && $value =~ /\.\.\// ) {
         ## this is a friggin hack because I don't know how to have
         ## Path::Class eval ../ for me
         local $URI::ABS_REMOTE_LEADING_DOTS = 1;
-        $value = URI->new(
-            Path::Class::Dir->new($self->action_namespace, $value)->as_foreign('Unix')->stringify
-        )->abs('http://localhost')->path('foo');
-    };
+        $value =
+          URI->new( Path::Class::Dir->new( $self->action_namespace, $value )
+              ->as_foreign('Unix')->stringify )->abs('http://localhost')
+          ->path('foo');
+    }
 
     return Chained => $value || $self->action_namespace;
-};
+}
 
 sub _parse_Feed_attr {
-    my ($self, $c, $name, $value) = @_;
+    my ( $self, $c, $name, $value ) = @_;
 
     return Feed => $value;
-};
+}
 
 sub end : ActionClass('Serialize') {
     my $self = shift;
-    my $c = shift;
-    my %feeds = map { lc($_) => 1 } @{$c->action->attributes->{'Feed'} || []};
+    my $c    = shift;
+    my %feeds =
+      map { lc($_) => 1 } @{ $c->action->attributes->{'Feed'} || [] };
 
-    if (exists $feeds{'atom'}) {
-        $self->enable_atom_feed unless
-            $c->stash->{'links'}->{'alternate'}->{'atom'};
-    };
-    if (exists $feeds{'rss'}) {
-        $self->enable_rss_feed unless
-            $c->stash->{'links'}->{'alternate'}->{'rss'};
-    };
+    if ( exists $feeds{'atom'}
+        && !$c->stash->{'links'}->{'alternate'}->{'atom'} )
+    {
+        $self->enable_atom_feed;
+    }
+    if ( exists $feeds{'rss'}
+        && !$c->stash->{'links'}->{'alternate'}->{'rss'} )
+    {
+        $self->enable_rss_feed;
+    }
 
-    return $self->NEXT::end($c, @_);
-};
+    return $self->NEXT::end( $c, @_ );
+}
 
 sub register_as_resource {
-    my ($self, $name) = @_;
+    my ( $self, $name ) = @_;
     my $class = ref $self || $self;
 
-    $self->context->register_resource($name, $class);
+    $self->context->register_resource( $name, $class );
 
     return;
-};
+}
 
 sub current_page {
     my $c = shift->context;
-    return $c->request->param('current_page') ||
-        $c->request->param('page') || 1;
-};
+    return
+         $c->request->param('current_page')
+      || $c->request->param('page')
+      || 1;
+}
 
 sub entries_per_page {
     my $c = shift->context;
-    return $c->request->param('entries_per_page') ||
-        $c->request->param('rows') || 10;
-};
+    return
+         $c->request->param('entries_per_page')
+      || $c->request->param('rows')
+      || 10;
+}
 
 sub enable_feeds {
     my $self = shift;
 
     $self->enable_atom_feed;
     $self->enable_rss_feed;
-};
+
+    return;
+}
 
 sub enable_atom_feed {
     my $self = shift;
-    my $c = $self->context;
+    my $c    = $self->context;
 
-    $c->stash->{'links'}->{'alternate'}->{'atom'} = $c->request->uri_with({view => 'Atom'});
-};
+    $c->stash->{'links'}->{'alternate'}->{'atom'} =
+      $c->request->uri_with( { view => 'Atom' } );
+
+    return;
+}
 
 sub enable_rss_feed {
     my $self = shift;
-    my $c = $self->context;
+    my $c    = $self->context;
 
-    $c->stash->{'links'}->{'alternate'}->{'rss'} = $c->request->uri_with({view => 'RSS'});
-};
+    $c->stash->{'links'}->{'alternate'}->{'rss'} =
+      $c->request->uri_with( { view => 'RSS' } );
+
+    return;
+}
 
 1;
-
+__END__
 
 =head1 NAME
 

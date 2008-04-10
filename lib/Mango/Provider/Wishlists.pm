@@ -6,99 +6,97 @@ use warnings;
 BEGIN {
     use base qw/Mango::Provider/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/storage/);
-};
+    __PACKAGE__->mk_group_accessors( 'simple', qw/storage/ );
+}
 __PACKAGE__->result_class('Mango::Wishlist');
 
 sub setup {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
     my $storage = $self->result_class->storage->clone;
 
     $storage->setup($args);
 
-    $self->storage(
-        bless {storage => $storage}, $self->result_class
-    );
+    $self->storage( bless { storage => $storage }, $self->result_class );
 
     return;
-};
+}
 
 sub create {
     my $self = shift;
     my $data = shift || {};
 
-    if (my $user = delete $data->{'user'}) {
-        if (Scalar::Util::blessed($user)) {
-            if ($user->isa('Mango::User')) {
+    if ( my $user = delete $data->{'user'} ) {
+        if ( Scalar::Util::blessed($user) ) {
+            if ( $user->isa('Mango::User') ) {
                 $data->{'user_id'} = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             $data->{'user_id'} = $user;
-        };
-    };
+        }
+    }
 
-    if (!$data->{'user_id'}) {
+    if ( !$data->{'user_id'} ) {
         Mango::Exception->throw('NO_USER_SPECIFIED');
-    };
+    }
 
-    return $self->storage->create($data, @_);
-};
+    return $self->storage->create( $data, @_ );
+}
 
 sub search {
     my $self = shift;
     my $filter = shift || {};
 
-    if (my $user = delete $filter->{'user'}) {
-        if (Scalar::Util::blessed $user) {
-            if ($user->isa('Mango::User')) {
+    if ( my $user = delete $filter->{'user'} ) {
+        if ( Scalar::Util::blessed $user) {
+            if ( $user->isa('Mango::User') ) {
                 $filter->{'user_id'} = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
+            }
         } else {
             $filter->{'user_id'} = $user;
-        };
-    };
+        }
+    }
 
-    return $self->storage->search($filter, @_);
-};
+    return $self->storage->search( $filter, @_ );
+}
 
 sub update {
-    my ($self, $object) = @_;
+    my ( $self, $object ) = @_;
 
     return $object->update;
-};
+}
 
 sub delete {
-    my $self = shift;
+    my $self   = shift;
     my $filter = shift;
 
-    if (Scalar::Util::blessed $filter) {
-        if ($filter->isa('Mango::Wishlist')) {
-            $filter = {id => $filter->id};
+    if ( Scalar::Util::blessed $filter) {
+        if ( $filter->isa('Mango::Wishlist') ) {
+            $filter = { id => $filter->id };
         } else {
             Mango::Exception->throw('NOT_A_WISHLIST');
-        };
-    } elsif (ref $filter eq 'HASH') {
-        if (my $user = delete $filter->{'user'}) {
-            if (Scalar::Util::blessed $user) {
-                if ($user->isa('Mango::User')) {
+        }
+    } elsif ( ref $filter eq 'HASH' ) {
+        if ( my $user = delete $filter->{'user'} ) {
+            if ( Scalar::Util::blessed $user) {
+                if ( $user->isa('Mango::User') ) {
                     $filter->{'user_id'} = $user->id;
                 } else {
                     Mango::Exception->throw('NOT_A_USER');
-                };
+                }
             } else {
                 $filter->{'user_id'} = $user;
-            };
-        };
+            }
+        }
     } else {
-        $filter = {id => $filter};
-    };
+        $filter = { id => $filter };
+    }
 
-    return $self->storage->destroy($filter, @_);
-};
+    return $self->storage->destroy( $filter, @_ );
+}
 
 1;
 __END__
@@ -127,8 +125,8 @@ deleting, updating and searching wishlist information.
 
 =back
 
-Creates a new wishlist provider object. If options are passed to new, those are
-sent to C<setup>.
+Creates a new wishlist provider object. If options are passed to new, those
+are sent to C<setup>.
 
     my $provider = Mango::Provider::Wishlists->new;
 
@@ -152,7 +150,8 @@ Creates a new Mango::Wishlist object using the supplied data.
     
     print $wishlist->name;
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -183,7 +182,8 @@ Deletes wishlists from the provider matching the supplied filter.
         id => 23
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 
@@ -222,8 +222,8 @@ Returns undef if no matching wishlist can be found.
 
 =back
 
-Returns a list of Mango::Wishlist objects in list context, or a Mango::Iterator
-in scalar context matching the specified filter.
+Returns a list of Mango::Wishlist objects in list context, or a
+Mango::Iterator in scalar context matching the specified filter.
 
     my @wishlists = $provider->search({
         name => 'A%'
@@ -233,7 +233,8 @@ in scalar context matching the specified filter.
         name => 'A%'
     });
 
-In addition to using the column names, the following special keys are available:
+In addition to using the column names, the following special keys are
+available:
 
 =over
 

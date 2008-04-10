@@ -1,146 +1,142 @@
+## no critic (ProhibitMixedCaseSubs)
 # $Id$
 package Mango::Catalyst::Controller::Form;
 use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Controller Catalyst::Component::ACCEPT_CONTEXT Class::Accessor::Grouped/;
+    use base
+      qw/Catalyst::Controller Catalyst::Component::ACCEPT_CONTEXT Class::Accessor::Grouped/;
     use Catalyst::Utils ();
-    use Path::Class ();
-    use File::Basename ();
+    use Path::Class     ();
+    use File::Basename  ();
     use Scalar::Util qw/blessed/;
 
-    __PACKAGE__->mk_group_accessors('simple', qw/forms/);
-    __PACKAGE__->mk_group_accessors('inherited', qw/form_directory/);
-    __PACKAGE__->mk_group_accessors('component_class', qw/form_class/);
-};
+    __PACKAGE__->mk_group_accessors( 'simple',          qw/forms/ );
+    __PACKAGE__->mk_group_accessors( 'inherited',       qw/form_directory/ );
+    __PACKAGE__->mk_group_accessors( 'component_class', qw/form_class/ );
+}
 __PACKAGE__->form_class('Mango::Form');
 
 sub _parse_Form_attr {
-    my ($self, $c, $name, $value) = @_;
+    my ( $self, $c, $name, $value ) = @_;
 
-    if (my $form = $self->forms->{$value}) {
-        $form->action('/' . $self->path_prefix . '/');
+    if ( my $form = $self->forms->{$value} ) {
+        $form->action( '/' . $self->path_prefix . '/' );
         return Form => $form;
-    };
+    }
 
     return;
-};
+}
 
 sub _parse_FormFile_attr {
-    my ($self, $c, $name, $value) = @_;
+    my ( $self, $c, $name, $value ) = @_;
 
-    if (my $form = $self->_load_form_from_file($c, $value)) {
+    if ( my $form = $self->_load_form_from_file( $c, $value ) ) {
         return Form => $form;
-    };
+    }
 
     return;
-};
+}
 
 sub COMPONENT {
-    my $class = shift;
-    my $self = $class->NEXT::COMPONENT(@_);
-    my $c = shift;
+    my $class  = shift;
+    my $self   = $class->NEXT::COMPONENT(@_);
+    my $c      = shift;
     my $prefix = Catalyst::Utils::class2prefix($class);
 
-    $self->forms({});
+    $self->forms( {} );
 
-    if (!$self->form_directory) {
+    if ( !$self->form_directory ) {
         $self->form_directory(
-            Path::Class::Dir->new(Mango->share, 'forms', $prefix)
-        );
-    };
+            Path::Class::Dir->new( Mango->share, 'forms', $prefix ) );
+    }
 
-    my @files = glob(
-        Path::Class::File->new($self->form_directory, '*.yml')
-    );
+    my @files = glob Path::Class::File->new( $self->form_directory, '*.yml' );
 
     foreach my $file (@files) {
         my $filename = Path::Class::file($file)->basename;
-        my ($name, $directories, $suffix) = File::Basename::fileparse($filename, '.yml');
-        my $action = Path::Class::dir($prefix, $name)->as_foreign('Unix');
+        my ( $name, $directories, $suffix ) =
+          File::Basename::fileparse( $filename, '.yml' );
+        my $action = Path::Class::dir( $prefix, $name )->as_foreign('Unix');
 
-        my $form = $self->_load_form_from_file($c, $file);
+        my $form = $self->_load_form_from_file( $c, $file );
 
-        if ($form->{'action'}) {
+        if ( $form->{'action'} ) {
             $form->action("$_");
         } else {
             $form->action("/$action/");
-        };
+        }
 
-        if ($c->debug) {
+        if ( $c->debug ) {
             $c->log->debug("Form $filename attached to action '$action'");
-        };
-        $self->forms->{$name} = $form;
+        }
+        $self->forms->{$name}   = $form;
         $self->forms->{$action} = $form;
-    };
+    }
 
     return $self;
-};
+}
 
 sub _load_form_from_file {
-    my ($self, $c, $file) = @_;
+    my ( $self, $c, $file ) = @_;
 
-    if ($c->debug) {
+    if ( $c->debug ) {
         $c->log->debug("Loading form '$file'");
-    };
+    }
 
-    my $form = $self->form_class->new({
-        source => $file
-    });
+    my $form = $self->form_class->new( { source => $file } );
 
     $c->add_form($form);
 
     return $form;
-};
+}
 
 sub form {
-    my ($self, $name) = @_;
+    my ( $self, $name ) = @_;
     my $c = $self->context;
     my $form;
 
     $name ||= $c->action;
 
-    if (exists $c->action->attributes->{'Form'}) {
+    if ( exists $c->action->attributes->{'Form'} ) {
         $form = $c->action->attributes->{'Form'}->[-1];
-    };
+    }
 
-    if (!$form) {
+    if ( !$form ) {
         $form = $self->forms->{$name};
-    };
+    }
 
     if ($form) {
-        $form->action($c->request->uri->as_string);
-        $form->params($c->request);
-        $form->localizer(
-            sub {$c->localize(@_)}
-        );
+        $form->action( $c->request->uri->as_string );
+        $form->params( $c->request );
+        $form->localizer( sub { $c->localize(@_) } );
 
         $c->stash->{'form'} = $form;
 
         return $form;
-    };
+    }
 
     return;
-};
+}
 
 sub submitted {
     my $self = shift;
     my $form = $self->form;
 
     return $form ? $form->submitted : undef;
-};
+}
 
 sub validate {
-    my $self = shift;
-    my $c = $self->context;
-    my $form = $self->form;
+    my $self    = shift;
+    my $c       = $self->context;
+    my $form    = $self->form;
     my $results = $form->validate(@_);
 
     $c->stash->{'errors'} = $results->errors;
 
     return $results;
-};
+}
 
 1;
 __END__
@@ -210,8 +206,8 @@ The form class used to parse/validate forms. The default class is Mango::Form.
 
 =item form_directory
 
-The directory to load forms from. If no directory is specified, forms in the current
-class2prefix are loaded instead.
+The directory to load forms from. If no directory is specified, forms in the
+current class2prefix are loaded instead.
 
     __PACKAGE__->config(
         form_directory => '/path/to/this/classes/forms'

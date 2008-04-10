@@ -6,19 +6,19 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
 
-    __PACKAGE__->config(
-        resource_name  => 'mango/logout'
-    );
-};
+    __PACKAGE__->config( resource_name => 'mango/logout' );
+}
 
 sub index : Template('logout/index') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
 
-    if ($c->user_exists) {
+    if ( $c->user_exists ) {
         $c->logout;
-        $c->stash->{'errors'} = [$c->localize('LOGOUT_SUCCEEDED')];
-    };
-};
+        $c->stash->{'errors'} = [ $c->localize('LOGOUT_SUCCEEDED') ];
+    }
+
+    return;
+}
 
 1;
 __END__
@@ -26,6 +26,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Controller::Logout - Catalyst controller for logouts
+
+=head1 SYNOPSIS
+
+    package MyApp::Controller::Logout;
+    use base 'Mango::Catalyst::Controller::Logout';
 
 =head1 DESCRIPTION
 

@@ -5,11 +5,9 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Model::Provider/;
-};
+}
 
-__PACKAGE__->config(
-    provider_class => 'Mango::Provider::Roles'
-);
+__PACKAGE__->config( provider_class => 'Mango::Provider::Roles' );
 
 1;
 __END__
@@ -17,6 +15,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Model::Roles - Catalyst model for user role information
+
+=head1 SYNOPSIS
+
+    package MyApp::Model::Roles;
+    use base 'Mango::Catalyst::Model::Roles';
 
 =head1 DESCRIPTION
 

@@ -7,48 +7,56 @@ BEGIN {
     use base qw/Handel::Order/;
     use Handel::Constants qw/ORDER_TYPE_TEMP/;
     use Handel::Constraints ();
-    use DateTime ();
-};
+    use DateTime            ();
+}
 
 ## Yes, this isn't the preferred way. Sue me. I don't want the storage classes
-## floating around this dist. If you make your own order, feel free to do it the
-## correct way. ;-)
+## floating around this dist. If you make your own order, feel free to do it
+## the correct way. ;-)
 __PACKAGE__->item_class('Mango::Order::Item');
-__PACKAGE__->storage->setup({
-    autoupdate         => 0,
-    currency_class     => 'Mango::Currency',
-    schema_class       => 'Mango::Schema',
-    schema_source      => 'Orders',
-    currency_columns => [qw/shipping handling subtotal tax total/],
-    constraints        => {
-        type           => {'Check Type'     => \&Handel::Constraints::constraint_order_type},
-        shipping       => {'Check Shopping' => \&Handel::Constraints::constraint_price},
-        handling       => {'Check Handling' => \&Handel::Constraints::constraint_price},
-        subtotal       => {'Check Subtotal' => \&Handel::Constraints::constraint_price},
-        tax            => {'Check Tax'      => \&Handel::Constraints::constraint_price},
-        total          => {'Check Total'    => \&Handel::Constraints::constraint_price}
-    },
-    default_values => {
-        type     => ORDER_TYPE_TEMP,
-        shipping => 0,
-        handling => 0,
-        subtotal => 0,
-        tax      => 0,
-        total    => 0,
-        created  => sub {DateTime->now},
-        updated  => sub {DateTime->now}
+__PACKAGE__->storage->setup(
+    {
+        autoupdate       => 0,
+        currency_class   => 'Mango::Currency',
+        schema_class     => 'Mango::Schema',
+        schema_source    => 'Orders',
+        currency_columns => [qw/shipping handling subtotal tax total/],
+        constraints      => {
+            type => {
+                'Check Type' => \&Handel::Constraints::constraint_order_type
+            },
+            shipping =>
+              { 'Check Shopping' => \&Handel::Constraints::constraint_price },
+            handling =>
+              { 'Check Handling' => \&Handel::Constraints::constraint_price },
+            subtotal =>
+              { 'Check Subtotal' => \&Handel::Constraints::constraint_price },
+            tax => { 'Check Tax' => \&Handel::Constraints::constraint_price },
+            total =>
+              { 'Check Total' => \&Handel::Constraints::constraint_price }
+        },
+        default_values => {
+            type     => ORDER_TYPE_TEMP,
+            shipping => 0,
+            handling => 0,
+            subtotal => 0,
+            tax      => 0,
+            total    => 0,
+            created  => sub { DateTime->now },
+            updated  => sub { DateTime->now }
+        }
     }
-});
+);
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub update {
     my $self = shift;
 
-    $self->updated(DateTime->now);
-  
+    $self->updated( DateTime->now );
+
     return $self->SUPER::update(@_);
-};
+}
 
 1;
 __END__
@@ -84,8 +92,8 @@ Mango::Order represents an order.
 
 =back
 
-Adds a new item to the current order and returns an instance of the item class.
-You can either pass the item data as a hash reference:
+Adds a new item to the current order and returns an instance of the item
+class. You can either pass the item data as a hash reference:
 
     my $item = $order->add({
         sku      => 'SKU1234',
@@ -99,8 +107,8 @@ or pass an existing item:
         $cart->items->first
     );
 
-When passing an existing cart/order item to add, all columns in the source item
-will be copied into the destination item if the column exists in both the
+When passing an existing cart/order item to add, all columns in the source
+item will be copied into the destination item if the column exists in both the
 destination and source, and the column isn't the primary key or the foreign
 key of the item relationship.
 

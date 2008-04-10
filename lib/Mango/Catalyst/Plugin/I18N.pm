@@ -1,3 +1,4 @@
+## no critic (ProhibitStringyEval)
 # $Id$
 package Mango::Catalyst::Plugin::I18N;
 use strict;
@@ -5,13 +6,13 @@ use warnings;
 our $VERSION = $Mango::VERSION;
 
 BEGIN {
-    use Mango ();
-    use Mango::I18N ();
-    use I18N::LangTags ();
+    use Mango                  ();
+    use Mango::I18N            ();
+    use I18N::LangTags         ();
     use I18N::LangTags::Detect ();
     use NEXT;
     use Scalar::Util qw/blessed/;
-};
+}
 
 sub setup {
     my $self = shift;
@@ -20,38 +21,43 @@ sub setup {
     my $class = blessed $self || $self;
     my $custom = $self->config->{'i18n_class'} || "$class\:\:I18N";
 
-    if (eval "require $custom") {
+    if ( eval "require $custom" ) {
         $self->config->{'i18n_class'} = $custom;
-    } elsif (eval "require $class\:\:L10N") {
+    } elsif ( eval "require $class\:\:L10N" ) {
         $self->config->{'i18n_class'} = "$class\:\:L10N";
     } else {
         delete $self->config->{'i18n_class'};
-    };
-};
+    }
+
+    return;
+}
 
 *lang = \&language;
 
 sub language {
-    my ($c, $language) = @_;
+    my ( $c, $language ) = @_;
 
     if ($language) {
         $c->languages($language);
-    };
+    }
 
     my $class = $c->config->{'i18n_class'} || 'Mango::I18N';
-    my $lang = ref $class->get_handle(@{$c->languages});
+    my $lang = ref $class->get_handle( @{ $c->languages } );
     $lang =~ s/.*:://;
 
     return $lang;
-};
+}
 
 *langs = \&languages;
 
 sub languages {
-    my ($c, $languages) = @_;
+    my ( $c, $languages ) = @_;
 
     if ($languages) {
-        $c->{'languages'} = ref($languages) eq 'ARRAY' ? $languages : [ split(/,\s*/, $languages) ];
+        $c->{'languages'} =
+          ref($languages) eq 'ARRAY'
+          ? $languages
+          : [ split /,\s*/, $languages ];
         delete $c->{'__mango_i18n_handle'};
     } else {
         $c->{languages} ||= [
@@ -62,34 +68,38 @@ sub languages {
             ),
             'i-default'
         ];
-    };
+    }
 
     return $c->{languages};
-};
+}
 
 *loc = \&localize;
 
 sub localize {
-    my ($c, $text) = (shift, shift);
+    my ( $c, $text ) = ( shift, shift );
     my $changed;
 
-    if ($c->config->{'i18n_class'}) {
-        if (!$c->{'__mango_app_i18_handle'}) {
-            $c->{'__mango_app_i18_handle'} = $c->config->{'i18n_class'}->get_handle(@{$c->languages});
-        };
+    if ( $c->config->{'i18n_class'} ) {
+        if ( !$c->{'__mango_app_i18_handle'} ) {
+            $c->{'__mango_app_i18_handle'} =
+              $c->config->{'i18n_class'}->get_handle( @{ $c->languages } );
+        }
 
-        my $loc = $c->{'__mango_app_i18_handle'}->maketext($text, @_);
+        my $loc = $c->{'__mango_app_i18_handle'}->maketext( $text, @_ );
 
         ## bail if text was localized
-        return $loc unless $loc eq $text;
-    };
+        if ( $loc ne $text ) {
+            return $loc;
+        }
+    }
 
-    if (!$c->{'__mango_i18n_handle'}) {
-        $c->{'__mango_i18n_handle'} = Mango::I18N->get_handle(@{$c->languages});
-    };
+    if ( !$c->{'__mango_i18n_handle'} ) {
+        $c->{'__mango_i18n_handle'} =
+          Mango::I18N->get_handle( @{ $c->languages } );
+    }
 
-    return $c->{'__mango_i18n_handle'}->maketext($text, @_);
-};
+    return $c->{'__mango_i18n_handle'}->maketext( $text, @_ );
+}
 
 1;
 __END__

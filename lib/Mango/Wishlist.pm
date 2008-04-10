@@ -6,56 +6,63 @@ use warnings;
 BEGIN {
     use base qw/Handel::Cart/;
     use Handel::Constraints ();
-    use DateTime ();
-};
+    use DateTime            ();
+}
 
 ## Yes, this isn't the preferred way. Sue me. I don't want the storage classes
-## floating around this dist. If you make your own cart, feel free to do it the
-## correct way. ;-)
+## floating around this dist. If you make your own cart, feel free to do it
+## the correct way. ;-)
 __PACKAGE__->item_class('Mango::Wishlist::Item');
-__PACKAGE__->storage->setup({
-    autoupdate         => 0,
-    currency_class     => 'Mango::Currency',
-    schema_class       => 'Mango::Schema',
-    schema_source      => 'Wishlists',
-    constraints        => {
-        name           => {'Check Name'    => \&Handel::Constraints::constraint_cart_name},
-    },
-    default_values     => {
-        created        => sub {DateTime->now},
-        updated        => sub {DateTime->now}
-    },
-    validation_profile => undef
-});
+__PACKAGE__->storage->setup(
+    {
+        autoupdate     => 0,
+        currency_class => 'Mango::Currency',
+        schema_class   => 'Mango::Schema',
+        schema_source  => 'Wishlists',
+        constraints    => {
+            name =>
+              { 'Check Name' => \&Handel::Constraints::constraint_cart_name },
+        },
+        default_values => {
+            created => sub { DateTime->now },
+            updated => sub { DateTime->now }
+        },
+        validation_profile => undef
+    }
+);
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
 sub items {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
     $options ||= {};
 
-    $options->{'join'} = 'product';
+    $options->{'join'}    = 'product';
     $options->{'+select'} = 'product.price';
-    $options->{'+as'} = 'price';
+    $options->{'+as'}     = 'price';
 
-    return $self->SUPER::items($filter, $options);
-};
+    return $self->SUPER::items( $filter, $options );
+}
 
 sub type {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
-};
+
+    return;
+}
 
 sub save {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
-};
+
+    return;
+}
 
 sub update {
     my $self = shift;
 
-    $self->updated(DateTime->now);
-  
+    $self->updated( DateTime->now );
+
     return $self->SUPER::update(@_);
-};
+}
 
 1;
 __END__
@@ -115,8 +122,9 @@ or pass an existing wishlist/cart item:
     );
 
 When passing an existing item to add, all columns in the source item will
-be copied into the destination item if the column exists in the destination and
-the column isn't the primary key or the foreign key of the item relationship.
+be copied into the destination item if the column exists in the destination
+and the column isn't the primary key or the foreign key of the item
+relationship.
 
 The item object passed to add must be an instance or subclass of Handel::Cart.
 
@@ -134,7 +142,8 @@ Returns the number of items in the wishlist.
 
 =head2 created
 
-Returns the date and time in UTC the wishlist was created as a DateTime object.
+Returns the date and time in UTC the wishlist was created as a DateTime
+object.
 
     print $wishlist->created;
 
@@ -246,8 +255,8 @@ or subclass.
     
     $wishlist->restore($cart);
 
-For either method, you may also specify the mode in which the wishlist should be
-restored. The following modes are available:
+For either method, you may also specify the mode in which the wishlist should
+be restored. The following modes are available:
 
 =over
 

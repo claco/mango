@@ -5,107 +5,128 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
-    use Mango ();
+    use Mango                    ();
     use HTML::TagCloud::Sortable ();
-    use Path::Class::Dir ();
+    use Path::Class::Dir         ();
 
     __PACKAGE__->config(
-        resource_name  => 'mango/products',
-        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'products')
+        resource_name => 'mango/products',
+        form_directory =>
+          Path::Class::Dir->new( Mango->share, 'forms', 'products' )
     );
-};
+}
 
 sub list : Chained('/') PathPrefix Args(0) Template('products/list') {
-    my ($self, $c) = @_;
-    my $tags = $c->model('Products')->tags({}, {
-        order_by => 'tag.name'
-    });
+    my ( $self, $c ) = @_;
+    my $tags = $c->model('Products')->tags( {}, { order_by => 'tag.name' } );
     $c->stash->{'tags'} = $tags;
 
     my $tagcloud = HTML::TagCloud::Sortable->new;
-    foreach my $tag ($tags->all) {
-        $tagcloud->add({
-            name => $tag->name,
-            count => $tag->count,
-            url => $c->uri_for('tags', $tag->name) . '/'
-        });
-    };
+    foreach my $tag ( $tags->all ) {
+        $tagcloud->add(
+            {
+                name  => $tag->name,
+                count => $tag->count,
+                url   => $c->uri_for( 'tags', $tag->name ) . '/'
+            }
+        );
+    }
     $c->stash->{'tagcloud'} = $tagcloud;
 
     return;
-};
+}
 
 sub instance : Chained('/') PathPrefix CaptureArgs(1) {
-    my ($self, $c, $sku) = @_;
+    my ( $self, $c, $sku ) = @_;
     my $product = $c->model('Products')->get_by_sku($sku);
 
-    if (defined $product) {
+    if ( defined $product ) {
         $c->stash->{'product'} = $product;
     } else {
         $c->response->status(404);
         $c->detach;
-    };
-};
+    }
 
-sub view : Chained('instance') PathPart('') Args(0) Template('products/view') {
-    my ($self, $c) = @_;
+    return;
+}
 
-};
+sub view : Chained('instance') PathPart('') Args(0) Template('products/view')
+{
+    my ( $self, $c ) = @_;
 
-sub tags : Local Template('products/list') Feed('Atom') Feed('RSS')  {
-    my ($self, $c, @tags) = @_;
+    return;
+}
 
-    return unless scalar @tags;
+sub tags : Local Template('products/list') Feed('Atom') Feed('RSS') {
+    my ( $self, $c, @tags ) = @_;
 
-    my $products = $c->model('Products')->search({
-        tags => \@tags
-    }, {
-        page => $self->current_page,
-        rows => $self->entries_per_page
-    });
+    if ( !scalar @tags ) {
+        return;
+    }
+
+    my $products = $c->model('Products')->search(
+        { tags => \@tags },
+        {
+            page => $self->current_page,
+            rows => $self->entries_per_page
+        }
+    );
     my $pager = $products->pager;
-  
-    if ($self->wants_feed) {
-        $self->entity({
-            title => 'Products: ' . join('. ', @tags),
-            link =>  $c->uri_for('tags', @tags) . '/',
-            entries => [
-                map {{
-                    id => $_->id,
-                    title => $_->name,
-                    title => $_->sku,
-                    link => $c->uri_for_resource('mango/products', 'view', [$_->sku]) . '/',
-                    content => '<p>Price: ' . $_->price->as_string('FMT_SYMBOL') . '</p><p>' . ($_->description || 'No description available.') . '</p>',
-                    issued => $_->created,
-                    modified => $_->updated
-                }} $products->all
-            ]
-        });
+
+    if ( $self->wants_feed ) {
+        $self->entity(
+            {
+                title   => 'Products: ' . join( '. ', @tags ),
+                link    => $c->uri_for( 'tags',       @tags ) . '/',
+                entries => [
+                    map {
+                        {
+                            id    => $_->id,
+                            title => $_->name,
+                            title => $_->sku,
+                            link =>
+                              $c->uri_for_resource( 'mango/products', 'view',
+                                [ $_->sku ] )
+                              . '/',
+                            content => '<p>Price: '
+                              . $_->price->as_string('FMT_SYMBOL')
+                              . '</p><p>'
+                              . (
+                                $_->description || 'No description available.'
+                              )
+                              . '</p>',
+                            issued   => $_->created,
+                            modified => $_->updated
+                        }
+                      } $products->all
+                ]
+            }
+        );
         $c->detach;
     } else {
         $c->stash->{'products'} = $products;
-        $c->stash->{'pager'} = $pager;
-        
-        my $tags = $c->model('Products')->related_tags({
-            tags => \@tags
-        }, {
-            order_by => 'tag.name'
-        });
+        $c->stash->{'pager'}    = $pager;
+
+        my $tags =
+          $c->model('Products')
+          ->related_tags( { tags => \@tags }, { order_by => 'tag.name' } );
         $c->stash->{'tags'} = $tags;
 
         my $tagcloud = HTML::TagCloud::Sortable->new;
-        foreach my $tag ($tags->all) {
-            $tagcloud->add({
-                name => $tag->name,
-                count => $tag->count,
-                url => $c->uri_for('tags', @tags, $tag->name) . '/'
-            });
-        };
+        foreach my $tag ( $tags->all ) {
+            $tagcloud->add(
+                {
+                    name  => $tag->name,
+                    count => $tag->count,
+                    url   => $c->uri_for( 'tags', @tags, $tag->name ) . '/'
+                }
+            );
+        }
         $c->stash->{'tagcloud'} = $tagcloud;
-    };
+    }
 
     return;
-};
+}
 
 1;
 __END__
@@ -114,6 +135,11 @@ __END__
 
 Mango::Catalyst::Controller::Products - Catalyst controller for displaying
 products.
+
+=head1 SYNOPSIS
+
+    package MyApp::Controller::Products;
+    use base 'Mango::Catalyst::Controller::Products';
 
 =head1 DESCRIPTION
 

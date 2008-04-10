@@ -6,15 +6,17 @@ use warnings;
 BEGIN {
     use base qw/DBIx::Class/;
     use DateTime ();
-};
+}
 
-__PACKAGE__->load_components(qw/
-    +Handel::Components::DefaultValues
-    +Handel::Components::Constraints
-    +Handel::Components::Validation
-    InflateColumn::DateTime
-    Core
-/);
+__PACKAGE__->load_components(
+    qw/
+      +Handel::Components::DefaultValues
+      +Handel::Components::Constraints
+      +Handel::Components::Validation
+      InflateColumn::DateTime
+      Core
+      /
+);
 __PACKAGE__->table('user');
 __PACKAGE__->source_name('Users');
 __PACKAGE__->add_columns(
@@ -22,7 +24,7 @@ __PACKAGE__->add_columns(
         data_type         => 'INT',
         is_auto_increment => 1,
         is_nullable       => 0,
-        extras            => {unsigned => 1}
+        extras            => { unsigned => 1 }
     },
     username => {
         data_type   => 'VARCHAR',
@@ -35,39 +37,37 @@ __PACKAGE__->add_columns(
         is_nullable => 0
     },
     created => {
-        data_type    => 'DATETIME',
-        is_nullable  => 0,
-        extra        => {
-            timezone => "UTC"
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     },
     updated => {
-        data_type    => 'DATETIME',
-        is_nullable  => 0,
-        extra        => {
-            timezone => "UTC"
-        }
+        data_type   => 'DATETIME',
+        is_nullable => 0,
+        extra       => { timezone => 'UTC' }
     }
 );
 __PACKAGE__->set_primary_key('id');
-__PACKAGE__->add_unique_constraint(
-    username => [qw/username/]
-);
+__PACKAGE__->add_unique_constraint( username => [qw/username/] );
 __PACKAGE__->has_many(
     map_user_role => 'Mango::Schema::UserRole',
-    {'foreign.user_id' => 'self.id'}
+    { 'foreign.user_id' => 'self.id' }
 );
-__PACKAGE__->many_to_many(roles => 'map_user_role', 'role');
-__PACKAGE__->might_have(profile => 'Mango::Schema::Profile',
-    {'foreign.user_id' => 'self.id'}
+__PACKAGE__->many_to_many( roles => 'map_user_role', 'role' );
+__PACKAGE__->might_have(
+    profile => 'Mango::Schema::Profile',
+    { 'foreign.user_id' => 'self.id' }
 );
-__PACKAGE__->has_many(wishlists => 'Mango::Schema::Wishlist',
-    {'foreign.user_id' => 'self.id'}
+__PACKAGE__->has_many(
+    wishlists => 'Mango::Schema::Wishlist',
+    { 'foreign.user_id' => 'self.id' }
 );
-__PACKAGE__->default_values({
-    created => sub {DateTime->now},
-    updated => sub {DateTime->now}
-});
+__PACKAGE__->default_values(
+    {
+        created => sub { DateTime->now },
+        updated => sub { DateTime->now }
+    }
+);
 
 1;
 __END__

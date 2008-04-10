@@ -5,91 +5,103 @@ use warnings;
 
 BEGIN {
     use base qw/Class::Accessor::Grouped/;
+    use English '-no_match_vars';
     use Class::Inspector ();
-    use Scalar::Util ();
+    use Scalar::Util     ();
     use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('component_class', qw/result_class/);
-};
+    __PACKAGE__->mk_group_accessors( 'component_class', qw/result_class/ );
+}
 
 sub new {
-    my ($class, $args) = @_;
+    my ( $class, $args ) = @_;
     my $self = bless {}, $class;
 
     $self->setup($args);
 
     return $self;
-};
+}
 
 sub create {
-    my ($self, $data) = @_;
+    my ( $self, $data ) = @_;
 
     Mango::Exception->throw('VIRTUAL_METHOD');
-};
+
+    return;
+}
 
 sub delete {
-    my ($self, $filter) = @_;
+    my ( $self, $filter ) = @_;
 
     Mango::Exception->throw('VIRTUAL_METHOD');
-};
+
+    return;
+}
 
 sub get_by_id {
-    my $self = shift;
+    my $self   = shift;
     my $object = shift;
-    my $id = Scalar::Util::blessed($object) ? $object->id : $object ;
+    my $id     = Scalar::Util::blessed($object) ? $object->id : $object;
 
-    return $self->search({id => $id}, @_)->first;
-};
+    return $self->search( { id => $id }, @_ )->first;
+}
 
 sub get_component_class {
-    my ($self, $field) = @_;
+    my ( $self, $field ) = @_;
 
     return $self->get_inherited($field);
-};
+}
 
 sub set_component_class {
-    my ($self, $field, $value) = @_;
+    my ( $self, $field, $value ) = @_;
 
     if ($value) {
-        if (!Class::Inspector->loaded($value)) {
-            eval "use $value"; ## no critic
+        if ( !Class::Inspector->loaded($value) ) {
+            eval "use $value";    ## no critic
 
-            Mango::Exception->throw('COMPCLASS_NOT_LOADED', $field, $value, $@) if $@;
-        };
-    };
+            if ($EVAL_ERROR) {
+                Mango::Exception->throw( 'COMPCLASS_NOT_LOADED', $field,
+                    $value, $EVAL_ERROR );
+            }
+        }
+    }
 
-    $self->set_inherited($field, $value);
+    $self->set_inherited( $field, $value );
 
     return;
-};
+}
 
 sub search {
-    my ($self, $filter, $options) = @_;
+    my ( $self, $filter, $options ) = @_;
 
     Mango::Exception->throw('VIRTUAL_METHOD');
-};
-
-sub setup {
-    my ($self, $args) = @_;
-
-    if (ref $args eq 'HASH') {
-        map {
-            if ($self->can($_)) {
-                $self->$_($args->{$_})
-            } else {
-                $self->{$_}  = $args->{$_};
-            }
-        } keys %{$args};
-    };
 
     return;
-};
+}
+
+sub setup {
+    my ( $self, $args ) = @_;
+
+    if ( ref $args eq 'HASH' ) {
+        foreach ( keys %{$args} ) {
+            if ( $self->can($_) ) {
+                $self->$_( $args->{$_} );
+            } else {
+                $self->{$_} = $args->{$_};
+            }
+        }
+    }
+
+    return;
+}
 
 sub update {
-    my ($self, $object) = @_;
+    my ( $self, $object ) = @_;
 
     Mango::Exception->throw('VIRTUAL_METHOD');
-};
+
+    return;
+}
 
 1;
 __END__

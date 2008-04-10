@@ -6,23 +6,21 @@ use warnings;
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/name value/);
-};
+    __PACKAGE__->mk_group_accessors( 'column', qw/name value/ );
+}
 
 sub destroy {
     my $self = shift;
 
-    return $self->meta->provider->delete_attributes(
-        $self->meta->parent,
-        {id => $self->id}
-    );
-};
+    return $self->meta->provider->delete_attributes( $self->meta->parent,
+        { id => $self->id } );
+}
 
 sub update {
     my $self = shift;
 
     return $self->meta->provider->update_attribute($self);
-};
+}
 
 1;
 __END__

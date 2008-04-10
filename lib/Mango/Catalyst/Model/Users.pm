@@ -5,11 +5,9 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Model::Provider/;
-};
+}
 
-__PACKAGE__->config(
-    provider_class => 'Mango::Provider::Users'
-);
+__PACKAGE__->config( provider_class => 'Mango::Provider::Users' );
 
 1;
 __END__
@@ -17,6 +15,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Model::Users - Catalyst model for user information
+
+=head1 SYNOPSIS
+
+    package MyApp::Model::Users;
+    use base 'Mango::Catalyst::Model::Users';
 
 =head1 DESCRIPTION
 

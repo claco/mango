@@ -5,68 +5,76 @@ use warnings;
 
 BEGIN {
     use base qw/Handel::Cart/;
-    use Mango::User ();
+    use Mango::User      ();
     use Mango::Exception ();
-    use DateTime ();
-    use Scalar::Util ();
-};
+    use DateTime         ();
+    use Scalar::Util     ();
+}
 
 ## Yes, this isn't the preferred way. Sue me. I don't want the storage classes
-## floating around this dist. If you make your own cart, feel free to do it the
-## correct way. ;-)
+## floating around this dist. If you make your own cart, feel free to do it
+## the correct way. ;-)
 __PACKAGE__->item_class('Mango::Cart::Item');
-__PACKAGE__->storage->setup({
-    autoupdate         => 0,
-    currency_class     => 'Mango::Currency',
-    schema_class       => 'Mango::Schema',
-    schema_source      => 'Carts',
-    constraints        => undef,
-    default_values     => {
-        created        => sub {DateTime->now},
-        updated        => sub {DateTime->now}
-    },
-    validation_profile => undef
-});
+__PACKAGE__->storage->setup(
+    {
+        autoupdate     => 0,
+        currency_class => 'Mango::Currency',
+        schema_class   => 'Mango::Schema',
+        schema_source  => 'Carts',
+        constraints    => undef,
+        default_values => {
+            created => sub { DateTime->now },
+            updated => sub { DateTime->now }
+        },
+        validation_profile => undef
+    }
+);
 __PACKAGE__->result_iterator_class('Mango::Iterator');
 __PACKAGE__->create_accessors;
 
-sub name {};
+sub name { }
 
-sub description {};
+sub description { }
 
 sub type {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
-};
+
+    return;
+}
 
 sub save {
     Mango::Exception->throw('METHOD_NOT_IMPLEMENTED');
-};
+
+    return;
+}
 
 sub user {
-    my ($self, $user) = @_;
+    my ( $self, $user ) = @_;
 
-    if (defined $user) {
-        if (Scalar::Util::blessed $user) {
-            if ($user->isa('Mango::User')) {
+    if ( defined $user ) {
+        if ( Scalar::Util::blessed $user) {
+            if ( $user->isa('Mango::User') ) {
                 $user = $user->id;
             } else {
                 Mango::Exception->throw('NOT_A_USER');
-            };
-        };
+            }
+        }
 
         $self->user_id($user);
     } else {
         Mango::Exception->throw('NO_USER_SPECIFIED');
-    };
-};
+    }
+
+    return;
+}
 
 sub update {
     my $self = shift;
 
-    $self->updated(DateTime->now);
-  
+    $self->updated( DateTime->now );
+
     return $self->SUPER::update(@_);
-};
+}
 
 1;
 __END__
@@ -125,8 +133,9 @@ or pass an existing cart item:
     );
 
 When passing an existing cart item to add, all columns in the source item will
-be copied into the destination item if the column exists in the destination and
-the column isn't the primary key or the foreign key of the item relationship.
+be copied into the destination item if the column exists in the destination
+and the column isn't the primary key or the foreign key of the item
+relationship.
 
 The item object passed to add must be an instance or subclass of Handel::Cart.
 
@@ -239,8 +248,8 @@ restored. The following modes are available:
 
 =item C<CART_MODE_REPLACE>
 
-All items in the current cart will be deleted before the saved cart is restored
-into it. This is the default if no mode is specified.
+All items in the current cart will be deleted before the saved cart is
+restored into it. This is the default if no mode is specified.
 
 =item C<CART_MODE_MERGE>
 
@@ -251,9 +260,9 @@ assume that the price in the current cart has the more up to date price.
 
 =item C<CART_MODE_APPEND>
 
-All items in the saved cart will be appended to the list of items in the current
-cart. No effort will be made to merge items with the same SKU and duplicates
-will be allowed.
+All items in the saved cart will be appended to the list of items in the
+current cart. No effort will be made to merge items with the same SKU and
+duplicates will be allowed.
 
 =back
 

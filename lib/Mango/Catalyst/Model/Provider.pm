@@ -5,23 +5,25 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::Model Class::Accessor::Grouped/;
+    use English '-no_match_vars';
     use Scalar::Util qw/blessed/;
     use Class::Inspector ();
     use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('inherited', qw/_provider_class _provider/);
-};
+    __PACKAGE__->mk_group_accessors( 'inherited',
+        qw/_provider_class _provider/ );
+}
 
 sub COMPONENT {
     my $self = shift->new(@_);
 
-    if (my $provider_class = delete $self->{'provider_class'}) {
-        $self->provider_class($provider_class);        
-    };
+    if ( my $provider_class = delete $self->{'provider_class'} ) {
+        $self->provider_class($provider_class);
+    }
 
-    if (!$self->provider_class) {
+    if ( !$self->provider_class ) {
         Mango::Exception->throw('PROVIDER_CLASS_NOT_SPECIFIED');
-    };
+    }
 
     ## hack for Handel Storage setup
     ## should fix this
@@ -30,38 +32,41 @@ sub COMPONENT {
     delete $config{'_provider'};
 
     $self->provider(
-        $self->provider_class->new({
-            connection_info => $_[0]->config->{'connection_info'},
-            %config
-        })
+        $self->provider_class->new(
+            {
+                connection_info => $_[0]->config->{'connection_info'},
+                %config
+            }
+        )
     );
 
     return $self;
-};
+}
 
 sub provider_class {
-    my ($self, $provider_class) = @_;
+    my ( $self, $provider_class ) = @_;
 
     if ($provider_class) {
-        if (!Class::Inspector->loaded($provider_class)) {
-            eval "use $provider_class"; ## no critic;
-            if ($@) {
-                Mango::Exception->throw('PROVIDER_CLASS_NOT_LOADED', $provider_class, $@);
-            };
-        };
+        if ( !Class::Inspector->loaded($provider_class) ) {
+            eval "use $provider_class";    ## no critic;
+            if ($EVAL_ERROR) {
+                Mango::Exception->throw( 'PROVIDER_CLASS_NOT_LOADED',
+                    $provider_class, $EVAL_ERROR );
+            }
+        }
 
         $self->_provider_class($provider_class);
-    };
+    }
 
     return $self->_provider_class;
-};
+}
 
 sub provider {
-    my ($self, $provider) = @_;
+    my ( $self, $provider ) = @_;
 
     if ($provider) {
         $self->_provider($provider);
-    } elsif (!$self->_provider) {
+    } elsif ( !$self->_provider ) {
 
         ## hack for Handel Storage setup
         ## should fix this
@@ -69,21 +74,19 @@ sub provider {
         delete $config{'_provider_class'};
         delete $config{'_provider'};
 
-        $self->_provider(
-            $self->provider_class->new(\%config)
-        );
-        $self->_provider_class(blessed $provider);
-    };
+        $self->_provider( $self->provider_class->new( \%config ) );
+        $self->_provider_class( blessed $provider);
+    }
 
     return $self->_provider;
-};
+}
 
 sub AUTOLOAD {
-    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
+    my ($method) = ( our $AUTOLOAD =~ /([^:]+)$/ );
     return if $method =~ /(DESTROY|ACCEPT_CONTEXT)/;
 
     return shift->provider->$method(@_);
-};
+}
 
 1;
 __END__
@@ -91,6 +94,11 @@ __END__
 =head1 NAME
 
 Mango::Catalyst::Model::Provider - Catalyst model for Mango::Provider classes
+
+=head1 SYNOPSIS
+
+    package MyApp::Model::Provider;
+    use base 'Mango::Catalyst::Model::Provider';
 
 =head1 DESCRIPTION
 

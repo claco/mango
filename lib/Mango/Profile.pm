@@ -6,16 +6,17 @@ use warnings;
 BEGIN {
     use base qw/Mango::Object/;
 
-    __PACKAGE__->mk_group_accessors('column', qw/user_id first_name last_name/);
-};
+    __PACKAGE__->mk_group_accessors( 'column',
+        qw/user_id first_name last_name/ );
+}
 
 sub full_name {
     my $self = shift;
 
-    return $self->last_name ?
-        $self->first_name . ' ' . $self->last_name :
-        $self->first_name;
-};
+    return $self->last_name
+      ? $self->first_name . ' ' . $self->last_name
+      : $self->first_name;
+}
 
 1;
 __END__

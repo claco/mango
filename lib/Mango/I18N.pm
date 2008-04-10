@@ -1,3 +1,4 @@
+## no critic (ProhibitPackageVars)
 # $Id$
 package Mango::I18N;
 use strict;
@@ -7,19 +8,17 @@ use vars qw/@EXPORT_OK %Lexicon $handle/;
 
 BEGIN {
     use base qw/Locale::Maketext Exporter/;
-};
+}
 
 @EXPORT_OK = qw(translate);
 
-%Lexicon = (
-    _AUTO => 1
-);
+%Lexicon = ( _AUTO => 1 );
 
 sub translate {
-    my $handle = __PACKAGE__->get_handle();
+    my $handle = __PACKAGE__->get_handle;
 
     return $handle->maketext(@_);
-};
+}
 
 1;
 __END__
@@ -50,10 +49,10 @@ or export L</translate> into the callers namespace:
     
     warn translate('My message');
 
-If you have the time and can do a language, the help would be much appreciated.
-If you're going to email a translation module, please Gzip it first. It's not
-uncommon for an email server or client along the way to trash UTF-8 characters
-in the .pm attachment text.
+If you have the time and can do a language, the help would be much
+appreciated. If you're going to email a translation module, please Gzip it
+first. It's not uncommon for an email server or client along the way to trash
+UTF-8 characters in the .pm attachment text.
 
 =head1 FUNCTIONS
 
