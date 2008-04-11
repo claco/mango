@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>t/critic.t</string>
+	<string>lib/Mango/Catalyst/Plugin/I18N.pm</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -35,6 +35,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>lib/Mango/Catalyst/Plugin/I18N.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>71</integer>
+		</dict>
 		<key>t/critic.t</key>
 		<dict>
 			<key>caret</key>
@@ -53,6 +67,7 @@
 	<key>openDocuments</key>
 	<array>
 		<string>t/critic.t</string>
+		<string>lib/Mango/Catalyst/Plugin/I18N.pm</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

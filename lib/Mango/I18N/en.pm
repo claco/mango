@@ -42,6 +42,7 @@ BEGIN {
     NOT_A_WISHLIST        => 'The object is not a Mango::Wishlist object',
     NOT_A_PROFILE         => 'The object is not a Mango::Profile object',
     NOT_A_FORM            => 'The object is not a Mango::Form object',
+    NOT_A_FEED            => 'The object is not an XML::Feed object',
     NO_USER_SPECIFIED     => 'No user was specified',
     MODEL_NOT_FOUND => 'The model requested \'[_1]\' could not be found',
     FEED_NOT_FOUND  => 'No feed data was specified',

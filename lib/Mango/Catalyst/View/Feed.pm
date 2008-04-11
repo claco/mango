@@ -7,70 +7,117 @@ BEGIN {
     use base qw/Catalyst::View/;
 
     use Mango::Exception ();
-    use Scalar::Util ();
-    use XML::Feed ();
-};
+    use Scalar::Util     ();
+    use XML::Feed        ();
+}
 
 sub process {
-    my ($self, $c, $type) = @_;
-    my $entity = $c->stash->{'entity'};
-    my @entries;
+    my ( $self, $c, $type ) = @_;
 
-    Mango::Exception->throw('FEED_TYPE_NOT_SPECIFIED') unless $type;
-    Mango::Exception->throw('FEED_NOT_FOUND') unless $entity;
+    if ( !$type ) {
+        Mango::Exception->throw('FEED_TYPE_NOT_SPECIFIED');
+    }
 
-    if (Scalar::Util::blessed $entity && $entity->can('as_feed')) {
-        my $feed = $entity->as_feed($type);
+    my $feed = $self->feed( $c, $type );
+    if ( !$feed ) {
+        Mango::Exception->throw('FEED_NOT_FOUND');
+    } elsif ( !Scalar::Util::blessed $feed || !$feed->isa('XML::Feed') ) {
+        Mango::Exception->throw('NOT_A_FEED');
+    }
 
-        if (Scalar::Util::blessed $feed) {
-            $c->response->body($feed->as_xml);
-            return 1;
-        } else {
-            $entity = $feed;
-        };
-    };
+    foreach my $entry ( $self->feed_entries( $c, $type ) ) {
+        $feed->add_entry($entry);
+    }
 
-    if (my $entries = delete $entity->{'entries'}) {
-        if (Scalar::Util::blessed $entries && $entries->isa('Mango::Iterator')) {
-            push @entries, $entries->all;
-        } else {
-            push @entries, @{$entries};
-        };
-    };
-
-    my $feed = XML::Feed->new($type);
-    foreach my $key (keys %{$entity}) {
-        $feed->$key($entity->{$key}) unless
-            !$feed->can($key);
-    };
-
-    $feed->language($c->language) unless $feed->language;
-
-    for my $entry (@entries) {
-        if (Scalar::Util::blessed $entry && $entry->can('as_feed_entry')) {
-            my $data = $entry->as_feed_entry($type);
-
-            if (blessed $data) {
-                $feed->add_entry($data);
-            } else {
-                $entry = $data;
-            };
-        } else {
-            my $new_entry = XML::Feed::Entry->new($type);
-            foreach my $key (keys %{$entry}) {
-                $new_entry->$key($entry->{$key}) unless
-                    !$new_entry->can($key);
-            };
-            $feed->add_entry($new_entry);
-        };
-    };
+    if ( !$feed->language ) {
+        $feed->language( $c->language );
+    }
 
     $c->stash->{'feed'} = $feed;
-
-    $c->response->body($feed->as_xml);
+    $c->response->body( $feed->as_xml );
 
     return 1;
-};
+}
+
+sub feed {
+    my ( $self, $c, $type ) = @_;
+    my $entity = $c->stash->{'entity'};
+    my $data;
+
+    if ( !$entity ) {
+        return;
+    }
+
+    if ( Scalar::Util::blessed $entity && $entity->isa('XML::Feed') ) {
+        return $entity;
+    } elsif ( Scalar::Util::blessed $entity && $entity->can('as_feed') ) {
+        $data = $entity->as_feed($type);
+
+        if ( Scalar::Util::blessed $data) {
+            return $data;
+        }
+    } else {
+        $data = $entity;
+    }
+
+    my $feed = XML::Feed->new($type);
+    foreach my $key ( keys %{$data} ) {
+        if ( $feed->can($key) ) {
+            $feed->$key( $data->{$key} );
+        }
+    }
+
+    return $feed;
+}
+
+sub feed_entries {
+    my ( $self, $c, $type ) = @_;
+    my $entity = $c->stash->{'entity'};
+    my @entities;
+    my @entries;
+    my $data;
+
+    if ( Scalar::Util::blessed $entity) {
+        return;
+    }
+
+    if ( my $entries = delete $entity->{'entries'} ) {
+        if ( Scalar::Util::blessed $entries
+            && $entries->isa('Mango::Iterator') )
+        {
+            push @entities, $entries->all;
+        } else {
+            push @entities, @{$entries};
+        }
+    }
+
+    for my $entity (@entities) {
+        if ( Scalar::Util::blessed $entity
+            && $entity->isa('XML::Feed::Entry') )
+        {
+            push @entries, $entity;
+        } elsif ( Scalar::Util::blessed $entity
+            && $entity->can('as_feed_entry') )
+        {
+            $data = $entity->as_feed_entry($type);
+
+            if ( Scalar::Util::blessed $data) {
+                push @entries, $data;
+            }
+        } else {
+            $data = $entity;
+        }
+        my $new_entry = XML::Feed::Entry->new($type);
+        foreach my $key ( keys %{$data} ) {
+            if ( $new_entry->can($key) ) {
+                $new_entry->$key( $data->{$key} );
+            }
+        }
+        push @entries, $new_entry;
+    }
+
+    return @entries;
+}
 
 1;
 __END__
@@ -114,13 +161,41 @@ If C<entity> is a hash, each key will be assigned to the XML::Feed object:
     $feed->$_($entity->{$_}) for keys %{$entity}
 
 If an C<entries> key is supplied, each item in it will also be converted to an
-XML::Feed::Entry object and added to the feed.
+XML::Feed::Entry object and added to the feed. C<entries> may also contain a
+list of XML::Feed::Entry objects, or objects thart support a C<as_feed_entry>
+method which returns XML::Feed::Entry objects or the appropriate hash.
 
-If C<entity> is an object and it supports the C<as_feed> method, the output
-from that will be used. C<as_feed> B<must> return a XML::Feed object or the
+If C<entity> is an XML::Feed object, that is used directly. If C<entity> is an
+object and it supports the C<as_feed> method, the output from that method will
+be used. C<as_feed> B<must> return a XML::Feed object or the
 same C<entity> hash described above.
 
 =head1 METHODS
+
+=head2 feed
+
+=over
+
+=item Arguments: $c, $type
+
+C<type> can be either 'RSS' or 'Atom'.
+
+=back
+
+Returns an XML::Feed object from the configuration described above.
+
+=head2 feed_entries
+
+=over
+
+=item Arguments: $c, $type
+
+C<type> can be either 'RSS' or 'Atom'.
+
+=back
+
+Returns a list of XML::Feed::Entry objects from the configuration described
+above.
 
 =head2 process
 
@@ -133,7 +208,7 @@ C<type> can be either 'RSS' or 'Atom'.
 =back
 
 Creates an XML::Feed of the specific type, writes it to the response body,
-and changes the content type.
+changing the content type.
 
 =head1 SEE ALSO
 
