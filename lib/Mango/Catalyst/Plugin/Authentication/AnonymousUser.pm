@@ -7,61 +7,69 @@ BEGIN {
     use base qw/Mango::Catalyst::Plugin::Authentication::User/;
 
     use Mango::Exception ();
-};
+}
 __PACKAGE__->mk_accessors(qw/password/);
 
 sub new {
-    my ($class, $c, $config) = @_;
-    my $name = $config->{'user_model'};
+    my ( $class, $c, $config ) = @_;
+    my $name  = $config->{'user_model'};
     my $model = $c->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+    if ( !$model ) {
+        Mango::Exception->throw( 'MODEL_NOT_FOUND', $name );
+    }
 
-    my $user = $model->result_class->new({
-        id => '0E0',
-        username => 'anonymous'
-    });
+    my $user = $model->result_class->new(
+        {
+            id       => '0E0',
+            username => 'anonymous'
+        }
+    );
 
     return bless {
-        config => $config,
+        config   => $config,
         _context => $c,
-        _user => $user
+        _user    => $user
     }, $class;
-};
+}
 
 sub roles {
 
-};
+}
 
 sub profile {
-    my $self = shift;
-    my $name = $self->config->{'profile_model'};
+    my $self  = shift;
+    my $name  = $self->config->{'profile_model'};
     my $model = $self->_context->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+    if ( !$model ) {
+        Mango::Exception->throw( 'MODEL_NOT_FOUND', $name );
+    }
 
-    if (!$self->_profile) {
+    if ( !$self->_profile ) {
         $self->_profile(
-            $model->result_class->new({
-                id => $self->_user->id,
-                first_name => 'Anonymous',
-                last_name => 'User'
-            })
+            $model->result_class->new(
+                {
+                    id         => $self->_user->id,
+                    first_name => 'Anonymous',
+                    last_name  => 'User'
+                }
+            )
         );
-    };
+    }
 
     return $self->_profile;
-};
+}
 
 sub supported_features {
     my $self = shift;
 
     return {
-        roles => 1,
+        roles    => 1,
         profiles => 1,
-        carts => 1
+        carts    => 1
     };
-};
+}
 
 1;
 __END__
@@ -117,9 +125,9 @@ empty except for the following fields:
     first_name: Anonymous
     last_name: User
 
-Normally, a Mango::Profile is returned. If you are using a custom profile model
-that has set its C<result_class> to a custom subclass of Mango::Profile, that
-class will be used instead.
+Normally, a Mango::Profile is returned. If you are using a custom profile
+model that has set its C<result_class> to a custom subclass of Mango::Profile,
+that class will be used instead.
 
 =head2 roles
 

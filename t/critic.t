@@ -27,6 +27,6 @@ my @files = Test::Perl::Critic::all_code_files('lib');
 BAIL_OUT('No code files were found') unless scalar @files;
 
 plan tests => scalar @files;
-for my $file ($files[72]) {
+for my $file (@files) {
     critic_ok($file, $file);
 };

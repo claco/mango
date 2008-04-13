@@ -7,121 +7,137 @@ BEGIN {
     use base qw/Catalyst::Plugin::Authentication::User Class::Accessor::Fast/;
 
     use Mango::Exception ();
-};
-__PACKAGE__->mk_accessors(qw/config _context _cart _user _profile supports_sessions/);
+}
+
+__PACKAGE__->mk_accessors(
+    qw/config _context _cart _user _profile supports_sessions/);
 
 sub new {
-	my ($class, $c, $config, $user) = @_;
+    my ( $class, $c, $config, $user ) = @_;
 
-	return unless $user;
+    if ( !$user ) {
+        return;
+    }
 
-	return bless {config => $config, _user => $user, _context => $c, supports_sessions => 1}, $class;
-};
+    return bless {
+        config            => $config,
+        _user             => $user,
+        _context          => $c,
+        supports_sessions => 1
+    }, $class;
+}
 
 sub get {
-    my ($self, $field) = @_;
+    my ( $self, $field ) = @_;
 
     my $object;
-    if ($object = $self->get_object and $object->can($field)) {
+    if ( $object = $self->get_object and $object->can($field) ) {
         return $object->$field;
     } else {
-        return undef;
-    };
-};
+        return;
+    }
+}
 
 sub get_object {
     my $self = shift;
 
     return $self->_user;
-};
+}
 
 sub supported_features {
     my $self = shift;
 
-	return {
-        session => $self->supports_sessions,
-        roles => 1,
+    return {
+        session  => $self->supports_sessions,
+        roles    => 1,
         profiles => 1,
-        carts => 1
-	};
-};
+        carts    => 1
+    };
+}
 
 sub refresh {
     my $self = shift;
 
-    $self->_context->session->{'__user'}->{'profile'} = {$self->profile->get_columns};
-};
+    $self->_context->session->{'__user'}->{'profile'} =
+      { $self->profile->get_columns };
+
+    return;
+}
 
 sub roles {
-    my $self = shift;
-    my $name = $self->config->{'role_model'};
+    my $self  = shift;
+    my $name  = $self->config->{'role_model'};
     my $model = $self->_context->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+    if ( !$model ) {
+        Mango::Exception->throw( 'MODEL_NOT_FOUND', $name );
+    }
 
     my $role_name_field = $self->config->{'role_name_field'};
     my @roles;
 
-    foreach my $role ($model->search({user => $self->_user})) {
+    foreach my $role ( $model->search( { user => $self->_user } ) ) {
         push @roles, $role->$role_name_field;
-    };
+    }
 
     return @roles;
-};
+}
 
 sub profile {
-    my $self = shift;
-    my $name = $self->config->{'profile_model'};
+    my $self  = shift;
+    my $name  = $self->config->{'profile_model'};
     my $model = $self->_context->model($name);
 
-    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+    if ( !$model ) {
+        Mango::Exception->throw( 'MODEL_NOT_FOUND', $name );
+    }
 
-    if (!$self->_profile) {
-        my $profile =
-            $model->search({user => $self->_user})->first ||
-            $model->create({user => $self->_user});
+    if ( !$self->_profile ) {
+        my $profile = $model->search( { user => $self->_user } )->first
+          || $model->create( { user => $self->_user } );
 
-        $self->_profile(
-            $profile
-        );
-    };
+        $self->_profile($profile);
+    }
 
     return $self->_profile;
-};
+}
 
 sub cart {
-    my $self = shift;
-    my $name = $self->config->{'cart_model'};
+    my $self  = shift;
+    my $name  = $self->config->{'cart_model'};
     my $model = $self->_context->model($name);
     my $cart;
 
-    Mango::Exception->throw('MODEL_NOT_FOUND', $name) unless $model;
+    if ( !$model ) {
+        Mango::Exception->throw( 'MODEL_NOT_FOUND', $name );
+    }
 
-    if (!$self->_cart) {
-        if (my $cart_id = $self->_context->session->{'__mango_cart_id'}) {
+    if ( !$self->_cart ) {
+        if ( my $cart_id = $self->_context->session->{'__mango_cart_id'} ) {
             $cart = $model->get_by_id($cart_id);
-        };
+        }
 
-        if (!$cart) {
-            $cart = $model->create({});
+        if ( !$cart ) {
+            $cart = $model->create( {} );
             $self->_context->session->{'__mango_cart_id'} = $cart->id;
-        };
+        }
 
         $self->_cart($cart);
         $self->_context->session_expires(1);
-    };
+    }
 
     return $self->_cart;
-};
+}
 
 sub AUTOLOAD {
-    my ($method) = (our $AUTOLOAD =~ /([^:]+)$/);
-    if ($method =~ /(DESTROY|ACCEPT_CONTEXT|config)/) {
+    my $self = shift;
+    my ($method) = ( our $AUTOLOAD =~ /([^:]+)$/ );
+    if ( $method =~ /(DESTROY|ACCEPT_CONTEXT|config)/ ) {
         return;
-    };
+    }
 
-    return shift->_user->$method(@_);
-};
+    return $self->_user->$method(@_);
+}
 
 1;
 __END__
@@ -204,9 +220,9 @@ will be created and assigned to the current user.
     my $profile = $c->user->profile;
     print 'Welcome back ', $profile->first_name;
 
-Normally, a Mango::Profile is returned. If you are using a custom profile model
-that has set its C<result_class> to a custom subclass of Mango::Profile, that
-class will be used instead.
+Normally, a Mango::Profile is returned. If you are using a custom profile
+model that has set its C<result_class> to a custom subclass of Mango::Profile,
+that class will be used instead.
 
 =head2 refresh
 

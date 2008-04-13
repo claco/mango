@@ -5,14 +5,14 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::View::Template/;
-    use Path::Class ()
-};
-__PACKAGE__->share_paths([
-    Path::Class::Dir->new(qw/templates %view text/)
-]);
-__PACKAGE__->root_paths([
-    Path::Class::Dir->new(qw/templates %view text/)
-]);
+    use Path::Class ();
+}
+__PACKAGE__->share_paths(
+    [ Path::Class::Dir->new(qw/templates %view text/) ] );
+
+__PACKAGE__->root_paths(
+    [ Path::Class::Dir->new(qw/templates %view text/) ] );
+
 __PACKAGE__->content_type('text/plain; charset=utf-8');
 
 1;
@@ -57,8 +57,8 @@ Now, the template search path will be:
     root/templates/tt/html
     /usr/local/share/Mango/templates/tt/text
 
-See L<Mango::Catalyst::View::Template|Mango::Catalyst::View::Template> for more
-information on changing the location of templates.
+See L<Mango::Catalyst::View::Template|Mango::Catalyst::View::Template> for
+more information on changing the location of templates.
 
 =head1 METHODS
 

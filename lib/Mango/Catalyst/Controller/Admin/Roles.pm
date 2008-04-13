@@ -5,30 +5,36 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
-    use Mango ();
+    use Mango       ();
     use Path::Class ();
 
     __PACKAGE__->config(
-        resource_name  => 'mango/admin/roles',
-        form_directory => Path::Class::Dir->new(Mango->share, 'forms', 'admin', 'roles')
+        resource_name => 'mango/admin/roles',
+        form_directory =>
+          Path::Class::Dir->new( Mango->share, 'forms', 'admin', 'roles' )
     );
-};
+}
 
 sub index : Template('admin/roles/index') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
     my $page = $c->request->param('page') || 1;
-    my $roles = $c->model('Roles')->search(undef, {
-        page => $page,
-        rows => 10
-    });
+    my $roles = $c->model('Roles')->search(
+        undef,
+        {
+            page => $page,
+            rows => 10
+        }
+    );
 
-    $c->stash->{'roles'} = $roles;
-    $c->stash->{'pager'} = $roles->pager;
+    $c->stash->{'roles'}       = $roles;
+    $c->stash->{'pager'}       = $roles->pager;
     $c->stash->{'delete_form'} = $self->form('delete');
-};
+
+    return;
+}
 
 sub load : Chained('/') PathPrefix CaptureArgs(1) {
-    my ($self, $c, $id) = @_;
+    my ( $self, $c, $id ) = @_;
     my $role = $c->model('Roles')->get_by_id($id);
 
     if ($role) {
@@ -36,72 +42,82 @@ sub load : Chained('/') PathPrefix CaptureArgs(1) {
     } else {
         $c->response->status(404);
         $c->detach;
-    };
-};
+    }
+
+    return;
+}
 
 sub create : Local Template('admin/roles/create') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
     my $form = $self->form;
 
-    $form->unique('name', sub {
-        return !$c->model('Roles')->search({
-            name => $form->field('name')
-        })->count;
-    });
+    $form->unique(
+        'name',
+        sub {
+            return !$c->model('Roles')
+              ->search( { name => $form->field('name') } )->count;
+        }
+    );
 
-    if ($self->submitted && $self->validate->success) {
-        my $role = $c->model('Roles')->create({
-            name => $form->field('name'),
-            description => $form->field('description')
-        });
+    if ( $self->submitted && $self->validate->success ) {
+        my $role = $c->model('Roles')->create(
+            {
+                name        => $form->field('name'),
+                description => $form->field('description')
+            }
+        );
 
         $c->response->redirect(
-            $c->uri_for($self->action_for('edit'), [$role->id]) . '/'
-        );
-    };
-};
+            $c->uri_for( $self->action_for('edit'), [ $role->id ] ) . '/' );
+    }
+
+    return;
+}
 
 sub edit : Chained('load') PathPart Args(0) Template('admin/roles/edit') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
     my $role = $c->stash->{'role'};
     my $form = $self->form;
 
-    $form->values({
-        id          => $role->id,
-        name        => $role->name,
-        description => $role->description,
-        created     => $role->created . '',
-        updated     => $role->updated . ''
-    });
+    $form->values(
+        {
+            id          => $role->id,
+            name        => $role->name,
+            description => $role->description,
+            created     => $role->created . '',
+            updated     => $role->updated . ''
+        }
+    );
 
-    if ($self->submitted && $self->validate->success) {
-        $role->description($form->field('description'));
+    if ( $self->submitted && $self->validate->success ) {
+        $role->description( $form->field('description') );
         $role->update;
 
-        $form->values({
-            updated     => $role->updated . ''
-        });
-    };
-};
+        $form->values( { updated => $role->updated . '' } );
+    }
+
+    return;
+}
 
 sub delete : Chained('load') PathPart Args(0) Template('admin/roles/delete') {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
     my $form = $self->form;
     my $role = $c->stash->{'role'};
 
-    if ($self->submitted && $self->validate->success) {
-        if ($form->field('id') == $role->id) {
+    if ( $self->submitted && $self->validate->success ) {
+        if ( $form->field('id') == $role->id ) {
 
             $role->destroy;
 
             $c->response->redirect(
-                $c->uri_for($self->action_for('index')) . '/'
-            );
+                $c->uri_for( $self->action_for('index') ) . '/' );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];
-        };
-    };
-};
+        }
+    }
+
+    return;
+}
 
 1;
 __END__

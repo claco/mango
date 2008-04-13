@@ -117,9 +117,22 @@ sub parse {
         Mango::Exception->throw('UNKNOWN_FORM_SOURCE');
     }
 
-    my $fields      = delete $config->{'fields'};
-    my $field_order = delete $config->{'field_order'};
+    my $fields = delete $config->{'fields'};
     $self->_form( CGI::FormBuilder->new( %{$config} ) );
+    $self->_parse_fields($fields);
+
+    if ( !$config->{'submit'} ) {
+        $self->_form->submit('BUTTON_LABEL_SUBMIT');
+    }
+    $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
+
+    $self->validator->set_messages( { '.' => $self->messages } );
+
+    return;
+}
+
+sub _parse_fields {
+    my ( $self, $fields ) = @_;
 
     foreach ( @{$fields} ) {
         my ( $name, $field ) = %{$_};
@@ -135,68 +148,63 @@ sub parse {
             %{$field}
         );
 
-        if ($constraints) {
-            my @constraints;
-            my @additional;
+        $self->_parse_constraints( $name, $constraints, $errors );
+    }
 
-            push @{ $self->profile }, $name;
-            foreach my $constraint ( @{$constraints} ) {
-                my ( $cname, @args ) = split /, ?/, $constraint;
-                $cname = uc $cname;
+    return;
+}
 
-                if ( $cname =~ /(NOT_)?SAME_AS/ ) {
-                    my $mname =
-                        'CONSTRAINT_'
-                      . uc $name . '_'
-                      . $cname . '_'
-                      . uc $args[0];
-                    $self->messages->{$mname}
-                      ->{ ( $1 || '' ) . 'DUPLICATION' } = $mname;
-                    push @additional, { $mname => [ $name, @args ] },
-                      [ ( $1 || '' ) . 'DUPLICATION' ];
-                } else {
-                    if ( $cname eq 'UNIQUE' && !$self->unique($name) ) {
-                        if ( !scalar @args ) {
-                            push @args, $name;
-                        }
+sub _parse_constraints {
+    my ( $self, $name, $constraints, $errors ) = @_;
 
-                        $self->unique(
-                            $name,
-                            sub {
-                                return
-                                  FormValidator::Simple::Constants::FALSE;
-                            }
-                        );
+    if ($constraints) {
+        my @constraints;
+        my @additional;
+
+        push @{ $self->profile }, $name;
+        foreach my $constraint ( @{$constraints} ) {
+            my ( $cname, @args ) = split /, ?/, $constraint;
+            $cname = uc $cname;
+
+            if ( $cname =~ /(NOT_)?SAME_AS/ ) {
+                my $mname =
+                  'CONSTRAINT_' . uc $name . '_' . $cname . '_' . uc $args[0];
+                $self->messages->{$mname}->{ ( $1 || '' ) . 'DUPLICATION' } =
+                  $mname;
+                push @additional, { $mname => [ $name, @args ] },
+                  [ ( $1 || '' ) . 'DUPLICATION' ];
+            } else {
+                if ( $cname eq 'UNIQUE' && !$self->unique($name) ) {
+                    if ( !scalar @args ) {
+                        push @args, $name;
                     }
-                    if ( $cname eq 'EXISTS' && !$self->exists($name) ) {
-                        if ( !scalar @args ) {
-                            push @args, $name;
-                        }
 
-                        $self->exists(
-                            $name,
-                            sub {
-                                return
-                                  FormValidator::Simple::Constants::FALSE;
-                            }
-                        );
-                    }
-                    $self->messages->{$name}->{$cname} = $errors->{$cname}
-                      || ( 'CONSTRAINT_' . uc $name . '_' . $cname );
-                    push @constraints,
-                      scalar @args ? [ $cname, @args ] : $cname;
+                    $self->unique(
+                        $name,
+                        sub {
+                            return FormValidator::Simple::Constants::FALSE;
+                        }
+                    );
                 }
+                if ( $cname eq 'EXISTS' && !$self->exists($name) ) {
+                    if ( !scalar @args ) {
+                        push @args, $name;
+                    }
+
+                    $self->exists(
+                        $name,
+                        sub {
+                            return FormValidator::Simple::Constants::FALSE;
+                        }
+                    );
+                }
+                $self->messages->{$name}->{$cname} = $errors->{$cname}
+                  || ( 'CONSTRAINT_' . uc $name . '_' . $cname );
+                push @constraints, scalar @args ? [ $cname, @args ] : $cname;
             }
-            push @{ $self->profile }, \@constraints, @additional;
         }
+        push @{ $self->profile }, \@constraints, @additional;
     }
-
-    if ( !$config->{'submit'} ) {
-        $self->_form->submit('BUTTON_LABEL_SUBMIT');
-    }
-    $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
-
-    $self->validator->set_messages( { '.' => $self->messages } );
 
     return;
 }

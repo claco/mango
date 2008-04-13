@@ -162,7 +162,7 @@ If C<entity> is a hash, each key will be assigned to the XML::Feed object:
 
 If an C<entries> key is supplied, each item in it will also be converted to an
 XML::Feed::Entry object and added to the feed. C<entries> may also contain a
-list of XML::Feed::Entry objects, or objects thart support a C<as_feed_entry>
+list of XML::Feed::Entry objects, or objects that support a C<as_feed_entry>
 method which returns XML::Feed::Entry objects or the appropriate hash.
 
 If C<entity> is an XML::Feed object, that is used directly. If C<entity> is an

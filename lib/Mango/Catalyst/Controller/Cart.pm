@@ -118,16 +118,16 @@ __END__
 
 =head1 NAME
 
-Mango::Catalyst::Controller::Carts - Catalyst controller for cart information
+Mango::Catalyst::Controller::Cart - Catalyst controller for cart information
 
 =head1 SYNOPSIS
 
     package MyApp::Controller::Cart;
-    use base 'Mango::Catalyst::Controller::Carts';
+    use base 'Mango::Catalyst::Controller::Cart';
 
 =head1 DESCRIPTION
 
-Mango::Catalyst::Controller::Carts provides the web interface for shopping
+Mango::Catalyst::Controller::Cart provides the web interface for shopping
 cart information.
 
 =head1 ACTIONS

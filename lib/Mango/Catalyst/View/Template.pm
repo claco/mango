@@ -5,90 +5,92 @@ use warnings;
 
 BEGIN {
     use base qw/Catalyst::View Class::Accessor::Grouped/;
-    use Mango ();
+    use English '-no_match_vars';
+    use Mango            ();
     use Mango::Exception ();
 
-    __PACKAGE__->mk_group_accessors('inherited', qw/wrapper content_type share_paths root_paths template_paths/);
-    __PACKAGE__->mk_group_accessors('simple', qw/view_instance/);
-};
+    __PACKAGE__->mk_group_accessors( 'inherited',
+        qw/wrapper content_type share_paths root_paths template_paths/ );
+    __PACKAGE__->mk_group_accessors( 'simple', qw/view_instance/ );
+}
 __PACKAGE__->view_class('Catalyst::View::TT');
 __PACKAGE__->wrapper('wrapper');
 
 sub new {
-    my $self = shift->NEXT::new(@_);
-    my $c = shift;
+    my $self      = shift->NEXT::new(@_);
+    my $c         = shift;
     my $arguments = shift || {};
-    my $view = 'tt';
+    my $view      = 'tt';
 
-    if ($self->view_class =~ /^Catalyst::View::(.*)$/) {
+    if ( $self->view_class =~ /^Catalyst::View::(.*)$/ ) {
         $view = lc $1;
         $view =~ s/\:\:/-/;
-    };
+    }
 
     ## yuck. but it works for now and the C::View::Templated will fix this
-    if ($view eq 'tt') {
-        $arguments->{'WRAPPER'} = $self->wrapper if $self->wrapper;
-    };
+    if ( $view eq 'tt' && $self->wrapper ) {
+        $arguments->{'WRAPPER'} = $self->wrapper;
+    }
 
-    $self->view_instance(
-        $self->view_class->new($c, $arguments)
-    );
+    $self->view_instance( $self->view_class->new( $c, $arguments ) );
 
-    if (!$self->template_paths) {
-        $self->template_paths([]);
-        foreach my $path (@{$self->root_paths}) {
-            $path = $c->path_to('root', $path);
+    if ( !$self->template_paths ) {
+        $self->template_paths( [] );
+        foreach my $path ( @{ $self->root_paths } ) {
+            $path = $c->path_to( 'root', $path );
             $path =~ s/\%view/$view/g;
 
-            push @{$self->template_paths}, $path;
-        };
-        foreach my $path (@{$self->share_paths}) {
-            $path = Path::Class::Dir->new(Mango->share, $path);
+            push @{ $self->template_paths }, $path;
+        }
+        foreach my $path ( @{ $self->share_paths } ) {
+            $path = Path::Class::Dir->new( Mango->share, $path );
             $path =~ s/\%view/$view/g;
 
-            push @{$self->template_paths}, $path;
-        };
-    };
+            push @{ $self->template_paths }, $path;
+        }
+    }
 
-    if ($view eq 'tt') {
-        @{$self->view_instance->include_path} = (@{$self->template_paths});
-    };
+    if ( $view eq 'tt' ) {
+        @{ $self->view_instance->include_path } =
+          ( @{ $self->template_paths } );
+    }
 
     return $self;
-};
+}
 
 sub view_class {
-    my ($self, $view) = @_;
+    my ( $self, $view ) = @_;
     my $class = ref $self || $self;
 
     if ($view) {
-        no strict 'refs';
+        eval "require $view";    ## no critic
+        if ($EVAL_ERROR) {
+            Mango::Exception->throw( 'VIEW_CLASS_NOT_LOADED', $view,
+                $EVAL_ERROR );
+        }
 
-        eval "require $view";
-        Mango::Exception->throw('VIEW_CLASS_NOT_LOADED', $view, $@) if $@;
+        $self->set_inherited( 'view_class', $view );
+    }
 
-        $self->set_inherited('view_class', $view);
-    };
-
-    $self->get_inherited('view_class');
-};
+    return $self->get_inherited('view_class');
+}
 
 sub process {
     my $self = shift;
-    my $c = $_[0];
+    my $c    = $_[0];
 
-    if ($c->action->attributes->{'Template'}) {
+    if ( $c->action->attributes->{'Template'} ) {
         $c->stash->{'template'} ||= $c->action->attributes->{'Template'}->[0];
-    };
+    }
 
     my $result = $self->view_instance->process(@_);
 
-    if ($self->content_type) {
-        $_[0]->response->content_type($self->content_type);
-    };
+    if ( $self->content_type ) {
+        $_[0]->response->content_type( $self->content_type );
+    }
 
     return $result;
-};
+}
 
 1;
 __END__
@@ -153,7 +155,8 @@ output.
 
 =head2 process
 
-Renders content using the specified C<view_class> and sets the C<content_type>.
+Renders content using the specified C<view_class> and sets the
+C<content_type>.
 
 =head2 share_paths
 
@@ -245,10 +248,10 @@ Gets/sets the name of the template wrapper to be used around rendered content.
 
 =head1 SUBCLASSING
 
-Mango::Catalyst::View::Template is the base class for the Text/HTML/XHTML views
-in Mango. This view is not really meant to be used directly. In most cases, you
-can simply alter functionality by setting properties of your app specific view
-subclasses:
+Mango::Catalyst::View::Template is the base class for the Text/HTML/XHTML
+views in Mango. This view is not really meant to be used directly. In most
+cases, you can simply alter functionality by setting properties of your app
+specific view subclasses:
 
     MyApp::View::Text;
     use strict;
@@ -263,16 +266,16 @@ subclasses:
     
     1;
 
-Of course, you can always just roll your own view and use Catalyst::View::TT and
-the like directly.
+Of course, you can always just roll your own view and use Catalyst::View::TT
+and the like directly.
 
 =head1 TEMPLATES
 
 When a new instance of the C<view_class> is created, it is given the list of
 template paths in C<template_paths> in which to search for template files.
 
-If <template_paths> is not already defined, the following directories are added
-in the following order:
+If <template_paths> is not already defined, the following directories are
+added in the following order:
 
     $c->path_to('root')/root_paths
     $c->share/share_paths
