@@ -1,9 +1,11 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+0.01000_11 Sun Apr 13 20:39:27 2008
     - Added just enough pod to get spelling/coverage happy.
         Needs serious cleanup.
     - Added critic tests and set perltidy standard for dist
+    - Refactor View::Feed. Needs more tests.
 
 0.01000_10 Fri Jan 18 22:27:19 2008
     - Added Atom/RSS Feeds to Wishlists
