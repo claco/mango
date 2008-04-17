@@ -5,29 +5,19 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
+
+    __PACKAGE__->config(
+        resource_name => 'mango/checkout',
+        form_directory =>
+          Path::Class::Dir->new( Mango->share, 'forms', 'checkout' )
+    );
 }
 
-__PACKAGE__->config(
-    workflow => {
-        initial_state => 'initialize',
-        states        => [
-            {
-                name        => 'initialize',
-                transitions => [
-                    {
-                        name     => 'edit_billing',
-                        to_state => 'billing'
-                    }
-                ]
-            },
-            { name => 'billing' },
-            { name => 'shipping' },
-            { name => 'payment' },
-            { name => 'preview' },
-            { name => 'complete' }
-        ]
-    }
-);
+sub index : Template('cart/index') {
+    my ( $self, $c ) = @_;
+
+    return;
+}
 
 sub instance : Chained('/') PathPrefix Args(1) {
     my ( $self, $c, $state ) = @_;

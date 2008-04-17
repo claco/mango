@@ -143,7 +143,8 @@ sub restore : Chained('instance') PathPart Args(0) Template('wishlists/view')
     if ( $self->submitted && $self->validate->success ) {
         $c->user->cart->restore( $wishlist, $form->field('mode') );
 
-        $c->response->redirect( $c->uri_for_resource('mango/cart') . '/' );
+        $c->response->redirect(
+            $c->uri_for_resource( 'mango/cart', 'view' ) . '/' );
     }
 
     return;

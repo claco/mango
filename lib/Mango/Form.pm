@@ -77,7 +77,13 @@ sub field {
 
 sub render {
     my $self = shift;
+    my %args = @_;
     my $form = $self->_form;
+
+    ## CGI::FB Hates URI Objects
+    if (exists $args{'action'}) {
+        $args{'action'} = $args{'action'} . '';
+    }
 
     foreach my $field ( $form->fields ) {
         $field->label(
@@ -92,7 +98,7 @@ sub render {
     ## keeps CGI::FB from bitching about empty basename
     local $ENV{'SCRIPT_NAME'} ||= '';
 
-    return $form->render(@_);
+    return $form->render(%args);
 }
 
 sub values {

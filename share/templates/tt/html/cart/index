@@ -47,14 +47,12 @@
         </tr>
         <tr>
             <td colspan="7" align="right">
-                [% c.forms('cart_clear').render %]
-                <form action="[% c.uri_for('/checkout/') %]" method="POST">
-                    <input type="submit" value="Checkout" />
-                </form>
+                [% c.forms('cart_clear').render('action', c.uri_for_resource('mango/cart', 'clear') _ '/') %]
+                [% c.forms('checkout').render('action', c.uri_for_resource('mango/checkout') _ '/') %]
             </td>
         </tr>
     </table>
-    [% c.forms('cart_save').render %]
+    [% c.forms('cart_save').render('action', c.uri_for_resource('mango/cart', 'save') _ '/') %]
     <p>
 	<a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
     </p>

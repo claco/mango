@@ -16,26 +16,6 @@ BEGIN {
     );
 }
 
-sub list : Chained('/') PathPrefix Args(0) Template('products/list') {
-    my ( $self, $c ) = @_;
-    my $tags = $c->model('Products')->tags( {}, { order_by => 'tag.name' } );
-    $c->stash->{'tags'} = $tags;
-
-    my $tagcloud = HTML::TagCloud::Sortable->new;
-    foreach my $tag ( $tags->all ) {
-        $tagcloud->add(
-            {
-                name  => $tag->name,
-                count => $tag->count,
-                url   => $c->uri_for( 'tags', $tag->name ) . '/'
-            }
-        );
-    }
-    $c->stash->{'tagcloud'} = $tagcloud;
-
-    return;
-}
-
 sub instance : Chained('/') PathPrefix CaptureArgs(1) {
     my ( $self, $c, $sku ) = @_;
     my $product = $c->model('Products')->get_by_sku($sku);
@@ -53,6 +33,26 @@ sub instance : Chained('/') PathPrefix CaptureArgs(1) {
 sub view : Chained('instance') PathPart('') Args(0) Template('products/view')
 {
     my ( $self, $c ) = @_;
+
+    return;
+}
+
+sub list : Chained('/') PathPrefix Args(0) Template('products/list') {
+    my ( $self, $c ) = @_;
+    my $tags = $c->model('Products')->tags( {}, { order_by => 'tag.name' } );
+    $c->stash->{'tags'} = $tags;
+
+    my $tagcloud = HTML::TagCloud::Sortable->new;
+    foreach my $tag ( $tags->all ) {
+        $tagcloud->add(
+            {
+                name  => $tag->name,
+                count => $tag->count,
+                url   => $c->uri_for( 'tags', $tag->name ) . '/'
+            }
+        );
+    }
+    $c->stash->{'tagcloud'} = $tagcloud;
 
     return;
 }

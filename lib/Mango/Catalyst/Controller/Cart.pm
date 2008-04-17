@@ -16,27 +16,21 @@ BEGIN {
     );
 }
 
-sub auto : Private {
+sub instance : Chained('/') PathPrefix CaptureArgs(0) {
     my ( $self, $c ) = @_;
 
     $c->stash->{'cart'} = $c->user->cart;
 
-    return 1;
+    return;
 }
 
-sub index : Template('cart/index') {
+sub view : Chained('instance') PathPart('') Args(0) Template('cart/view') {
     my ( $self, $c ) = @_;
 
     return;
 }
 
-sub instance : Chained('/') PathPrefix CaptureArgs(0) {
-    my ( $self, $c ) = @_;
-
-    return;
-}
-
-sub add : Local Template('cart/index') {
+sub add : Chained('instance') Args(0) Template('cart/view') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $cart = $c->stash->{'cart'};
@@ -62,13 +56,13 @@ sub add : Local Template('cart/index') {
             }
         );
 
-        $c->res->redirect( $c->uri_for( $self->action_for('index') ) . '/' );
+        $c->res->redirect( $c->uri_for( $self->action_for('view') ) . '/' );
     }
 
     return;
 }
 
-sub clear : Local Template('cart/index') {
+sub clear : Chained('instance') Args(0) Template('cart/view') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $cart = $c->stash->{'cart'};
@@ -77,12 +71,12 @@ sub clear : Local Template('cart/index') {
         $cart->clear;
     }
 
-    $c->res->redirect( $c->uri_for( $self->action_for('index') ) . '/' );
+    $c->res->redirect( $c->uri_for( $self->action_for('view') ) . '/' );
 
     return;
 }
 
-sub save : Local Template('cart/index') {
+sub save : Chained('instance') Args(0) Template('cart/view') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $cart = $c->stash->{'cart'};

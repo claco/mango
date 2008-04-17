@@ -100,6 +100,7 @@ BEGIN {
     ## form button text
     BUTTON_LABEL_LOGIN       => 'Login',
     BUTTON_LABEL_ADD_TO_CART => 'Add to Cart',
+    BUTTON_LABEL_CHECHKOUT   => 'Checkout',
 
     ## form constraint messages
     CONSTRAINT_USERNAME_NOT_BLANK => 'The username field is required.',
