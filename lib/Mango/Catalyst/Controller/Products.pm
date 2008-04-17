@@ -10,6 +10,7 @@ BEGIN {
     use Path::Class::Dir         ();
 
     __PACKAGE__->config(
+        path          => 'parts',
         resource_name => 'mango/products',
         form_directory =>
           Path::Class::Dir->new( Mango->share, 'forms', 'products' )
@@ -48,7 +49,10 @@ sub list : Chained('/') PathPrefix Args(0) Template('products/list') {
             {
                 name  => $tag->name,
                 count => $tag->count,
-                url   => $c->uri_for( 'tags', $tag->name ) . '/'
+                url   => $c->uri_for_resource(
+                    'mango/products', 'tags', $tag->name
+                  )
+                  . '/'
             }
         );
     }
@@ -118,7 +122,10 @@ sub tags : Local Template('products/list') Feed('Atom') Feed('RSS') {
                 {
                     name  => $tag->name,
                     count => $tag->count,
-                    url   => $c->uri_for( 'tags', @tags, $tag->name ) . '/'
+                    url =>
+                      $c->uri_for_resource( 'mango/products', 'tags', @tags,
+                        $tag->name )
+                      . '/'
                 }
             );
         }

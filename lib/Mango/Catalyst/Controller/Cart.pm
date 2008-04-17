@@ -134,7 +134,7 @@ Adds and item to the cart.
 
 Removes all items from the cart.
 
-=head2 index : /cart/
+=head2 view : /cart/
 
 Displays the contents of the cart.
 

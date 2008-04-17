@@ -11,6 +11,7 @@
 	</p>
 	<p>[% HTML.escape(product.price.as_string('FMT_SYMBOL')) %]</p>
 	[% c.forms('cart_add').render(
+		'action', c.uri_for_resource('mango/cart', 'add') _ '/',
 		'values', [product.sku]
 	) %]
 
