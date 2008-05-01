@@ -6,7 +6,10 @@ use warnings;
 BEGIN {
     use base qw/DBIx::Class::Schema/;
 
+    use Mango;
     use Mango::Exception ();
+
+    our $VERSION = Mango->VERSION;
 }
 __PACKAGE__->load_classes;
 

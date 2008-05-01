@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 31;
+    use Test::More tests => 31;
 
     use_ok('Mango::Object');
     use_ok('Mango::Object::Meta');

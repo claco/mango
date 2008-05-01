@@ -67,9 +67,6 @@
                 </td>
             </tr>
         </table>
-        <p>
-	       <a href="?view=Atom">Atom</a> | <a href="?view=RSS">RSS</a>
-        </p>
     [% ELSE %]
         <p>[% c.localize('WISHLIST_IS_EMPTY') %]</p>
     [% END %]

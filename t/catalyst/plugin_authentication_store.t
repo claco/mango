@@ -5,8 +5,10 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 118;
-    use Mango::Test::Catalyst;
+    use Test::More tests => 118;
+
+    use Mango::Test ();
+    use Mango::Test::Catalyst ();
 
     use_ok('Mango::Catalyst::Plugin::Authentication::Store');
     use_ok('Mango::Catalyst::Plugin::Authentication::User');

@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 17;
+    use Test::More tests => 17;
     use Mango::Test::Catalyst::Request;
     use Path::Class::File;
 

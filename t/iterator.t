@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 6;
+    use Test::More tests => 6;
 
     use_ok('Mango::Iterator');
 };

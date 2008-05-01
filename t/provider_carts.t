@@ -5,7 +5,8 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test;
+    use Test::More;
+    use Mango::Test ();
 
     eval 'require DBD::SQLite';
     if($@) {

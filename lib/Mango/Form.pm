@@ -81,7 +81,7 @@ sub render {
     my $form = $self->_form;
 
     ## CGI::FB Hates URI Objects
-    if (exists $args{'action'}) {
+    if ( exists $args{'action'} ) {
         $args{'action'} = $args{'action'} . '';
     }
 

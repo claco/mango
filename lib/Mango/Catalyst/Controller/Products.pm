@@ -10,7 +10,6 @@ BEGIN {
     use Path::Class::Dir         ();
 
     __PACKAGE__->config(
-        path          => 'parts',
         resource_name => 'mango/products',
         form_directory =>
           Path::Class::Dir->new( Mango->share, 'forms', 'products' )

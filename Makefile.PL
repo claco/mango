@@ -63,6 +63,10 @@ install_share;
 eval {
     my $source = File::Spec->catfile('lib', 'Mango.pm');
     system "pod2text $source > README";
+
+    use lib 'lib';
+    use Mango::Schema;
+    Mango::Schema->connect->create_ddl_dir([qw/MySQL SQLite PostreSQL/], undef, 't/sql', '0.01000_10');
 };
 
 auto_install;

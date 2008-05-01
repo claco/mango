@@ -6,8 +6,10 @@ use utf8;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 71;
-    use Mango::Test::Catalyst;
+    use Test::More tests => 71;
+
+    use Mango::Test ();
+    use Mango::Test::Catalyst ();
 
     use_ok('Mango::Catalyst::Plugin::I18N');
 };

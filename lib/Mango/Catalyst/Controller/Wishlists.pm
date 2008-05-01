@@ -128,7 +128,7 @@ sub delete : Chained('instance') PathPart Args(0) Template('wishlists/view') {
         $wishlist->destroy;
 
         $c->response->redirect(
-            $c->uri_for_resource( 'mango/wishlists', 'index' ) . '/' );
+            $c->uri_for_resource( 'mango/wishlists', 'list' ) . '/' );
     }
 
     return;

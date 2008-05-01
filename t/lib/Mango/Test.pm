@@ -4,21 +4,15 @@ use strict;
 use warnings;
 
 BEGIN {
-    # little trick by Ovid to pretend to subclass+exporter Test::More
-    use base qw/Test::Builder::Module/;
     use Test::More;
     use Catalyst::Utils ();
     use Catalyst::Helper::Mango ();
     use Cwd ();
     use DateTime ();
     use File::Temp ();
-    use File::Spec::Functions qw/catdir catfile/;
+    use Path::Class ();
     use YAML ();
-
-    $ENV{'CATALYST_DEBUG'} = 0;
-    @Mango::Test::EXPORT = @Test::More::EXPORT;
 };
-
 
 ## cribbed and modified from DBICTest in DBIx::Class tests
 sub init_schema {
@@ -72,7 +66,7 @@ sub deploy_schema {
             die $@;
         };
     } else {
-        open IN, catfile('t', 'sql', 'test.sqlite.sql');
+        open IN, Path::Class::file('t', 'sql', 'test.sqlite.sql');
         my $sql;
         { local $/ = undef; $sql = <IN>; }
         close IN;
@@ -203,8 +197,9 @@ sub populate_schema {
 
 ## create test catalyst app
 sub mk_app {
-    my $class  = shift;
-    my $app    = shift || 'TestApp';
+    my $class  = $_[0];
+    my $app    = $_[1] || 'TestApp';
+    my $config = $_[2] || {};
     my $prefix = Catalyst::Utils::appprefix($app);
     my $cwd    = Cwd::cwd;
     my $temp   = File::Temp::tempdir(
@@ -214,29 +209,22 @@ sub mk_app {
         CLEANUP => 0
     );
     my @dir    = split(/\:\:/, $app);
-    my $lib    = catdir($temp, @dir, 'lib');
+    my $lib    = Path::Class::dir($temp, @dir, 'lib');
     my $helper = Catalyst::Helper::Mango->new;
-
-    eval "use lib '$lib';";
 
     chdir $temp;
     $helper->mk_app($app);
 
-    my $config = YAML::LoadFile(
-        catfile($app, "$prefix.yml")
+    my $config_file = YAML::LoadFile(
+        Path::Class::file($app, "$prefix.yml")
     );
-    $config->{'connection_info'}->[0] = 'dbi:SQLite:' . catfile($temp, @dir, 'data', 'mango.db');
-    YAML::DumpFile(catfile($app, "$prefix.yml"), $config);
+    $config_file->{'connection_info'}->[0] = 'dbi:SQLite:' . Path::Class::file($temp, @dir, 'data', 'mango.db');
+    my $merged = Catalyst::Utils::merge_hashes($config_file, $config);
+    YAML::DumpFile(Path::Class::file($app, "$prefix.yml"), $merged);
 
     chdir($cwd);
 
-    $ENV{'CATALYST_DEBUG'} = 0;
-    require Test::WWW::Mechanize::Catalyst;
-    Test::WWW::Mechanize::Catalyst->import('TestApp');
-
-    @INC = @lib::ORIG_INC;
-
-    return catdir($temp, @dir);
+    return Path::Class::dir($temp, @dir);
 };
 
 1;

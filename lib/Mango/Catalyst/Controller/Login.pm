@@ -9,6 +9,7 @@ BEGIN {
     use Path::Class ();
 
     __PACKAGE__->config(
+        path          => 'go',
         resource_name => 'mango/login',
         form_directory =>
           Path::Class::Dir->new( Mango->share, 'forms', 'login' )

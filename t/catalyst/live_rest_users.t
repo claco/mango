@@ -5,7 +5,9 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test;
+    use Test::More;
+    
+    use Mango::Test ();
 
     plan skip_all => 'No REST for the wicked.';
     Mango::Test->mk_app;

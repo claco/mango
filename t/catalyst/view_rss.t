@@ -5,9 +5,11 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 9;
-    use Mango::Test::Catalyst;
-    use DateTime;
+    use Test::More tests => 9;
+
+    use Mango::Test ();
+    use Mango::Test::Catalyst ();
+    use DateTime ();
 
     use_ok('Mango::Catalyst::View::RSS');
     use_ok('Mango::Exception', ':try');

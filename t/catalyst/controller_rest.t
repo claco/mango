@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 16;
+    use Test::More tests => 16;
 
     use_ok('Mango::Catalyst::Controller::REST');
     use_ok('Mango::Test::Catalyst');

@@ -5,8 +5,10 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test tests => 12;
-    use Mango::Test::Catalyst;
+    use Test::More tests => 12;
+
+    use Mango::Test ();
+    use Mango::Test::Catalyst ();
 
     use_ok('Mango::Catalyst::Model::Wishlists');
     use_ok('Mango::Exception', ':try');

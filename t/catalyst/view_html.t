@@ -5,8 +5,10 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Mango::Test;
-    use Mango::Test::Catalyst;
+    use Test::More;
+
+    use Mango::Test ();
+    use Mango::Test::Catalyst ();
 
     eval 'require Directory::Scratch';
     if($@) {
