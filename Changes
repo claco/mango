@@ -2,6 +2,8 @@
 This file documents the revision history for Perl extension Mango.
 
     - Fixed various controllers to use Chained instead of index : Private
+    - Converted Live Catalyst tests to Test::Class and added tests for
+        path config option and subclass renames
 
 0.01000_11 Sun Apr 13 20:39:27 2008
     - Added just enough pod to get spelling/coverage happy.

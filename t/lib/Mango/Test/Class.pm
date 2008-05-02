@@ -16,14 +16,15 @@ sub startup : Test(startup) {
     my $lib = Path::Class::dir( $app, 'lib' );
     eval "use lib '$lib';";
 
+    $self->application($app);
     $ENV{'CATALYST_DEBUG'} = 0;
+
+    $self->config_application;
     {
         local $SIG{__WARN__} = sub { };
         require Test::WWW::Mechanize::Catalyst;
         Test::WWW::Mechanize::Catalyst->import('TestApp');
     };
-
-    $self->application($app);
 }
 
 sub application {
@@ -37,6 +38,8 @@ sub application {
 }
 
 sub config {};
+
+sub config_application {};
 
 sub client {
     return Test::WWW::Mechanize::Catalyst->new;
