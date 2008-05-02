@@ -1,12 +1,12 @@
 <ul id="menu">
     <li><a href="[% c.uri_for('/') %]">[% c.localize('LINK_TEXT_HOME') %]</a></li>
 [% IF c.user_exists %]
-	<li><a href="[% c.uri_for_resource('mango/logout') %]/">[% c.localize('LINK_TEXT_LOGOUT') %]</a></li>
+	<li><a href="[% c.uri_for_resource('mango/logout', 'logout') %]/">[% c.localize('LINK_TEXT_LOGOUT') %]</a></li>
     <li><a href="[% c.uri_for_resource('mango/admin') %]/">[% c.localize('LINK_TEXT_ADMIN') %]</a></li>
     <li><a href="[% c.uri_for_resource('mango/wishlists', 'list') %]/">[% c.localize('LINK_TEXT_WISHLISTS') %]</a></li>
     <li><a href="[% c.uri_for_resource('mango/settings', 'profile') %]/">[% c.localize('LINK_TEXT_SETTINGS_PROFILE') %]</a></li>
 [% ELSE %]
-    <li><a href="[% c.uri_for_resource('mango/login') %]/">[% c.localize('LINK_TEXT_LOGIN') %]</a></li>
+    <li><a href="[% c.uri_for_resource('mango/login', 'login') %]/">[% c.localize('LINK_TEXT_LOGIN') %]</a></li>
     <li><a href="[% c.uri_for_resource('mango/users', 'create') %]/">[% c.localize('LINK_TEXT_USERS_CREATE') %]</a></li>
 [% END %]
     <li><a href="[% c.uri_for_resource('mango/cart', 'view') %]/">[% c.localize('LINK_TEXT_CART') %]</a></li>

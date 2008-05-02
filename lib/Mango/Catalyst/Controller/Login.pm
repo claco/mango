@@ -9,14 +9,13 @@ BEGIN {
     use Path::Class ();
 
     __PACKAGE__->config(
-        path          => 'go',
         resource_name => 'mango/login',
         form_directory =>
           Path::Class::Dir->new( Mango->share, 'forms', 'login' )
     );
 }
 
-sub index : Form('login') Template('login/index') {
+sub login : Chained('/') PathPrefix Args(0) Form('login') Template('login/index') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
 

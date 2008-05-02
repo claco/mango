@@ -9,7 +9,7 @@ BEGIN {
     __PACKAGE__->config( resource_name => 'mango/logout' );
 }
 
-sub index : Template('logout/index') {
+sub logout : Chained('/') PathPrefix Args(0) Template('logout/index') {
     my ( $self, $c ) = @_;
 
     if ( $c->user_exists ) {
