@@ -15,7 +15,8 @@ BEGIN {
     );
 }
 
-sub login : Chained('/') PathPrefix Args(0) Form('login') Template('login/index') {
+sub login : Chained('/') PathPrefix Args(0) Form('login')
+  Template('login/index') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
 
