@@ -144,4 +144,19 @@ sub tests : Test(64) {
     $m->content_contains('<td align="right">$3.69</td>');
 };
 
+sub tests_not_found : Test(2) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/products/');
+    if ($self->path eq 'products') {
+        is( $m->status, 200 );
+    } else {
+        is( $m->status, 404 );
+    }
+
+    $m->get('http://localhost/' . $self->path . '/' . 'bogon/');
+    is( $m->status, 404 );
+}
+
 1;

@@ -60,4 +60,17 @@ sub tests : Test(22) {
     is($m->uri->path, '/' . $self->path . '/');
 };
 
+sub tests_not_found : Test(1) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/logout/');
+
+    if ($self->path eq 'logout') {
+        is( $m->status, 200 );
+    } else {
+        is( $m->status, 404 );
+    }
+}
+
 1;

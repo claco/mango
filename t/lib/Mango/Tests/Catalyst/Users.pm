@@ -140,4 +140,21 @@ sub tests_wishlists : Test(12) {
     $m->content_like(qr/wishlist.*not.*found/i);
 }
 
+sub tests_not_found : Test(4) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/users/');
+    is( $m->status, 404 );
+
+    $m->get('http://localhost/' . $self->path . '/' . 'bogon/');
+    is( $m->status, 404 );    
+
+    $m->get('http://localhost/' . $self->path . '/' . 'admin/');
+    is( $m->status, 200 );
+
+    $m->get('http://localhost/' . $self->path . '/' . 'admin/wishlists/bogon');
+    is( $m->status, 404 );
+}
+
 1;

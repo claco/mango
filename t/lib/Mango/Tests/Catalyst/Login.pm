@@ -87,4 +87,17 @@ sub tests : Test(31) {
     ok(! $m->find_link(text => 'Logout'));
 };
 
+sub tests_not_found : Test(1) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/login/');
+
+    if ($self->path eq 'login') {
+        is( $m->status, 200 );
+    } else {
+        is( $m->status, 404 );
+    }
+}
+
 1;

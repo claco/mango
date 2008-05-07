@@ -13,6 +13,6 @@ sub config {
     { 'Controller::Cart' => { path => shift->path } };
 }
 
-sub path {'basket'};
+sub path { 'basket' }
 
 1;

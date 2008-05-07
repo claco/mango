@@ -222,4 +222,17 @@ sub tests : Test(80) {
     $m->content_like(qr/cart is empty/i);
 }
 
+sub tests_not_found : Test(1) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/cart/');
+
+    if ($self->path eq 'cart') {
+        is( $m->status, 200 );
+    } else {
+        is( $m->status, 404 );
+    }
+}
+
 1;

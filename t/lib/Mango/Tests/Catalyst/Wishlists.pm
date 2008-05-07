@@ -429,4 +429,25 @@ sub tests : Test(204) {
     $m->content_like(qr/cart is empty/i);
 };
 
+sub tests_not_found : Test(1) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/wishlists/');
+
+    if ($self->path eq 'wishlists') {
+        is( $m->status, 401 );
+    } else {
+        is( $m->status, 404 );
+    }
+}
+
+sub tests_unauthorized: Test(1) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get('http://localhost/' . $self->path . '/');
+    is( $m->status, 401 );
+}
+
 1;
