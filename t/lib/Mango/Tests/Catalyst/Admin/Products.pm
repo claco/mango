@@ -20,7 +20,7 @@ sub tests_unauthorized: Test(1) {
     is( $m->status, 401 );
 }
 
-sub tests : Test(4) {
+sub tests : Test(35) {
     my $self = shift;
     my $m = $self->client;
 
@@ -54,42 +54,52 @@ sub tests : Test(4) {
     $m->follow_link_ok({url_regex => qr/$create/i});
 
 
-    ## check field errors
+    ## fail to add product
+    $m->submit_form_ok({
+        form_name => 'admin_products_create',
+        fields    => {}
+    });
+    $m->content_contains('<li>CONSTRAINT_SKU_NOT_BLANK</li>');
+    $m->content_contains('<li>The name field is required.</li>');
+    $m->content_contains('<li>CONSTRAINT_DESCRIPTION_NOT_BLANK</li>');
+    $m->content_contains('<li>CONSTRAINT_PRICE_NOT_BLANK</li>');
+
+
+    ## add new product
     $m->submit_form_ok({
         form_name => 'admin_products_create',
         fields    => {
-
+            sku   => 'ABC-123',
+            name  => 'My SKU',
+            description => 'My SKU Description',
+            price => 1.23,
+            tags  => 'tag1'
         }
     });
-    $m->content_like(qr/sku.*required/i);
-    $m->content_like(qr/name.*required/i);
-    $m->content_like(qr/description.*required/i);
-    $m->content_like(qr/price.*required/i);
-
-    
-
-    #$m->content_like(qr/cart is empty/i);
-    #is($m->uri->path, '/' . $self->path . '/');
-
-    #is($m->uri->path, '/' . $self->path . '/');
+    $m->content_lacks('<li>CONSTRAINT_SKU_NOT_BLANK</li>');
+    $m->content_lacks('<li>The name field is required.</li>');
+    $m->content_lacks('<li>CONSTRAINT_DESCRIPTION_NOT_BLANK</li>');
+    $m->content_lacks('<li>CONSTRAINT_PRICE_NOT_BLANK</li>');
+    is($m->uri->path, '/' . $self->path . '/1/edit/');
 
 
-    ## add missing part/sku
-    #$m->follow_link_ok({text => 'Products'});
-    #$m->title_like(qr/products/i);
-    #$m->follow_link_ok({text => 'tag1'});
-    #{
-    #    local $SIG{__WARN__} = sub {};
-    #    $m->submit_form_ok({
-    #        form_name => 'cart_add',
-    #        fields    => {
-    #            sku => 'NOT-FOUND',
-    #            quantity => 2
-    #        }
-    #    });
-    #};
-    #$m->title_like(qr/cart/i);
-    #$m->content_like(qr/part.*could not be found/i);
+    ## view new product in list
+    $m->get_ok('http://localhost/');
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag1'});
+    is($m->uri->path, '/products/tags/tag1/');
+    $m->content_contains('ABC-123');
+    $m->content_contains('My SKU Description');
+    $m->content_contains('$1.23');
+
+
+    ## view new product
+    $m->follow_link_ok({text => 'My SKU'});
+    is($m->uri->path, '/products/ABC-123/');
+    $m->content_contains('ABC-123');
+    $m->content_contains('My SKU Description');
+    $m->content_contains('$1.23');
 }
 
 1;
