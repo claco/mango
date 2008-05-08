@@ -10,6 +10,37 @@ BEGIN {
     use Path::Class ();
 }
 
+sub startup : Test(startup => +1) {
+    my $self = shift;
+    $self->SUPER::startup(@_);
+
+    use_ok('Mango::Provider::Products');
+
+    my $provider = Mango::Provider::Products->new(
+        {
+            connection_info => [
+                'dbi:SQLite:'
+                  . Path::Class::file( $self->application, 'data', 'mango.db' )
+            ]
+        }
+    );
+    $provider->create(
+        {
+            sku         => 'DEF-345',
+            price       => 10.00,
+            name        => 'DEF Product',
+            description => 'DEF Product Description',
+            tags        => [qw/tag2/],
+            attributes  => [
+                {
+                    name => 'ExistingAttribute',
+                    value => 'ExistingValue'
+                }
+            ]
+        }
+    );
+}
+
 sub path {'admin/products'};
 
 sub tests_unauthorized: Test(1) {
@@ -20,7 +51,7 @@ sub tests_unauthorized: Test(1) {
     is( $m->status, 401 );
 }
 
-sub tests : Test(35) {
+sub tests : Test(86) {
     my $self = shift;
     my $m = $self->client;
 
@@ -80,7 +111,102 @@ sub tests : Test(35) {
     $m->content_lacks('<li>The name field is required.</li>');
     $m->content_lacks('<li>CONSTRAINT_DESCRIPTION_NOT_BLANK</li>');
     $m->content_lacks('<li>CONSTRAINT_PRICE_NOT_BLANK</li>');
+    is($m->uri->path, '/' . $self->path . '/2/edit/');
+
+
+    ## add attributes
+    $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
+    $m->follow_link_ok({text_regex => qr/new.*attribute/i, url_regex => qr/create/i});
+    $m->submit_form_ok({
+        form_name => 'admin_products_attributes_create',
+        fields    => {
+            name => '',
+            value => ''
+        }
+    });
+    $m->content_contains('<li>The name field is required.</li>');
+    $m->content_contains('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
+    $m->submit_form_ok({
+        form_name => 'admin_products_attributes_create',
+        fields    => {
+            name  => 'Attribute1',
+            value => 'Value1'
+        }
+    });
+    $m->content_lacks('<li>The name field is required.</li>');
+    $m->content_lacks('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
+    is($m->uri->path, '/' . $self->path . '/2/attributes/2/edit/');
+
+
+    ## edit exiting product
+    $m->follow_link_ok({text => 'Products', url_regex => qr/$path/i});
+    $m->follow_link_ok({text_regex => qr/DEF-345/, url_regex => qr/edit/i});
     is($m->uri->path, '/' . $self->path . '/1/edit/');
+    $m->submit_form_ok({
+        form_name => 'admin_products_edit',
+        fields    => {
+            sku   => '',
+            name  => '',
+            description => '',
+            price => ''
+        }
+    });
+    $m->content_contains('<li>CONSTRAINT_SKU_NOT_BLANK</li>');
+    $m->content_contains('<li>The name field is required.</li>');
+    $m->content_contains('<li>CONSTRAINT_DESCRIPTION_NOT_BLANK</li>');
+    $m->content_contains('<li>CONSTRAINT_PRICE_NOT_BLANK</li>');
+    $m->submit_form_ok({
+        form_name => 'admin_products_edit',
+        fields    => {
+            sku => 'DEF-345',
+            name  => 'My DEF SKU',
+            description => 'My DEF Description',
+            price => 3.45,
+            tags  => 'tag3'
+        }
+    });
+    $m->content_lacks('<li>CONSTRAINT_SKU_NOT_BLANK</li>');
+    $m->content_lacks('<li>The name field is required.</li>');
+    $m->content_lacks('<li>CONSTRAINT_DESCRIPTION_NOT_BLANK</li>');
+    $m->content_lacks('<li>CONSTRAINT_PRICE_NOT_BLANK</li>');
+
+
+    ## fail adding duplicate attribute
+    $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
+     $m->follow_link_ok({text_regex => qr/new.*attribute/i, url_regex => qr/create/i});
+     $m->submit_form_ok({
+         form_name => 'admin_products_attributes_create',
+         fields    => {
+             name => 'ExistingAttribute',
+             value => 'Existingvalue'
+         }
+     });
+     $m->content_contains('<li>CONSTRAINT_NAME_UNIQUE</li>');
+
+
+    ## edit existing attribute
+    $m->follow_link_ok({text => 'Products', url_regex => qr/$path/i});
+    $m->follow_link_ok({text_regex => qr/DEF-345/, url_regex => qr/edit/i});
+    $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
+    $m->follow_link_ok({text_regex => qr/ExistingAttribute/i, url_regex => qr/attributes.*edit/i});
+    $m->submit_form_ok({
+        form_name => 'admin_products_attributes_edit',
+        fields    => {
+            name => '',
+            value => ''
+        }
+    });
+    $m->content_contains('<li>The name field is required.</li>');
+    $m->content_contains('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
+    $m->submit_form_ok({
+        form_name => 'admin_products_attributes_edit',
+        fields    => {
+            name => 'EditAttribute',
+            value => 'EditValue'
+        }
+    });
+    $m->content_lacks('<li>The name field is required.</li>');
+    $m->content_lacks('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
 
 
     ## view new product in list
@@ -100,6 +226,28 @@ sub tests : Test(35) {
     $m->content_contains('ABC-123');
     $m->content_contains('My SKU Description');
     $m->content_contains('$1.23');
+    $m->content_contains('Attribute1: Value1');
+
+
+    ## view edited product in list
+    $m->get_ok('http://localhost/');
+    $m->follow_link_ok({text => 'Products'});
+    $m->title_like(qr/products/i);
+    $m->follow_link_ok({text => 'tag3'});
+    is($m->uri->path, '/products/tags/tag3/');
+    $m->content_contains('DEF-345');
+    $m->content_contains('My DEF Description');
+    $m->content_contains('$3.45');
+
+
+    ## view edited product
+    $m->follow_link_ok({text => 'My DEF SKU'});
+    is($m->uri->path, '/products/DEF-345/');
+    $m->content_contains('DEF-345');
+    $m->content_contains('My DEF Description');
+    $m->content_contains('$3.45');
+    $m->content_contains('EditAttribute: EditValue');
+    $m->content_lacks('ExistingAttribute: ExistingValue');
 }
 
 1;
