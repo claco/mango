@@ -79,8 +79,10 @@ sub tags : Local Template('products/list') Feed('Atom') Feed('RSS') {
     if ( $self->wants_feed ) {
         $self->entity(
             {
-                title   => 'Products: ' . join( '. ', @tags ),
-                link    => $c->uri_for( 'tags',       @tags ) . '/',
+                title => 'Products: ' . join( '. ', @tags ),
+                link =>
+                  $c->uri_for_resource( 'mango/products', 'tags', @tags )
+                  . '/',
                 entries => [
                     map {
                         {

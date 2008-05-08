@@ -48,7 +48,8 @@ sub startup : Test(startup => +2) {
         });
         $wishlist->add({
             sku => 'ABC-123',
-            quantity => 1
+            quantity => 1,
+            description => 'ABC Product Description',
         })
 }
 
@@ -138,6 +139,170 @@ sub tests_wishlists : Test(12) {
     $m->get('http://localhost/' . $self->path . '/admin/wishlists/999/');
     is($m->status, 404);
     $m->content_like(qr/wishlist.*not.*found/i);
+}
+
+sub test_wishlists_atom_feed : Test(27) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get_ok('http://localhost/' . $self->path . '/admin/');
+    $m->follow_link_ok({text => 'Admin\'s Wishlists'});
+    $m->follow_link_ok({text => 'Atom'});
+    
+    my $content = $m->content;
+    my $feed = XML::Feed->parse(\$content);
+    isa_ok($feed, 'XML::Feed');
+    is($feed->format, 'Atom');
+    is($feed->title, 'Admin User\'s Wishlists');
+    is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/');
+    is($feed->tagline, undef);
+    is($feed->description, undef);
+    is($feed->author, undef);
+    is($feed->language, 'en');
+    is($feed->copyright, undef);
+    isa_ok($feed->modified, 'DateTime');
+    is($feed->generator, undef);
+
+    my @entries = $feed->entries;
+    is(scalar @entries, 1);
+
+    my $entry = $entries[0];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'My Wishlist');
+    is($entry->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/My Wishlist Description/);
+    is($entry->content->type, 'text/html');
+    is($entry->summary->body, undef);
+    is($entry->category, undef);
+    is($entry->author, 'Admin User');
+    is($entry->id, 1);
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
+}
+
+sub test_wishlists_rss_feed : Test(27) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get_ok('http://localhost/' . $self->path . '/admin/');
+    $m->follow_link_ok({text => 'Admin\'s Wishlists'});
+    $m->follow_link_ok({text => 'RSS'});
+    
+    my $content = $m->content;
+    my $feed = XML::Feed->parse(\$content);
+    isa_ok($feed, 'XML::Feed');
+    is($feed->format, 'RSS 2.0');
+    is($feed->title, 'Admin User\'s Wishlists');
+    is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/');
+    is($feed->tagline, '');
+    is($feed->description, '');
+    is($feed->author, undef);
+    is($feed->language, 'en');
+    is($feed->copyright, undef);
+    isa_ok($feed->modified, 'DateTime');
+    is($feed->generator, undef);
+
+    my @entries = $feed->entries;
+    is(scalar @entries, 1);
+
+    my $entry = $entries[0];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'My Wishlist');
+    is($entry->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/My Wishlist Description/);
+    is($entry->content->type, 'text/html');
+    is($entry->summary->body, undef);
+    is($entry->category, undef);
+    is($entry->author, 'Admin User');
+    is($entry->id, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
+}
+
+sub test_wishlist_atom_feed : Test(29) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get_ok('http://localhost/' . $self->path . '/admin/');
+    $m->follow_link_ok({text => 'Admin\'s Wishlists'});
+    $m->follow_link_ok({text => 'My Wishlist'});
+    $m->follow_link_ok({text => 'Atom'});
+    
+    my $content = $m->content;
+    my $feed = XML::Feed->parse(\$content);
+    isa_ok($feed, 'XML::Feed');
+    is($feed->format, 'Atom');
+    is($feed->title, 'Admin User\'s Wishlists: My Wishlist');
+    is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
+    is($feed->tagline, undef);
+    is($feed->description, undef);
+    is($feed->author, undef);
+    is($feed->language, 'en');
+    is($feed->copyright, undef);
+    isa_ok($feed->modified, 'DateTime');
+    is($feed->generator, undef);
+
+    my @entries = $feed->entries;
+    is(scalar @entries, 1);
+
+    my $entry = $entries[0];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'ABC-123');
+    is($entry->link, 'http://localhost/products/ABC-123/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/\$1\.23/);
+    like($entry->content->body, qr//);
+    is($entry->content->type, 'text/html');
+    is($entry->summary->body, undef);
+    is($entry->category, undef);
+    is($entry->author, 'Admin User');
+    is($entry->id, 1);
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
+}
+
+sub test_wishlist_rss_feed : Test(29) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get_ok('http://localhost/' . $self->path . '/admin/');
+    $m->follow_link_ok({text => 'Admin\'s Wishlists'});
+    $m->follow_link_ok({text => 'My Wishlist'});
+    $m->follow_link_ok({text => 'RSS'});
+    
+    my $content = $m->content;
+    my $feed = XML::Feed->parse(\$content);
+    isa_ok($feed, 'XML::Feed');
+    is($feed->format, 'RSS 2.0');
+    is($feed->title, 'Admin User\'s Wishlists: My Wishlist');
+    is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
+    is($feed->tagline, '');
+    is($feed->description, '');
+    is($feed->author, undef);
+    is($feed->language, 'en');
+    is($feed->copyright, undef);
+    isa_ok($feed->modified, 'DateTime');
+    is($feed->generator, undef);
+
+    my @entries = $feed->entries;
+    is(scalar @entries, 1);
+
+    my $entry = $entries[0];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'ABC-123');
+    is($entry->link, 'http://localhost/products/ABC-123/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/\$1\.23/);
+    like($entry->content->body, qr//);
+    is($entry->content->type, 'text/html');
+    is($entry->summary->body, undef);
+    is($entry->category, undef);
+    is($entry->author, 'Admin User');
+    is($entry->id, 'http://localhost/products/ABC-123/');
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
 }
 
 sub tests_not_found : Test(4) {

@@ -103,7 +103,7 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
         $self->entity(
             {
                 title => $profile->full_name
-                  . '\'s Wishlist: '
+                  . '\'s Wishlists: '
                   . $wishlist->name,
                 link => $c->uri_for_resource(
                     'mango/users/wishlists', 'view',
