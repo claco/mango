@@ -95,7 +95,7 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/products/edit') {
                 return 1;
             }
             my $existing =
-              $c->model('Products')->search( { sku => $form->field('sku') } );
+              $c->model('Products')->search( { sku => $form->field('sku') } )->first;
 
             if ( $existing && $existing->id != $product->id ) {
                 return;

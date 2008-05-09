@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>currentDocument</key>
-	<string>t/lib/Mango/Tests/Catalyst/Admin/Products.pm</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -18,31 +16,12 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>348</integer>
+	<integer>290</integer>
 	<key>metaData</key>
-	<dict>
-		<key>t/lib/Mango/Tests/Catalyst/Admin/Products.pm</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>34</integer>
-				<key>line</key>
-				<integer>101</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>42</integer>
-		</dict>
-	</dict>
-	<key>openDocuments</key>
-	<array>
-		<string>t/lib/Mango/Tests/Catalyst/Admin/Products.pm</string>
-	</array>
+	<dict/>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{358, 27}, {1562, 1151}}</string>
+	<string>{{1051, 27}, {857, 1141}}</string>
 </dict>
 </plist>
