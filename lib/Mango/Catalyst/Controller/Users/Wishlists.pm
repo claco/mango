@@ -32,6 +32,9 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
         }
     );
 
+    $c->stash->{'wishlists'} = $wishlists;
+    $c->stash->{'pager'}     = $wishlists->pager;
+
     if ( $self->wants_feed ) {
         $self->entity(
             {
@@ -55,6 +58,15 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
                               . '/',
                             content => $_->description
                               || 'No description available.',
+                            content => $c->view('HTML')->render(
+                                $c,
+                                'users/wishlists/feed',
+                                {
+                                    %{ $c->stash },
+                                    wishlist        => $_,
+                                    DISABLE_WRAPPER => 1
+                                }
+                            ),
                             issued   => $_->created,
                             modified => $_->updated
                         }
@@ -63,9 +75,6 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
             }
         );
         $c->detach;
-    } else {
-        $c->stash->{'wishlists'} = $wishlists;
-        $c->stash->{'pager'}     = $wishlists->pager;
     }
 
     return;
@@ -121,13 +130,15 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
                               $c->uri_for_resource( 'mango/products', 'view',
                                 [ $_->sku ] )
                               . '/',
-                            content => '<p>Price: '
-                              . $_->price->as_string('FMT_SYMBOL')
-                              . '</p><p>'
-                              . (
-                                $_->description || 'No description available.'
-                              )
-                              . '</p>',
+                            content => $c->view('HTML')->render(
+                                $c,
+                                'users/wishlists/feed',
+                                {
+                                    %{ $c->stash },
+                                    product         => $_,
+                                    DISABLE_WRAPPER => 1
+                                }
+                            ),
                             issued   => $_->created,
                             modified => $_->updated
                         }

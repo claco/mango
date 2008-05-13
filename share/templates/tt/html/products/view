@@ -4,8 +4,7 @@
 	[% page.title = c.localize('PRODUCT_NOT_FOUND') %]
 [% ELSE %]
     [% page.title = product.name _ ': ' _ product.sku -%]
-
-	<h2>[% product.name _ ': ' _ product.sku -%]</h2>
+	<h2>[% IF product.name %][% product.name _ ': ' _ product.sku -%][% ELSE %][% product.sku %][% END %]</h2>
 	<p>
 		[% HTML.escape(product.description) %]
 	</p>

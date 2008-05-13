@@ -93,13 +93,15 @@ sub tags : Local Template('products/list') Feed('Atom') Feed('RSS') {
                               $c->uri_for_resource( 'mango/products', 'view',
                                 [ $_->sku ] )
                               . '/',
-                            content => '<p>Price: '
-                              . $_->price->as_string('FMT_SYMBOL')
-                              . '</p><p>'
-                              . (
-                                $_->description || 'No description available.'
-                              )
-                              . '</p>',
+                            content => $c->view('HTML')->render(
+                                $c,
+                                'products/feed',
+                                {
+                                    %{ $c->stash },
+                                    product         => $_,
+                                    DISABLE_WRAPPER => 1
+                                }
+                            ),
                             issued   => $_->created,
                             modified => $_->updated
                         }

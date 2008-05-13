@@ -1,0 +1,7 @@
+[% USE HTML %]
+[% INCLUDE 'products/view' %]
+
+[% IF NOT product %]
+	<p>[% HTML.escape(wishlist.name) %]</p>
+	<p>[% HTML.escape(wishlist.description) %]</p>
+[% END %]

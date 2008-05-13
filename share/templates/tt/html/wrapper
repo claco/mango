@@ -1,4 +1,5 @@
 [% USE HTML -%]
+[% IF NOT DISABLE_WRAPPER -%]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
@@ -26,7 +27,9 @@
 			<div id="contents">
 				<div id="content">
 					<h2>[% page.title %]</h2>
+					[% END %]
 					[% content %]
+					[% IF NOT DISABLE_WRAPPER -%]
 					[% INCLUDE 'includes/pager' %]
 				</div>
 			</div>
@@ -50,3 +53,4 @@
 		</div>
 	</body>
 </html>
+[% END -%]

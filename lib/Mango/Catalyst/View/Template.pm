@@ -92,6 +92,12 @@ sub process {
     return $result;
 }
 
+sub render {
+    my $self = shift;
+
+    return $self->view_instance->render(@_);
+}
+
 1;
 __END__
 
