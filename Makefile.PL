@@ -44,15 +44,19 @@ requires 'Module::Starter' => '1.42';
 requires 'Path::Class';
 requires 'Scalar::Util';
 requires 'Set::Scalar';
+requires 'SQL::Translator' => '0.08';
 requires 'Test::WWW::Mechanize::Catalyst';
 requires 'XML::Atom' => '0.27';
 requires 'XML::Feed' => '0.12';
 requires 'XML::RSS' => '1.31';
 requires 'YAML';
 
-catalyst;
-
 build_requires 'Directory::Scratch';
+
+test_requires 'Test::Class';
+test_requires 'Test::More';
+
+catalyst;
 
 tests('t/*.t t/*/*.t');
 clean_files('t/var');
@@ -63,10 +67,6 @@ install_share;
 eval {
     my $source = File::Spec->catfile('lib', 'Mango.pm');
     system "pod2text $source > README";
-
-    use lib 'lib';
-    use Mango::Schema;
-    Mango::Schema->connect->create_ddl_dir([qw/MySQL SQLite PostreSQL/], undef, 't/sql', '0.01000_10');
 };
 
 auto_install;
