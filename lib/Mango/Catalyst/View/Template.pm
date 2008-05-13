@@ -180,6 +180,22 @@ view.
         '/share/other/templates'
     ]);
 
+=head2 render
+
+=over
+
+=item Arguments: $c, $name [, \%vars]
+
+=back
+
+Calls render on the template instance.
+
+    $self->render(
+        $c,
+        'template',
+        {title => 'foo'}
+    ]);
+
 =head2 root_paths
 
 =over
