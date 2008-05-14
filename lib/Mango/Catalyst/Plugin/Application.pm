@@ -60,6 +60,7 @@ sub redirect_from_login {
 
         if ($url) {
             my $uri = URI->new($url);
+            delete $self->session->{'__mango_return_url'};
 
             $self->response->redirect($uri->path_query);
         }

@@ -34,6 +34,7 @@ sub login : Chained('/') PathPrefix Args(0) Form('login')
               )
             {
                 $c->stash->{'errors'} = [ $c->localize('LOGIN_SUCCEEDED') ];
+                $c->redirect_from_login;
             } else {
                 $c->stash->{'errors'} = [ $c->localize('LOGIN_FAILED') ];
             }

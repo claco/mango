@@ -1,6 +1,9 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Added redirect_to_login/redirect_from_login
+    - Added start of Checkout
+
 0.01000_12 Mon May 12 21:18:25 2008
     - Fixed various controllers to use Chained instead of index : Private
     - Converted Live Catalyst tests to Test::Class and added tests for
