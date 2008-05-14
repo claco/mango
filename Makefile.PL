@@ -46,6 +46,7 @@ requires 'Scalar::Util';
 requires 'Set::Scalar';
 requires 'SQL::Translator' => '0.08';
 requires 'Test::WWW::Mechanize::Catalyst';
+requires 'URI';
 requires 'XML::Atom' => '0.27';
 requires 'XML::Feed' => '0.12';
 requires 'XML::RSS' => '1.31';

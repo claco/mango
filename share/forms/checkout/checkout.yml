@@ -1,0 +1,9 @@
+# $Id$
+---
+id: checkout
+name: checkout
+method: POST
+javascript: 0
+stylesheet: 1
+sticky: 1
+submit: BUTTON_LABEL_CHECKOUT

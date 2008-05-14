@@ -10,6 +10,8 @@ BEGIN {
       Mango::Catalyst::Plugin::I18N
       Mango::Catalyst::Plugin::Forms
       /;
+
+      use URI ();
 }
 
 sub register_resource {
@@ -37,6 +39,31 @@ sub uri_for_resource {
     $action = $controller->action_for( $action || 'index' );
 
     return $self->uri_for( $action, @args );
+}
+
+sub redirect_to_login {
+    my $self = shift;
+
+    $self->session->{'__mango_return_url'} = $self->request->uri->path_query;
+    $self->response->redirect(
+        $self->uri_for_resource(
+            'mango/login', 'login'
+        ) . '/'
+    );
+}
+
+sub redirect_from_login {
+    my $self = shift;
+
+    if ($self->sessionid) {
+        my $url = $self->session->{'__mango_return_url'};
+
+        if ($url) {
+            my $uri = URI->new($url);
+
+            $self->response->redirect($uri->path_query);
+        }
+    };
 }
 
 1;
