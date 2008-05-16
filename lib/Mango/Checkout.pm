@@ -7,6 +7,8 @@ BEGIN {
     use base qw/Handel::Checkout/;
 }
 
+__PACKAGE__->stash_class('Mango::Checkout::Stash');
+
 1;
 __END__
 

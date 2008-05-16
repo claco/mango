@@ -33,7 +33,7 @@ requires 'DBIx::Class' => '0.08008';
 requires 'Error';
 requires 'File::ShareDir';
 requires 'FormValidator::Simple' => '0.17';
-requires 'Handel' => '1.00009';
+requires 'Handel' => '1.00011';
 requires 'HTML::TagCloud::Sortable';
 requires 'I18N::LangTags';
 requires 'I18N::LangTags::Detect';
@@ -45,7 +45,6 @@ requires 'Path::Class';
 requires 'Scalar::Util';
 requires 'Set::Scalar';
 requires 'SQL::Translator' => '0.08';
-requires 'Test::WWW::Mechanize::Catalyst';
 requires 'URI';
 requires 'XML::Atom' => '0.27';
 requires 'XML::Feed' => '0.12';
@@ -56,6 +55,7 @@ build_requires 'Directory::Scratch';
 
 test_requires 'Test::Class';
 test_requires 'Test::More';
+test_requires 'Test::WWW::Mechanize::Catalyst';
 
 catalyst;
 

@@ -1,0 +1,14 @@
+
+[% order.billtofirstname %]
+[% order.billtolastname %]
+
+<hr />
+[% FOREACH item = order.items %]
+	[% item.sku %]<br />
+	[% item.quantity %]<br />
+	[% item.price %]<br />
+	[% item.total %]<br />
+[% END %]
+<hr />
+[% order.subtotal %]
+[% order.total %]

@@ -8,6 +8,9 @@ BEGIN {
 
     use Mango::Checkout   ();
     use Handel::Constants ();
+    use Scalar::Util ();
+
+    $ENV{'HandelPluginPaths'} = 'Mango::Checkout::Plugins, Mango::Catalyst::Checkout::Plugins, MyApp::Checkout::Plugins';
 
     __PACKAGE__->config(
         resource_name => 'mango/checkout',
@@ -30,9 +33,12 @@ sub auto : Private {
 
         return;
     } else {
+        warn "RECONCILE";
         my $order = $self->order;
         $order->reconcile($cart);
         $order->update;
+
+        $c->stash->{'order'} = $order;
 
         return 1;
     }
@@ -55,10 +61,13 @@ sub initialize {
     my $c     = $self->context;
     my $order = $self->order;
 
+    Scalar::Util::weaken($c);
+    $c->stash->{'c'} = $c;
     my $checkout = Mango::Checkout->new(
         {
             order  => $order,
-            phases => 'CHECKOUT_PHASE_INITIALIZE'
+            phases => 'CHECKOUT_PHASE_INITIALIZE',
+            stash  => $c->stash
         }
     );
 
@@ -79,7 +88,7 @@ sub order {
     if ( $c->session->{'__mango_order_id'} ) {
         $order =
           $c->model('Orders')
-          ->search( { id => $c->session->{'__mango_order_id'} } );
+          ->search( { id => $c->session->{'__mango_order_id'} } )->first;
     }
 
     if ( !$order ) {
@@ -87,7 +96,7 @@ sub order {
             $order = $c->model('Orders')->create(
                 {
                     cart => $c->user->cart,
-                    user => $c->user
+                    user => $c->user->id
                 }
             );
         } else {

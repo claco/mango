@@ -77,6 +77,8 @@ sub create : Local Template('users/create') {
 
         $c->response->redirect(
             $c->uri_for_resource( 'mango/settings', 'profile' ) . '/' );
+
+        $c->redirect_from_login;
     }
 
     return;
