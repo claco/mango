@@ -110,6 +110,9 @@ sub mk_all {
     $self->mk_views;
     $self->mk_controllers;
 
+    ## add checkout
+    $self->mk_checkout;
+
     return;
 }
 
@@ -336,6 +339,21 @@ sub mk_controllers {
 
     ## rest
     $self->mk_dir( dir( $c, 'REST' ) );
+
+    return;
+}
+
+=head2 mk_models
+
+Adds the necessary models.
+
+=cut
+
+sub mk_checkout {
+    my $self = shift;
+    my $mod  = $self->{'mod'};
+
+    $self->mk_dir( dir( $mod, 'Checkout', 'Plugins' ) );
 
     return;
 }

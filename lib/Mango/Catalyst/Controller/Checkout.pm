@@ -33,8 +33,8 @@ sub auto : Private {
 
         return;
     } else {
-        warn "RECONCILE";
         my $order = $self->order;
+
         $order->reconcile($cart);
         $order->update;
 
@@ -47,11 +47,17 @@ sub auto : Private {
 sub index : Template('checkout/index') {
     my ( $self, $c ) = @_;
 
+    $c->response->redirect(
+        $c->uri_for_resource('mango/checkout', 'instance', 'preview') . '/'
+    );
+
     return;
 }
 
 sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
     my ( $self, $c, $state ) = @_;
+
+    warn "STATE: $state";
 
     return;
 }
@@ -85,10 +91,16 @@ sub order {
     my $c    = $self->context;
     my $order;
 
+    if (defined $c->stash->{'order'}) {
+        return $c->stash->{'order'};
+    }
+
     if ( $c->session->{'__mango_order_id'} ) {
         $order =
           $c->model('Orders')
           ->search( { id => $c->session->{'__mango_order_id'} } )->first;
+
+          $c->stash->{'order'} = $order;
     }
 
     if ( !$order ) {
@@ -104,6 +116,7 @@ sub order {
               $c->model('Orders')->create( { cart => $c->user->cart } );
         }
         $c->session->{'__mango_order_id'} = $order->id;
+        $c->stash->{'order'} = $order;
 
         $self->initialize;
     }

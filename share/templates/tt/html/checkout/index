@@ -1,7 +1,10 @@
 
-[% order.billtofirstname %]
-[% order.billtolastname %]
-
+[% order.billtofirstname %]<br />
+[% order.billtolastname %]<br />
+<hr />
+[% order.shiptosameasbillto %]<br />
+[% order.shiptofirstname %]<br />
+[% order.shiptolastname %]<br />
 <hr />
 [% FOREACH item = order.items %]
 	[% item.sku %]<br />
@@ -10,5 +13,5 @@
 	[% item.total %]<br />
 [% END %]
 <hr />
-[% order.subtotal %]
-[% order.total %]
+[% order.subtotal %]<br />
+[% order.total %]<br />

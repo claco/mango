@@ -15,10 +15,16 @@ sub register {
 
 sub initialize {
     my ($self, $ctx) = @_;
+    my $order = $ctx->order;
+    my $c = $ctx->stash->{'c'};
+    my $profile = $c->user->profile;
 
-    warn "INIT FROM MANGO CATALYST PLUGIN";
+    $order->billtofirstname($profile->first_name);
+    $order->billtolastname($profile->last_name);
 
-    warn $ctx->stash->{'c'}->user->profile->first_name;
+    $order->shiptosameasbillto(1);
+    $order->shiptofirstname($profile->first_name);
+    $order->shiptolastname($profile->last_name);
 
     return CHECKOUT_HANDLER_OK;
 };

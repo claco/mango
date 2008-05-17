@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>Changes</string>
+	<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,28 +21,14 @@
 	<integer>290</integer>
 	<key>metaData</key>
 	<dict>
-		<key>Changes</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>8</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>lib/Mango/Catalyst/Checkout/Plugins/Initialize.pm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>55</integer>
+				<integer>42</integer>
 				<key>line</key>
-				<integer>20</integer>
+				<integer>26</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -54,23 +40,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>60</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>15</integer>
 		</dict>
-		<key>lib/Mango/Checkout/Plugins/Initialize.pm</key>
+		<key>share/templates/tt/html/checkout/index</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>65</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>4</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -82,12 +68,11 @@
 	<array>
 		<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
 		<string>lib/Mango/Catalyst/Checkout/Plugins/Initialize.pm</string>
-		<string>Changes</string>
-		<string>lib/Mango/Checkout/Plugins/Initialize.pm</string>
+		<string>share/templates/tt/html/checkout/index</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{316, 41}, {1438, 1131}}</string>
+	<string>{{742, 38}, {1438, 1131}}</string>
 </dict>
 </plist>
