@@ -1,5 +1,5 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_CART') %]
+[% page.title = c.localize('PAGE_TITLE_CART'), page.id = 'cart' %]
 [% INCLUDE includes/errors %]
 
 [% IF cart.count %]

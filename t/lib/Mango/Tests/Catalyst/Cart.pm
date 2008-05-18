@@ -46,12 +46,13 @@ sub startup : Test(startup => +1) {
 
 sub path {'cart'};
 
-sub tests : Test(80) {
+sub tests : Test(81) {
     my $self = shift;
     my $m = $self->client;
 
     ## cart is empty
     $m->get_ok('http://localhost/');
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
     $m->content_like(qr/cart is empty/i);

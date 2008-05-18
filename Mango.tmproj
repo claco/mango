@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
+	<string>share/templates/tt/html/wrapper</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -47,7 +47,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>15</integer>
+			<integer>5</integer>
+		</dict>
+		<key>share/templates/tt/html/cart/view</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>63</integer>
+				<key>line</key>
+				<integer>1</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>share/templates/tt/html/checkout/index</key>
 		<dict>
@@ -63,16 +77,92 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>share/templates/tt/html/index</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>share/templates/tt/html/wrapper</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>8</integer>
+				<key>line</key>
+				<integer>15</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>t/lib/Mango/Test/Class.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>23</integer>
+				<key>line</key>
+				<integer>55</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>21</integer>
+		</dict>
+		<key>t/lib/Mango/Tests/Catalyst/Cart.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>27</integer>
+				<key>line</key>
+				<integer>54</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>45</integer>
+		</dict>
+		<key>t/pod_syntax.t</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>16</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
+		<string>t/lib/Mango/Test/Class.pm</string>
+		<string>share/templates/tt/html/wrapper</string>
+		<string>share/templates/tt/html/cart/view</string>
+		<string>t/lib/Mango/Tests/Catalyst/Cart.pm</string>
+		<string>t/pod_syntax.t</string>
 		<string>lib/Mango/Catalyst/Checkout/Plugins/Initialize.pm</string>
 		<string>share/templates/tt/html/checkout/index</string>
+		<string>share/templates/tt/html/index</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{742, 38}, {1438, 1131}}</string>
+	<string>{{482, 38}, {1438, 1131}}</string>
 </dict>
 </plist>

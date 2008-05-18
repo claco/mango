@@ -14,7 +14,7 @@
 			<link rel="alternate" type="application/atom+xml" title="Atom" href="[% links.alternate.atom %]" />
 		[% END -%]
 	</head>
-	<body id="[% HTML.escape(site.id OR c.config.site.id) %]">
+	<body id="[% HTML.escape(page.id OR site.id OR c.config.site.id) %]">
 		<div id="container">
 			<div id="header">
 				<h1>[% site.title OR name %]</h1>
