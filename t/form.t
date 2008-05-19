@@ -17,7 +17,7 @@ BEGIN {
 {
     my $form = Mango::Form->new;
     isa_ok($form, 'Mango::Form');
-    isa_ok($form->_form, 'CGI::FormBuilder');
+    isa_ok($form->_form, 'HTML::FormFu');
     isa_ok($form->validator, 'FormValidator::Simple');
     is_deeply($form->profile, []);
     is_deeply($form->messages, {});
@@ -32,7 +32,7 @@ BEGIN {
         source => Path::Class::File->new(qw/share forms admin products create.yml/)->stringify
     });
     isa_ok($form, 'Mango::Form');
-    isa_ok($form->_form, 'CGI::FormBuilder');
+    isa_ok($form->_form, 'HTML::FormFu');
     isa_ok($form->validator, 'FormValidator::Simple');
 
     ## all blank

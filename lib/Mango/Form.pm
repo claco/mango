@@ -10,7 +10,7 @@ BEGIN {
     use Mango::I18N ();
     use FormValidator::Simple 0.17 ();
     use FormValidator::Simple::Constants ();
-    use CGI::FormBuilder                 ();
+    use HTML::FormFu 0.02004             ();
     use Clone                            ();
     use YAML                             ();
 
@@ -108,7 +108,7 @@ sub values {
         $self->_form->values($values);
     }
 
-    return map { $_->name, ( $_->value || undef ) } $self->_form->fields;
+    return map { $_->name, ( $_->value || undef ) } @{$self->_form->get_all_elements};
 }
 
 sub parse {
@@ -124,12 +124,18 @@ sub parse {
     }
 
     my $fields = delete $config->{'fields'};
-    $self->_form( CGI::FormBuilder->new( %{$config} ) );
+    delete $config->{'sticky'};
+    delete $config->{'submit'};
+    delete $config->{'stylesheet'};
+    delete $config->{'javascript'};
+    $config->{'attributes'}->{'name'} = delete $config->{'name'};
+    
+    $self->_form( HTML::FormFu->new( $config ) );
     $self->_parse_fields($fields);
 
-    if ( !$config->{'submit'} ) {
-        $self->_form->submit('BUTTON_LABEL_SUBMIT');
-    }
+    #if ( !$config->{'submit'} ) {
+    #    $self->_form->submit('BUTTON_LABEL_SUBMIT');
+    #}
     $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
 
     $self->validator->set_messages( { '.' => $self->messages } );
@@ -148,11 +154,23 @@ sub _parse_fields {
 
         $self->labels->{$name} = $label;
 
-        $self->_form->field(
-            name  => $name,
-            label => $label,
+use Data::Dumper;
+warn Data::Dumper::Dumper($field);
+
+        #$self->_form->field(
+        #    name  => $name,
+        #    label => $label,
+        #    %{$field}
+        #);
+
+        my $type = delete $field->{'type'};
+        $type =~ s/text/Text/i;
+
+        $self->_form->element({
+            name => $name,
+            type => $type,
             %{$field}
-        );
+        });
 
         $self->_parse_constraints( $name, $constraints, $errors );
     }
