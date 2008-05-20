@@ -19,7 +19,10 @@ sub header {
 };
 
 sub param {
-    return shift->{$_[0]};
+    my ($self, $name) = @_;
+
+    return $self->{$name} if defined $name;
+    return keys %{$self};
 };
 
 sub method {

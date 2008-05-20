@@ -46,7 +46,7 @@ sub startup : Test(startup => +1) {
 
 sub path {'cart'};
 
-sub tests : Test(81) {
+sub tests : Test(96) {
     my $self = shift;
     my $m = $self->client;
 
@@ -57,10 +57,12 @@ sub tests : Test(81) {
     $m->title_like(qr/cart/i);
     $m->content_like(qr/cart is empty/i);
     is($m->uri->path, '/' . $self->path . '/');
+    $self->validate_markup($m->content);
 
     ## add missing part/sku
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'tag1'});
     {
         local $SIG{__WARN__} = sub {};
@@ -74,11 +76,13 @@ sub tests : Test(81) {
     };
     $m->title_like(qr/cart/i);
     $m->content_like(qr/part.*could not be found/i);
+    $self->validate_markup($m->content);
 
 
     ## add existing part/sku
     $m->follow_link_ok({text => 'Products'});
     $m->title_like(qr/products/i);
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'tag1'});
     {
         local $SIG{__WARN__} = sub {};
@@ -95,6 +99,7 @@ sub tests : Test(81) {
     $m->content_contains('<td align="left">ABC Product Description</td>');
     $m->content_contains('<td align="right">$1.23</td>');
     $m->content_contains('<td align="right">$2.46</td>');
+    $self->validate_markup($m->content);
 
 
     ## update quantity
@@ -109,6 +114,7 @@ sub tests : Test(81) {
     $m->content_contains('<td align="left">ABC Product Description</td>');
     $m->content_contains('<td align="right">$1.23</td>');
     $m->content_contains('<td align="right">$3.69</td>');
+    $self->validate_markup($m->content);
 
 
     ## update with non numeric
@@ -124,10 +130,12 @@ sub tests : Test(81) {
     $m->content_contains('<td align="left">ABC Product Description</td>');
     $m->content_contains('<td align="right">$1.23</td>');
     $m->content_contains('<td align="right">$3.69</td>');
+    $self->validate_markup($m->content);
 
 
     ## add another item
     $m->follow_link_ok({text => 'Products'});
+    $self->validate_markup($m->content);
     $m->title_like(qr/products/i);
     $m->follow_link_ok({text => 'tag2'});
     {
@@ -150,6 +158,7 @@ sub tests : Test(81) {
     $m->content_contains('<td align="right">$10.00</td>');
     $m->content_contains('<td align="right">$20.00</td>');
     $m->content_contains('<td align="right">$23.69</td>');
+    $self->validate_markup($m->content);
 
 
     ## delete an item
@@ -168,6 +177,7 @@ sub tests : Test(81) {
     $m->content_contains('<td align="left">DEF Product Description</td>');
     $m->content_contains('<td align="right">$10.00</td>');
     $m->content_contains('<td align="right">$20.00</td>');
+    $self->validate_markup($m->content);
 
 
     ## can't save as anonymous
@@ -179,10 +189,12 @@ sub tests : Test(81) {
     };
     $m->title_like(qr/cart/i);
     $m->content_like(qr/must be logged in/i);
+    $self->validate_markup($m->content);
 
 
     ## can't save if name is missing
     $m->follow_link_ok({text => 'Login'});
+    $self->validate_markup($m->content);
     $m->submit_form_ok({
         form_name => 'login',
         fields    => {
@@ -192,6 +204,7 @@ sub tests : Test(81) {
     });
     $m->title_like(qr/login/i);
     $m->content_like(qr/login successful/i);
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
     {
@@ -202,6 +215,7 @@ sub tests : Test(81) {
     };
     $m->title_like(qr/cart/i);
     $m->content_like(qr/name field is required/i);
+    $self->validate_markup($m->content);
     
 
     ## clear the cart
@@ -221,9 +235,10 @@ sub tests : Test(81) {
     $m->content_lacks('<td align="right">$10.00</td>');
     $m->content_lacks('<td align="right">$20.00</td>');
     $m->content_like(qr/cart is empty/i);
+    $self->validate_markup($m->content);
 }
 
-sub tests_not_found : Test(1) {
+sub tests_not_found : Test(2) {
     my $self = shift;
     my $m = $self->client;
 
@@ -234,6 +249,7 @@ sub tests_not_found : Test(1) {
     } else {
         is( $m->status, 404 );
     }
+    $self->validate_markup($m->content);
 }
 
 1;

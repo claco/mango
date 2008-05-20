@@ -1,5 +1,6 @@
 [% USE HTML %]
 
+[% page.id = 'product' %]
 [% IF NOT product %]
 	[% page.title = c.localize('PRODUCT_NOT_FOUND') %]
 [% ELSE %]

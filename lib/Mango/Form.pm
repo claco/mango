@@ -31,7 +31,8 @@ sub new {
         validator => $args->{'validator'} || FormValidator::Simple->new,
         localizer => $args->{'localizer'} || \&Mango::I18N::translate,
         _unique   => $args->{'unique'}    || {},
-        _exists   => $args->{'exists'}    || {}
+        _exists   => $args->{'exists'}    || {},
+        mode      => $args->{'mode'}      || 'xhtml'
     }, $class;
 
     $self->parse($source);
@@ -47,7 +48,7 @@ sub action {
     my ( $self, $action ) = @_;
 
     if ($action) {
-        $self->_form->{'action'} = "$action";
+        $self->_form->action("$action");
     }
 
     return $self->_form->action;
@@ -98,17 +99,23 @@ sub render {
     ## keeps CGI::FB from bitching about empty basename
     local $ENV{'SCRIPT_NAME'} ||= '';
 
-    return $form->render(%args);
+    my $render =  $form->render(%args);
+
+    if (lc $self->{'mode'} eq 'xhtmlstrict') {
+        $render =~ s/(\s+name=\".*\")//i;
+    };
+
+    return $render;
 }
 
 sub values {
     my ( $self, $values ) = @_;
 
     if ($values) {
-        $self->_form->values($values);
+        $self->_form->query($values);
     }
 
-    return map { $_->name, ( $_->value || undef ) } @{$self->_form->get_all_elements};
+    return map {$_->name, $self->_form->query->param($_->name)} @{$self->_form->get_fields};
 }
 
 sub parse {
@@ -124,6 +131,10 @@ sub parse {
     }
 
     my $fields = delete $config->{'fields'};
+    my $indicator = '_submitted_' . ($config->{'id'} || $config->{'name'} || 'noidorname');
+    push @{$fields}, { $indicator  => {type => 'Submit'}};
+    $config->{'indicator'} =  $indicator;
+
     delete $config->{'sticky'};
     delete $config->{'submit'};
     delete $config->{'stylesheet'};
@@ -132,10 +143,6 @@ sub parse {
     
     $self->_form( HTML::FormFu->new( $config ) );
     $self->_parse_fields($fields);
-
-    #if ( !$config->{'submit'} ) {
-    #    $self->_form->submit('BUTTON_LABEL_SUBMIT');
-    #}
     $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
 
     $self->validator->set_messages( { '.' => $self->messages } );
@@ -154,24 +161,20 @@ sub _parse_fields {
 
         $self->labels->{$name} = $label;
 
-use Data::Dumper;
-warn Data::Dumper::Dumper($field);
-
-        #$self->_form->field(
-        #    name  => $name,
-        #    label => $label,
-        #    %{$field}
-        #);
-
         my $type = delete $field->{'type'};
         $type =~ s/text/Text/i;
+        $type =~ s/hidden/Hidden/i;
+        
+        delete $field->{'force'};
+        if (exists $field->{'disabled'}) {
+            $field->{'attributes'}->{'disabled'} = delete $field->{'disabled'};
+        }
 
         $self->_form->element({
             name => $name,
             type => $type,
             %{$field}
         });
-
         $self->_parse_constraints( $name, $constraints, $errors );
     }
 
@@ -237,10 +240,10 @@ sub params {
     my $self = shift;
 
     if (@_) {
-        $self->_form->{'params'} = shift;
+        $self->_form->query(shift);
     }
 
-    return $self->_form->{'params'};
+    return $self->_form->query;
 }
 
 sub exists {
@@ -266,6 +269,8 @@ sub unique {
 sub validate {
     my $self = shift;
     $self->validator->results->clear;
+
+    $self->_form->process;
 
     ## ugly. this will go when I move to Reaction :-)
     local *FormValidator::Simple::Validator::UNIQUE = sub {
@@ -313,6 +318,8 @@ sub validate {
 
 sub submitted {
     my $self = shift;
+
+    $self->_form->process;
 
     return $self->_form->submitted;
 }

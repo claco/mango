@@ -6,6 +6,7 @@ This file documents the revision history for Perl extension Mango.
        then MyApp
     - Added Catalyst Initialize plugin, Checkout and Checkout::Stash classes
     - Now requires Handel 1.00011 for stash->clear fix
+    - Start migration from CGI::FormBuilder to HTML::FormFu
 
 0.01000_12 Mon May 12 21:18:25 2008
     - Fixed various controllers to use Chained instead of index : Private

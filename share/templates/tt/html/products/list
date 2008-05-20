@@ -1,5 +1,5 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_PRODUCTS') %]
+[% page.title = c.localize('PAGE_TITLE_PRODUCTS'), page.id = 'products' %]
 
 [% tagcloud.html %]
 
