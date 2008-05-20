@@ -46,12 +46,12 @@ sub new {
 
 sub action {
     my ( $self, $action ) = @_;
-
+warn "SETTING ACTION: $action";
     if ($action) {
         $self->_form->action("$action");
     }
 
-    return $self->_form->action;
+    return $self->_form->attributes->{'action'};
 }
 
 sub clone {
@@ -73,7 +73,7 @@ sub clone {
 sub field {
     my $self = shift;
 
-    return $self->_form->field(@_);
+    return $self->_form->query->param(shift);
 }
 
 sub render {
@@ -86,15 +86,15 @@ sub render {
         $args{'action'} = $args{'action'} . '';
     }
 
-    foreach my $field ( $form->fields ) {
-        $field->label(
-            $self->localizer->(
-                $self->labels->{ $field->name },
-                $field->name
-            )
-        );
-    }
-    $form->submit( $self->localizer->( $self->labels->{'submit'} ) );
+    #foreach my $field ( $form->fields ) {
+    #    $field->label(
+    #        $self->localizer->(
+    #            $self->labels->{ $field->name },
+    #            $field->name
+    #        )
+    #    );
+    #}
+    #$form->submit( $self->localizer->( $self->labels->{'submit'} ) );
 
     ## keeps CGI::FB from bitching about empty basename
     local $ENV{'SCRIPT_NAME'} ||= '';
@@ -162,13 +162,34 @@ sub _parse_fields {
         $self->labels->{$name} = $label;
 
         my $type = delete $field->{'type'};
+        $type ||= 'Text';
         $type =~ s/text/Text/i;
         $type =~ s/hidden/Hidden/i;
+        $type =~ s/password/Password/i;
+        $type =~ s/select/Select/i;
+        $type =~ s/checkbox/Checkbox/i;
         
+        if ($type eq 'Checkbox' && exists $field->{'multiple'} && $field->{'multiple'}) {
+            $type => 'Checkboxgroup';
+        };
+
+        ## migrate disabled
         delete $field->{'force'};
         if (exists $field->{'disabled'}) {
             $field->{'attributes'}->{'disabled'} = delete $field->{'disabled'};
         }
+
+        ## migrate options/option labels
+        my $options = delete $field->{'options'};
+        my $labels = delete $field->{'labels'};
+
+        if ($options) {
+            $field->{'options'} = [ map {[$_ => $labels->{$_} ]} @{$options}];
+        };
+
+        ## delete unknowns
+        delete $field->{'selectname'};
+        delete $field->{'multiple'};
 
         $self->_form->element({
             name => $name,
