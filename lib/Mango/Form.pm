@@ -106,10 +106,10 @@ sub values {
     my ( $self, $values ) = @_;
 
     if ($values) {
-        $self->_form->query($values);
+        $self->_form->default_values($values);
     }
 
-    return map {$_->name, $self->_form->query->param($_->name)} @{$self->_form->get_fields};
+    return map {$_->name, $self->_form->query->param($_->name) || undef} @{$self->_form->get_fields};
 }
 
 sub parse {
@@ -124,20 +124,21 @@ sub parse {
         Mango::Exception->throw('UNKNOWN_FORM_SOURCE');
     }
 
+    my $submit = delete $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
     my $fields = delete $config->{'fields'};
     my $indicator = '_submitted_' . ($config->{'id'} || $config->{'name'} || 'noidorname');
-    push @{$fields}, { $indicator  => {type => 'Hidden', value => 1}};
+    push @{$fields}, { $indicator  => {type => 'Hidden', value => 1} };
+    push @{$fields}, { '_submit' => {type => 'Submit', value => $submit} };
     $config->{'indicator'} =  $indicator;
 
     delete $config->{'sticky'};
-    delete $config->{'submit'};
     delete $config->{'stylesheet'};
     delete $config->{'javascript'};
     $config->{'attributes'}->{'name'} = delete $config->{'name'};
     
     $self->_form( HTML::FormFu->new( $config ) );
     $self->_parse_fields($fields);
-    $self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
+    #$self->labels->{'submit'} = $config->{'submit'} || 'BUTTON_LABEL_SUBMIT';
 
     $self->validator->set_messages( { '.' => $self->messages } );
 
