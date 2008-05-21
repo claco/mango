@@ -64,6 +64,7 @@ sub validate_markup {
             if ( $v->is_valid ) {
                 pass('content is valid');
             } else {
+                my ($package, $filename, $line) = caller;
                 my $message;
                 foreach my $error ( @{$v->errors} ) {
                     $message .= sprintf("line: %s, column: %s error: %s\n", 
@@ -73,7 +74,7 @@ sub validate_markup {
                     $message .= '  ' . $lines[$error->line - 1] . "\n";
                 }
 
-                fail 'content is not valid' or diag $message;;
+                fail "content is not valid at $package line $line" or diag $message;;
             }
         } else {
             fail('Failed to validate the content: ' . $v->validator_error);

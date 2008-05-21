@@ -46,7 +46,7 @@ sub new {
 
 sub action {
     my ( $self, $action ) = @_;
-warn "SETTING ACTION: $action";
+
     if ($action) {
         $self->_form->action("$action");
     }
@@ -63,6 +63,7 @@ sub clone {
     $self->localizer(undef);
 
     my $form = Clone::clone($self);
+    $form->_form($self->_form->clone);
 
     $self->params($params);
     $self->localizer($localizer);
@@ -81,31 +82,24 @@ sub render {
     my %args = @_;
     my $form = $self->_form;
 
-    ## CGI::FB Hates URI Objects
-    if ( exists $args{'action'} ) {
-        $args{'action'} = $args{'action'} . '';
+    foreach my $arg (keys %args) {
+        next if $arg =~ /values/i;
+        $self->$arg($args{$arg});
     }
 
-    #foreach my $field ( $form->fields ) {
-    #    $field->label(
-    #        $self->localizer->(
-    #            $self->labels->{ $field->name },
-    #            $field->name
-    #        )
-    #    );
-    #}
-    #$form->submit( $self->localizer->( $self->labels->{'submit'} ) );
+    my $fields = $form->get_fields;
+    if (my $values = $args{'values'}) {
+        for (my $i = 0; $i < scalar @{$values};$i++) {
+            next unless $fields->[$i];
 
-    ## keeps CGI::FB from bitching about empty basename
-    local $ENV{'SCRIPT_NAME'} ||= '';
+            $fields->[$i]->value($values->[$i]);
+        }
+    }
 
-    my $render =  $form->render(%args);
+    $form->method(lc $form->method);
 
-    if (lc $self->{'mode'} eq 'xhtmlstrict') {
-        $render =~ s/(\s+name=\".*\")//i;
-    };
-
-    return $render;
+    $form->process;
+    return $form->render;
 }
 
 sub values {
@@ -132,7 +126,7 @@ sub parse {
 
     my $fields = delete $config->{'fields'};
     my $indicator = '_submitted_' . ($config->{'id'} || $config->{'name'} || 'noidorname');
-    push @{$fields}, { $indicator  => {type => 'Submit'}};
+    push @{$fields}, { $indicator  => {type => 'Hidden', value => 1}};
     $config->{'indicator'} =  $indicator;
 
     delete $config->{'sticky'};
@@ -170,7 +164,7 @@ sub _parse_fields {
         $type =~ s/checkbox/Checkbox/i;
         
         if ($type eq 'Checkbox' && exists $field->{'multiple'} && $field->{'multiple'}) {
-            $type => 'Checkboxgroup';
+            $type = 'Checkboxgroup';
         };
 
         ## migrate disabled

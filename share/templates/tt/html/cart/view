@@ -31,8 +31,7 @@
 		[% SET form = c.forms('cart_items_delete') %]
 		[% CALL form.id(form.id _ '_' _ item.id) %]
 		[% form.render(
-			'action', c.uri_for_resource('mango/cart/items', 'delete', [item.id]) _ '/',
-			'values', [item.id, item.quantity]
+			'action', c.uri_for_resource('mango/cart/items', 'delete', [item.id]) _ '/'
 		) %]
 	</td>
         </tr>
