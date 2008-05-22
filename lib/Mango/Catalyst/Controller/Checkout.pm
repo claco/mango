@@ -8,9 +8,10 @@ BEGIN {
 
     use Mango::Checkout   ();
     use Handel::Constants ();
-    use Scalar::Util ();
+    use Scalar::Util      ();
 
-    $ENV{'HandelPluginPaths'} = 'Mango::Checkout::Plugins, Mango::Catalyst::Checkout::Plugins, MyApp::Checkout::Plugins';
+    $ENV{'HandelPluginPaths'} =
+'Mango::Checkout::Plugins, Mango::Catalyst::Checkout::Plugins, MyApp::Checkout::Plugins';
 
     __PACKAGE__->config(
         resource_name => 'mango/checkout',
@@ -48,8 +49,8 @@ sub index : Template('checkout/index') {
     my ( $self, $c ) = @_;
 
     $c->response->redirect(
-        $c->uri_for_resource('mango/checkout', 'instance', 'preview') . '/'
-    );
+        $c->uri_for_resource( 'mango/checkout', 'instance', 'preview' )
+          . '/' );
 
     return;
 }
@@ -57,7 +58,8 @@ sub index : Template('checkout/index') {
 sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
     my ( $self, $c, $state ) = @_;
 
-    warn "STATE: $state";
+    use Carp ();
+    Carp::croak "STATE: $state";
 
     return;
 }
@@ -91,7 +93,7 @@ sub order {
     my $c    = $self->context;
     my $order;
 
-    if (defined $c->stash->{'order'}) {
+    if ( defined $c->stash->{'order'} ) {
         return $c->stash->{'order'};
     }
 
@@ -100,7 +102,7 @@ sub order {
           $c->model('Orders')
           ->search( { id => $c->session->{'__mango_order_id'} } )->first;
 
-          $c->stash->{'order'} = $order;
+        $c->stash->{'order'} = $order;
     }
 
     if ( !$order ) {
@@ -116,7 +118,7 @@ sub order {
               $c->model('Orders')->create( { cart => $c->user->cart } );
         }
         $c->session->{'__mango_order_id'} = $order->id;
-        $c->stash->{'order'} = $order;
+        $c->stash->{'order'}              = $order;
 
         $self->initialize;
     }
@@ -143,9 +145,24 @@ checkout process.
 
 =head1 ACTIONS
 
+=head2 index : /checkout/
+
+Initiates the checkout process into the first state, usually 'preview'.
+
 =head2 instance : /checkout/<state>
 
 Runs the specified checkout state.
+
+=head1 METHODS
+
+=head2 initialize
+
+Routes the current order record through the INITIALIZE phase of the checkout
+pipeline.
+
+=head2 order
+
+Returns the order for the users current checkout process.
 
 =head1 SEE ALSO
 

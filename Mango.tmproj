@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>lib/Mango/Form.pm</string>
+	<string>Changes</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,6 +21,36 @@
 	<integer>288</integer>
 	<key>metaData</key>
 	<dict>
+		<key>Changes</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>6</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>11</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+		</dict>
 		<key>lib/Mango/Catalyst/Controller/Checkout.pm</key>
 		<dict>
 			<key>caret</key>
@@ -35,61 +65,33 @@
 			<key>firstVisibleLine</key>
 			<integer>5</integer>
 		</dict>
-		<key>lib/Mango/Form.pm</key>
+		<key>lib/Mango/Catalyst/Controller/Settings.pm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>20</integer>
-		</dict>
-		<key>t/catalyst/controller_form.t</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>21</integer>
-				<key>line</key>
-				<integer>53</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>36</integer>
-		</dict>
-		<key>t/form.t</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>24</integer>
+				<integer>34</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>t/lib/Mango/Test/Class.pm</key>
+		<key>share/forms/settings/profile.yml</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>23</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>55</integer>
+				<integer>15</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>21</integer>
+			<integer>0</integer>
 		</dict>
 		<key>t/pod_syntax.t</key>
 		<dict>
@@ -108,13 +110,13 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>lib/Mango/Form.pm</string>
-		<string>t/catalyst/controller_form.t</string>
-		<string>t/form.t</string>
+		<string>lib/Mango/Catalyst/Controller/Settings.pm</string>
+		<string>Changes</string>
+		<string>share/forms/settings/profile.yml</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1082, 54}, {838, 1124}}</string>
+	<string>{{1082, 49}, {838, 1124}}</string>
 </dict>
 </plist>

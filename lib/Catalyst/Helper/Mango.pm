@@ -343,9 +343,9 @@ sub mk_controllers {
     return;
 }
 
-=head2 mk_models
+=head2 mk_checkout
 
-Adds the necessary models.
+Adds the necessary checkout directories.
 
 =cut
 

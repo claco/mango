@@ -18,7 +18,19 @@ Mango::Checkout - Mango class to handle checkout/order processing
 
 =head1 SYNOPSIS
 
+    my $checkout = Mango::Checkout->new({
+        order => $order
+    });
+    $checkout->process;
+
 =head1 DESCRIPTION
+
+Mango::Checkout loads the specified plugins and routes an order through each
+plugin to perform work upon it.
+
+=head1 SEE ALSO
+
+L<Handel::Checkout>
 
 =head1 AUTHOR
 

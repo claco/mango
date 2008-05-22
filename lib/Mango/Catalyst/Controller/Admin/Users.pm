@@ -104,7 +104,8 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
     my $form       = $self->form;
 
     $form->field( 'roles',
-        options => [ map { [ $_->id, $_->name ] } @roles ] );
+        options => [ map { [ $_->id, $_->description ] } @roles ] );
+
     $form->values(
         {
             id               => $user->id,

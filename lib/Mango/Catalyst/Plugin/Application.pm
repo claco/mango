@@ -11,7 +11,7 @@ BEGIN {
       Mango::Catalyst::Plugin::Forms
       /;
 
-      use URI ();
+    use URI ();
 }
 
 sub register_resource {
@@ -46,25 +46,26 @@ sub redirect_to_login {
 
     $self->session->{'__mango_return_url'} = $self->request->uri->path_query;
     $self->response->redirect(
-        $self->uri_for_resource(
-            'mango/login', 'login'
-        ) . '/'
-    );
+        $self->uri_for_resource( 'mango/login', 'login' ) . '/' );
+
+    return;
 }
 
 sub redirect_from_login {
     my $self = shift;
 
-    if ($self->sessionid) {
+    if ( $self->sessionid ) {
         my $url = $self->session->{'__mango_return_url'};
 
         if ($url) {
             my $uri = URI->new($url);
             delete $self->session->{'__mango_return_url'};
 
-            $self->response->redirect($uri->path_query);
+            $self->response->redirect( $uri->path_query );
         }
-    };
+    }
+
+    return;
 }
 
 1;
@@ -89,6 +90,15 @@ Mango::Catalyst::Plugin::Application loads all Mango related plugins into a
 Catalyst application.
 
 =head1 METHODS
+
+=head2 redirect_to_login
+
+Redirects the user to the current login page, storing the current pages
+uri to return to using C<redirect_from_login>.
+
+=head2 redirect_from_login
+
+Redirects the user back to the page they were visiting before having to login.
 
 =head2 register_resource
 

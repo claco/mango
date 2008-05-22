@@ -20,9 +20,6 @@ fields:
       disabled: 1
       force: 1
       maxlength: 25
-      constraints:
-        - NOT_BLANK
-        - LENGTH, 1, 25
   - description:
       type: text
       size: 50
@@ -33,6 +30,8 @@ fields:
   - created:
       size: 20
       disabled: 1
+      force: 1
   - updated:
       size: 20
       disabled: 1
+      force: 1
