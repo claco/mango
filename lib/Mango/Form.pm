@@ -31,8 +31,7 @@ sub new {
         validator => $args->{'validator'} || FormValidator::Simple->new,
         localizer => $args->{'localizer'} || \&Mango::I18N::translate,
         _unique   => $args->{'unique'}    || {},
-        _exists   => $args->{'exists'}    || {},
-        mode      => $args->{'mode'}      || 'xhtml'
+        _exists   => $args->{'exists'}    || {}
     }, $class;
 
     $self->parse($source);
@@ -77,9 +76,9 @@ sub field {
 
     if ($value) {
         if ( ref $value eq 'ARRAY' ) {
-            $self->_form->get_element( { name => $name } )->options($value);
+            $self->_form->get_field( { name => $name } )->options($value);
         } else {
-            $self->_form->get_element( { name => $name } )->value($value);
+            $self->_form->get_field( { name => $name } )->value($value);
         }
     }
 
@@ -107,7 +106,6 @@ sub render {
         }
     }
 
-    $form->method( lc $form->method );
     $form->process;
     return $form->render;
 }
@@ -117,7 +115,7 @@ sub values {
 
     if ($values) {
         foreach my $field ( keys %{$values} ) {
-            $self->_form->get_element( { name => $field } )
+            $self->_form->get_field( { name => $field } )
               ->value( $values->{$field} );
         }
     }
@@ -150,8 +148,10 @@ sub parse {
     delete $config->{'sticky'};
     delete $config->{'stylesheet'};
     delete $config->{'javascript'};
-    $config->{'attributes'}->{'name'} = delete $config->{'name'};
-
+    
+    if (exists $config->{'name'}) {
+        $config->{'attributes'}->{'name'} = delete $config->{'name'};
+    };
     $self->_form( HTML::FormFu->new($config) );
     $self->_parse_fields($fields);
 

@@ -67,13 +67,13 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_1',
             fields    => {
                 sku => 'NOT-FOUND',
                 quantity => 2
             }
         });
-    };
+    }
     $m->title_like(qr/cart/i);
     $m->content_like(qr/part.*could not be found/i);
     $self->validate_markup($m->content);
@@ -87,7 +87,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_1',
             fields    => {
                 sku => 'ABC-123',
                 quantity => 2
@@ -101,10 +101,9 @@ sub tests : Test(96) {
     $m->content_contains('<td align="right">$2.46</td>');
     $self->validate_markup($m->content);
 
-
     ## update quantity
     $m->submit_form_ok({
-        form_name => 'cart_items_update',
+        form_id => 'cart_items_update_1',
         fields    => {
             quantity => 3
         }
@@ -119,7 +118,7 @@ sub tests : Test(96) {
 
     ## update with non numeric
     $m->submit_form_ok({
-        form_name => 'cart_items_update',
+        form_id => 'cart_items_update_1',
         fields    => {
             quantity => 'a'
         }
@@ -141,7 +140,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_2',
             fields    => {
                 sku => 'DEF-345',
                 quantity => 2
@@ -165,7 +164,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_items_delete'
+            form_id => 'cart_items_delete_1'
         });
     };
     $m->title_like(qr/cart/i);
@@ -184,7 +183,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_save'
+            form_id => 'cart_save'
         });
     };
     $m->title_like(qr/cart/i);
@@ -196,7 +195,7 @@ sub tests : Test(96) {
     $m->follow_link_ok({text => 'Login'});
     $self->validate_markup($m->content);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -210,7 +209,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_save',
+            form_id => 'cart_save',
         });
     };
     $m->title_like(qr/cart/i);
@@ -222,7 +221,7 @@ sub tests : Test(96) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_clear'
+            form_id => 'cart_clear'
         });
     };
     $m->title_like(qr/cart/i);

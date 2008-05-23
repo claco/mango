@@ -167,15 +167,17 @@ sub test_rss_feed : Tests(42) {
     isa_ok($entry->modified, 'DateTime');
 }
 
-sub tests : Test(64) {
+sub tests : Test(75) {
     my $self = shift;
     my $m = $self->client;
 
     ## cart is empty
     $m->get_ok('http://localhost/');
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
     $m->content_like(qr/cart is empty/i);
+    $self->validate_markup($m->content);
 
 
     ## view product index tags
@@ -186,6 +188,7 @@ sub tests : Test(64) {
     ok($m->find_link(text => 'tag2'));
     ok($m->find_link(text => 'tag3'));
     ok($m->find_link(text => 'tag5'));
+    $self->validate_markup($m->content);
 
 
     ## follow the tag cloud
@@ -199,8 +202,9 @@ sub tests : Test(64) {
     $m->content_contains('GHI-666');
     $m->content_contains('GHI Product Description');
     $m->content_contains('$125.32');
+    $self->validate_markup($m->content);
     $m->submit_form_ok({
-        form_name => 'cart_add',
+        form_id => 'cart_add_3',
         fields    => {
                 quantity => 2
         }
@@ -210,11 +214,14 @@ sub tests : Test(64) {
     $m->content_contains('<td align="left">GHI Product Description</td>');
     $m->content_contains('<td align="right">$125.32</td>');
     $m->content_contains('<td align="right">$250.64</td>');
+    $self->validate_markup($m->content);
 
 
     ## follow the tag cloud two deep
     $m->follow_link_ok({text => 'Products'});
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'tag3'});
+    $self->validate_markup($m->content);
     ok($m->find_link(text => 'tag1'));
     ok($m->find_link(text => 'tag2'));
     ok(!$m->find_link(text => 'tag3'));
@@ -227,6 +234,7 @@ sub tests : Test(64) {
     $m->content_contains('DEF Product Description');
     $m->content_contains('$10.00');
     $m->follow_link_ok({text => 'tag2'});
+    $self->validate_markup($m->content);
     ok(!$m->find_link(text => 'tag1'));
     ok(!$m->find_link(text => 'tag2'));
     ok(!$m->find_link(text => 'tag3'));
@@ -240,14 +248,17 @@ sub tests : Test(64) {
 
     ## product view
     $m->follow_link_ok({text => 'Products'});
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'tag1'});
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'ABC Product'});
+    $self->validate_markup($m->content);
     $m->content_contains('ABC-123');
     $m->content_contains('ABC Product Description');
     $m->content_contains('$1.23');
     $m->content_contains('foo: bar');
     $m->submit_form_ok({
-        form_name => 'cart_add',
+        form_id => 'cart_add',
         fields    => {
                 quantity => 3
         }
@@ -257,9 +268,10 @@ sub tests : Test(64) {
     $m->content_contains('<td align="left">ABC Product Description</td>');
     $m->content_contains('<td align="right">$1.23</td>');
     $m->content_contains('<td align="right">$3.69</td>');
+    $self->validate_markup($m->content);
 };
 
-sub test_not_found : Test(2) {
+sub test_not_found : Test(4) {
     my $self = shift;
     my $m = $self->client;
 
@@ -269,9 +281,11 @@ sub test_not_found : Test(2) {
     } else {
         is( $m->status, 404 );
     }
+    $self->validate_markup($m->content);
 
     $m->get('http://localhost/' . $self->path . '/' . 'bogon/');
     is( $m->status, 404 );
+    $self->validate_markup($m->content);
 }
 
 1;

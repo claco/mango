@@ -1,5 +1,5 @@
 [% USE HTML -%]
-[% IF errors %]
+[% IF errors AND errors.size %]
 	<ul class="errors">
 	[% FOREACH error IN errors %]
 		<li>[% HTML.escape(error) %]</li>

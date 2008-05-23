@@ -1,6 +1,6 @@
 [% USE HTML -%]
-[% page.title = c.localize('PAGE_TITLE_SETTINGS_PROFILE') %]
+[% page.title = c.localize('PAGE_TITLE_SETTINGS_PROFILE'), page.id = 'page-profile' %]
 
-<h2>[% HTML.escape(user.username) %]</h2>
+<h2>[% HTML.escape(c.user.username) %]</h2>
 [% INCLUDE 'includes/errors' %]
 [% form.render %]

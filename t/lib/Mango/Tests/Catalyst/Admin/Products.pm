@@ -67,7 +67,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -87,7 +87,7 @@ sub tests : Test(113) {
 
     ## fail to add product
     $m->submit_form_ok({
-        form_name => 'admin_products_create',
+        form_id => 'admin_products_create',
         fields    => {}
     });
     $m->content_contains('<li>CONSTRAINT_SKU_NOT_BLANK</li>');
@@ -98,7 +98,7 @@ sub tests : Test(113) {
 
     ## fail to add existing product
     $m->submit_form_ok({
-        form_name => 'admin_products_create',
+        form_id => 'admin_products_create',
         fields    => {
             sku   => 'DEF-345',
             name  => 'My SKU',
@@ -112,7 +112,7 @@ sub tests : Test(113) {
 
     ## add new product
     $m->submit_form_ok({
-        form_name => 'admin_products_create',
+        form_id => 'admin_products_create',
         fields    => {
             sku   => 'ABC-123',
             name  => 'My SKU',
@@ -132,7 +132,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
     $m->follow_link_ok({text_regex => qr/new.*attribute/i, url_regex => qr/create/i});
     $m->submit_form_ok({
-        form_name => 'admin_products_attributes_create',
+        form_id => 'admin_products_attributes_create',
         fields    => {
             name => '',
             value => ''
@@ -141,7 +141,7 @@ sub tests : Test(113) {
     $m->content_contains('<li>The name field is required.</li>');
     $m->content_contains('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
     $m->submit_form_ok({
-        form_name => 'admin_products_attributes_create',
+        form_id => 'admin_products_attributes_create',
         fields    => {
             name  => 'Attribute1',
             value => 'Value1'
@@ -160,7 +160,7 @@ sub tests : Test(113) {
 
     ## fail edit
     $m->submit_form_ok({
-        form_name => 'admin_products_edit',
+        form_id => 'admin_products_edit',
         fields    => {
             sku   => '',
             name  => '',
@@ -176,7 +176,7 @@ sub tests : Test(113) {
 
     ## fail edit duplicate product
     $m->submit_form_ok({
-        form_name => 'admin_products_edit',
+        form_id => 'admin_products_edit',
         fields    => {
             sku => 'ABC-123',
             name  => 'My DEF SKU',
@@ -190,7 +190,7 @@ sub tests : Test(113) {
 
     ## continue edit
     $m->submit_form_ok({
-        form_name => 'admin_products_edit',
+        form_id => 'admin_products_edit',
         fields    => {
             sku => 'DEF-345',
             name  => 'My DEF SKU',
@@ -209,7 +209,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
      $m->follow_link_ok({text_regex => qr/new.*attribute/i, url_regex => qr/create/i});
      $m->submit_form_ok({
-         form_name => 'admin_products_attributes_create',
+         form_id => 'admin_products_attributes_create',
          fields    => {
              name => 'ExistingAttribute',
              value => 'Existingvalue'
@@ -224,7 +224,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
     $m->follow_link_ok({text_regex => qr/ExistingAttribute/i, url_regex => qr/attributes.*edit/i});
     $m->submit_form_ok({
-        form_name => 'admin_products_attributes_edit',
+        form_id => 'admin_products_attributes_edit',
         fields    => {
             name => '',
             value => ''
@@ -233,7 +233,7 @@ sub tests : Test(113) {
     $m->content_contains('<li>The name field is required.</li>');
     $m->content_contains('<li>CONSTRAINT_VALUE_NOT_BLANK</li>');
     $m->submit_form_ok({
-        form_name => 'admin_products_attributes_edit',
+        form_id => 'admin_products_attributes_edit',
         fields    => {
             name => 'EditAttribute',
             value => 'EditValue'
@@ -291,7 +291,7 @@ sub tests : Test(113) {
     is($m->uri->path, '/' . $self->path . '/1/edit/');
     $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
     $m->submit_form_ok({
-        form_name => 'admin_products_attributes_delete',
+        form_id => 'admin_products_attributes_delete',
     });
 
 
@@ -299,7 +299,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Products', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_name => 'admin_products_delete',
+        form_id => 'admin_products_delete',
         form_number => 2
     });
 

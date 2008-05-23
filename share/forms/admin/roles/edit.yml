@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: admin_roles_edit
-name: admin_roles_edit
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1
@@ -17,7 +17,7 @@ fields:
   - name:
       type: text
       size: 25
-      disabled: 1
+      disabled: disabled
       force: 1
       maxlength: 25
   - description:
@@ -29,9 +29,9 @@ fields:
         - LENGTH, 1, 100
   - created:
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1
   - updated:
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1

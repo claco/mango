@@ -51,7 +51,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'claco',
             password => 'foo'
@@ -67,7 +67,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -88,7 +88,7 @@ sub tests : Test(53) {
 
     ## fail to add role
     $m->submit_form_ok({
-        form_name => 'admin_roles_create',
+        form_id => 'admin_roles_create',
         fields    => {
         }
     });
@@ -98,7 +98,7 @@ sub tests : Test(53) {
 
     ## fail to add role - exists
     $m->submit_form_ok({
-        form_name => 'admin_roles_create',
+        form_id => 'admin_roles_create',
         fields    => {
             name => 'admin'
         }
@@ -109,7 +109,7 @@ sub tests : Test(53) {
 
     ## add new role
     $m->submit_form_ok({
-        form_name => 'admin_roles_create',
+        form_id => 'admin_roles_create',
         fields    => {
             name => 'editor',
             description => 'Editors'
@@ -132,7 +132,7 @@ sub tests : Test(53) {
 
     ## fail edit
     $m->submit_form_ok({
-        form_name => 'admin_roles_edit',
+        form_id => 'admin_roles_edit',
         fields    => {
             description => ''
         }
@@ -142,7 +142,7 @@ sub tests : Test(53) {
 
     ## continue edit
     $m->submit_form_ok({
-        form_name => 'admin_roles_edit',
+        form_id => 'admin_roles_edit',
         fields    => {
             description => 'New Admins Roles'
         }
@@ -158,7 +158,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'claco', url_regex => qr/admin\/users/i});
     $m->tick('roles', 1);
     $m->submit_form_ok({
-        form_name => 'admin_users_edit',
+        form_id => 'admin_users_edit',
         fields => {
             first_name => 'Christopher',
             last_name  => 'Laco',
@@ -174,7 +174,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'claco',
             password => 'foo'
@@ -187,7 +187,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Roles', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_name => 'admin_roles_delete',
+        form_id => 'admin_roles_delete',
         form_number => 2
     });
     $m->follow_link_ok({text => 'Admin'});

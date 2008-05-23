@@ -43,7 +43,7 @@ sub config {};
 sub config_application {};
 
 sub client {
-    return Test::WWW::Mechanize::Catalyst->new;
+    return Mango::Test::Class::Mechanize->new;
 }
 
 sub path {};
@@ -80,6 +80,45 @@ sub validate_markup {
             fail('Failed to validate the content: ' . $v->validator_error);
         }
     };
+}
+
+package Mango::Test::Class::Mechanize;
+use strict;
+use warnings;
+
+BEGIN {
+    use base 'Test::WWW::Mechanize::Catalyst';
+}
+
+sub form_id {
+    my ( $self, $formid ) = @_;
+
+    my $temp;
+    my @matches =
+      grep { defined( $temp = $_->attr('id') ) and ( $temp eq $formid ) }
+      $self->forms;
+    if (@matches) {
+        $self->warn(
+            "There are ",
+            scalar @matches,
+            " forms with id $formid. The first one was used."
+        ) if @matches > 1;
+        return $self->{form} = $matches[0];
+    } else {
+        $self->warn(qq{ There is no form with id "$formid"});
+        return undef;
+    }
+}
+
+sub submit_form_ok {
+    my $self = shift;
+    my $args = shift;
+
+    if (my $id = delete $args->{'form_id'}) {
+        $self->form_id($id);
+    }
+
+    return $self->SUPER::submit_form_ok($args, @_);
 }
 
 1;

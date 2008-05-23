@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: cart_items_update
-name: cart_items_update
-method: POST
+auto_fieldset: 1
+method: post
 javascript: 0
 stylesheet: 1
 sticky: 0

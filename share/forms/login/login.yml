@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: login
-name: login
-method: POST
+auto_fieldset: 1
+method: post
 javascript: 0
 stylesheet: 1
 sticky: 1

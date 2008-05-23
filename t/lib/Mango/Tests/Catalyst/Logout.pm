@@ -12,22 +12,24 @@ BEGIN {
 
 sub path {'logout'};
 
-sub tests : Test(22) {
+sub tests : Test(27) {
     my $self = shift;
     my $m = $self->client;
 
     ## not logged in
     $m->get_ok('http://localhost/');
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->content_unlike(qr/already logged in/i);
     $m->content_unlike(qr/welcome anonymous/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## login
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -38,6 +40,7 @@ sub tests : Test(22) {
     $m->content_like(qr/welcome admin/i);
     ok(! $m->find_link(text => 'Login'));
     ok($m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## no form, already logged in
@@ -49,6 +52,7 @@ sub tests : Test(22) {
     $m->title_like(qr/login/i);
     $m->content_like(qr/already logged in/i);
     ok($m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## logout
@@ -58,9 +62,10 @@ sub tests : Test(22) {
     ok($m->find_link(text => 'Login'));
     ok(! $m->find_link(text => 'Logout'));
     is($m->uri->path, '/' . $self->path . '/');
+    $self->validate_markup($m->content);
 };
 
-sub tests_not_found : Test(1) {
+sub tests_not_found : Test(2) {
     my $self = shift;
     my $m = $self->client;
 
@@ -71,6 +76,7 @@ sub tests_not_found : Test(1) {
     } else {
         is( $m->status, 404 );
     }
+    $self->validate_markup($m->content);
 }
 
 1;

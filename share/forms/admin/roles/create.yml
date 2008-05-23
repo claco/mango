@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: admin_roles_create
-name: admin_roles_create
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1

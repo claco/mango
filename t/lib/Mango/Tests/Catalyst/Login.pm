@@ -12,23 +12,25 @@ BEGIN {
 
 sub path {'login'};
 
-sub tests : Test(31) {
+sub tests : Test(38) {
     my $self = shift;
     my $m = $self->client;
 
     ## not logged in
     $m->get_ok('http://localhost/');
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     is($m->uri->path, '/' . $self->path . '/');
     $m->content_unlike(qr/already logged in/i);
     $m->content_unlike(qr/welcome anonymous/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## empty username/password
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => undef,
             password => undef
@@ -38,11 +40,12 @@ sub tests : Test(31) {
     $m->content_like(qr/username field is required/i);
     $m->content_like(qr/password field is required/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## fail login
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'foo',
             password => 'bar'
@@ -51,11 +54,12 @@ sub tests : Test(31) {
     $m->title_like(qr/login/i);
     $m->content_like(qr/username or password.*incorrect/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## login
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -66,6 +70,7 @@ sub tests : Test(31) {
     $m->content_like(qr/welcome admin/i);
     ok(! $m->find_link(text => 'Login'));
     ok($m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## no form, already logged in
@@ -77,6 +82,7 @@ sub tests : Test(31) {
     $m->title_like(qr/login/i);
     $m->content_like(qr/already logged in/i);
     ok($m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## logout
@@ -85,9 +91,10 @@ sub tests : Test(31) {
     $m->content_unlike(qr/welcome admin/i);
     ok($m->find_link(text => 'Login'));
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 };
 
-sub tests_not_found : Test(1) {
+sub tests_not_found : Test(2) {
     my $self = shift;
     my $m = $self->client;
 
@@ -98,6 +105,7 @@ sub tests_not_found : Test(1) {
     } else {
         is( $m->status, 404 );
     }
+    $self->validate_markup($m->content);
 }
 
 1;

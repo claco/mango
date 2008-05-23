@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: settings_profile
-name: settings_profile
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1
@@ -11,18 +11,18 @@ fields:
   - username:
       type: text
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1
       maxlength: 25
   - password:
-      type: password
+      type: text
       size: 20
       maxlength: 255
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 255
   - confirm_password:
-      type: password
+      type: text
       size: 20
       maxlength: 255
       constraints:

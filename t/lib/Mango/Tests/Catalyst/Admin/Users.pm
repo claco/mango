@@ -71,7 +71,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -91,7 +91,7 @@ sub tests : Test(66) {
 
     ## fail to add user
     $m->submit_form_ok({
-        form_name => 'admin_users_create',
+        form_id => 'admin_users_create',
         fields    => {
             password => 'a',
             confirm_password => 'b'
@@ -105,7 +105,7 @@ sub tests : Test(66) {
 
     ## fail to add user - exists
     $m->submit_form_ok({
-        form_name => 'admin_users_create',
+        form_id => 'admin_users_create',
         fields    => {
             username => 'admin',
             password => 'a',
@@ -120,7 +120,7 @@ sub tests : Test(66) {
 
     ## add new user
     $m->submit_form_ok({
-        form_name => 'admin_users_create',
+        form_id => 'admin_users_create',
         fields    => {
             username => 'claco',
             password => 'foo',
@@ -146,7 +146,7 @@ sub tests : Test(66) {
 
     ## fail edit
     $m->submit_form_ok({
-        form_name => 'admin_users_edit',
+        form_id => 'admin_users_edit',
         fields    => {
             password => 'a',
             confirm_password => 'b'
@@ -159,7 +159,7 @@ sub tests : Test(66) {
 
     ## continue edit
     $m->submit_form_ok({
-        form_name => 'admin_users_edit',
+        form_id => 'admin_users_edit',
         fields    => {
             username => 'claco',
             password => 'foo',
@@ -178,7 +178,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'claco',
             password => 'foo'
@@ -195,7 +195,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'foo',
             password => 'foo'
@@ -213,7 +213,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -222,7 +222,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Users', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_name => 'admin_users_delete',
+        form_id => 'admin_users_delete',
         form_number => 3
     });
     $m->follow_link_ok({text => 'Logout'});
@@ -232,7 +232,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'claco',
             password => 'foo'

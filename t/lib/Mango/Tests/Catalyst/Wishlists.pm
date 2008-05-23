@@ -56,7 +56,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_1',
             fields    => {
                 sku => 'ABC-123',
                 quantity => 2
@@ -69,7 +69,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_2',
             fields    => {
                 sku => 'DEF-345',
                 quantity => 1
@@ -90,7 +90,7 @@ sub tests : Test(204) {
     ## login
     $m->follow_link_ok({text => 'Login'});
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'admin',
             password => 'admin'
@@ -104,11 +104,12 @@ sub tests : Test(204) {
     $m->follow_link_ok({text => 'Cart'});
     $m->title_like(qr/cart/i);
     $m->submit_form_ok({
-        form_name => 'cart_save',
+        form_id => 'cart_save',
         fields => {
             name => 'My New Wishlist',
         }
     });
+
 
     ## list wishlists
     $m->title_like(qr/wishlists/i);
@@ -135,7 +136,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'wishlists_items_update',
+            form_id => 'wishlists_items_update_1',
             fields    => {
                 quantity => 3
             }
@@ -157,7 +158,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'wishlists_items_update',
+            form_id => 'wishlists_items_update_1',
             fields    => {
                 quantity => 'a'
             }
@@ -179,7 +180,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'wishlists_items_delete',
+            form_id => 'wishlists_items_delete_1',
         });
     };
     $m->title_like(qr/My New Wishlist/i);
@@ -197,7 +198,7 @@ sub tests : Test(204) {
     $m->follow_link_ok({text => 'Edit'});
     $m->content_contains('Editing My New Wishlist');
     $m->submit_form_ok({
-        form_name => 'wishlists_edit',
+        form_id => 'wishlists_edit',
         fields    => {
             name => 'My Updated Wishlist',
             description => 'My Updated Description'
@@ -215,7 +216,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'wishlists_clear',
+            form_id => 'wishlists_clear',
         });
     };
     $m->title_like(qr/My Updated Wishlist/i);
@@ -234,7 +235,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'wishlists_delete',
+            form_id => 'wishlists_delete',
         });
     };
     $m->title_like(qr/wishlists/i);
@@ -253,7 +254,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_1',
             fields    => {
                 sku => 'ABC-123',
                 quantity => 1
@@ -265,7 +266,7 @@ sub tests : Test(204) {
     $m->content_contains('<td align="left">ABC Product Description</td>');
     $m->content_contains('<td align="right">$1.23</td>');
     $m->submit_form_ok({
-        form_name => 'cart_save',
+        form_id => 'cart_save',
         fields => {
             name => 'My New Wishlist',
         }
@@ -281,7 +282,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_2',
             fields    => {
                 sku => 'DEF-345',
                 quantity => 1
@@ -299,7 +300,7 @@ sub tests : Test(204) {
     $m->follow_link_ok({text => 'My New Wishlist'});
     $m->title_like(qr/My New Wishlist/i);
     $m->submit_form_ok({
-        form_name => 'wishlists_restore',
+        form_id => 'wishlists_restore',
         fields    => {
             mode => 3
         }
@@ -315,7 +316,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_clear'
+            form_id => 'cart_clear'
         });
     };
     $m->title_like(qr/cart/i);
@@ -339,7 +340,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_1',
             fields    => {
                 sku => 'ABC-123',
                 quantity => 1
@@ -354,7 +355,7 @@ sub tests : Test(204) {
     $m->follow_link_ok({text => 'My New Wishlist'});
     $m->title_like(qr/My New Wishlist/i);
     $m->submit_form_ok({
-        form_name => 'wishlists_restore',
+        form_id => 'wishlists_restore',
         fields    => {
             mode => 2
         }
@@ -367,7 +368,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_clear'
+            form_id => 'cart_clear'
         });
     };
     $m->title_like(qr/cart/i);
@@ -388,7 +389,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_add',
+            form_id => 'cart_add_2',
             fields    => {
                 sku => 'DEF-345',
                 quantity => 1
@@ -403,7 +404,7 @@ sub tests : Test(204) {
     $m->follow_link_ok({text => 'My New Wishlist'});
     $m->title_like(qr/My New Wishlist/i);
     $m->submit_form_ok({
-        form_name => 'wishlists_restore',
+        form_id => 'wishlists_restore',
         fields    => {
             mode => 1
         }
@@ -418,7 +419,7 @@ sub tests : Test(204) {
     {
         local $SIG{__WARN__} = sub {};
         $m->submit_form_ok({
-            form_name => 'cart_clear'
+            form_id => 'cart_clear'
         });
     };
     $m->title_like(qr/cart/i);

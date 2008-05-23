@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: admin_products_attributes_edit
-name: admin_products_attributes_edit
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1
@@ -32,8 +32,8 @@ fields:
   - created:
       type: text
       size: 20
-      disabled: 1
+      disabled: disabled
   - updated:
       type: text
       size: 20
-      disabled: 1
+      disabled: disabled

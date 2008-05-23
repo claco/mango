@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: admin_users_edit
-name: admin_users_edit
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1
@@ -17,7 +17,7 @@ fields:
   - username:
       type: text
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1
       maxlength: 25
   - password:
@@ -37,11 +37,11 @@ fields:
         - SAME_AS, password
   - created:
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1
   - updated:
       size: 20
-      disabled: 1
+      disabled: disabled
       force: 1
   - first_name:
       type: text

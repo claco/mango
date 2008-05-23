@@ -91,7 +91,7 @@ sub tests_create : Test(14) {
 
     ## fail login
     $m->submit_form_ok({
-        form_name => 'login',
+        form_id => 'login',
         fields    => {
             username => 'claco',
             password => 'foo'
@@ -105,7 +105,7 @@ sub tests_create : Test(14) {
     ## Sign Up
     $m->follow_link_ok({text => 'Sign Up!'});
     $m->submit_form_ok({
-        form_name => 'users_create',
+        form_id => 'users_create',
         fields    => {
             username => 'claco',
             password => 'foo',

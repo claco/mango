@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: wishlists_update
-name: wishlists_update
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 0

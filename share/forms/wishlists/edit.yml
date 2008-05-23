@@ -1,8 +1,8 @@
 # $Id$
 ---
 id: wishlists_edit
-name: wishlists_edit
-method: POST
+method: post
+auto_fieldset: 1
 javascript: 0
 stylesheet: 1
 sticky: 1
@@ -29,7 +29,7 @@ fields:
         - LENGTH, 1, 255
   - created:
       size: 20
-      disabled: 1
+      disabled: disabled
   - updated:
       size: 20
-      disabled: 1
+      disabled: disabled
