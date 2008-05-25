@@ -16,7 +16,7 @@ BEGIN {
     );
 }
 
-sub list : Chained('/') PathPrefix Args(0) Template('admin/users/index') {
+sub list : Chained('/') PathPrefix Args(0) Template('admin/users/list') {
     my ( $self, $c ) = @_;
     my $page = $c->request->param('page') || 1;
     my $users = $c->model('Users')->search(
