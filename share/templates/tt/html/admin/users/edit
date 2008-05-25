@@ -1,5 +1,6 @@
 [% USE HTML -%]
 [% INCLUDE 'includes/admin/menu' %]
+[% page.id = 'page-admin' %]
 
 [% IF NOT user %]
 	[% c.loc('USER_NOT_FOUND') %]

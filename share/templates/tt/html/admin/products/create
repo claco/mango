@@ -1,4 +1,5 @@
 [% USE HTML -%]
+[% page.id = 'page-admin' %]
 [% INCLUDE 'includes/admin/menu' %]
 
 [% INCLUDE 'includes/errors' %]

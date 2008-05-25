@@ -1,5 +1,6 @@
 [% USE HTML -%]
 [% INCLUDE 'includes/admin/menu' %]
+[% page.id = 'page-admin' %]
 
 <table border="1">
 	<tr>

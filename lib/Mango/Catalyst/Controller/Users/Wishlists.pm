@@ -38,6 +38,9 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
     if ( $self->wants_feed ) {
         $self->entity(
             {
+                id => $c->uri_for_resource( 'mango/users/wishlists', 'list',
+                    [ $user->username ] )
+                  . '/',
                 title => $profile->full_name . '\'s Wishlists',
                 link => $c->uri_for_resource( 'mango/users/wishlists', 'list',
                     [ $user->username ] )
@@ -48,7 +51,11 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
                 entries => [
                     map {
                         {
-                            id     => $_->id,
+                            id   => $c->uri_for_resource(
+                                'mango/users/wishlists', 'view',
+                                [ $user->username, $_->id ]
+                              )
+                              . '/',
                             author => $profile->full_name || $user->username,
                             title  => $_->name,
                             link   => $c->uri_for_resource(
@@ -111,6 +118,11 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
           $c->model('Profiles')->search( { user => $user } )->first;
         $self->entity(
             {
+                id => $c->uri_for_resource(
+                    'mango/users/wishlists', 'view',
+                    [ $user->username, $wishlist->id ]
+                  )
+                  . '/',
                 title => $profile->full_name
                   . '\'s Wishlists: '
                   . $wishlist->name,
@@ -123,7 +135,10 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
                 entries  => [
                     map {
                         {
-                            id     => $_->id,
+                            id =>
+                              $c->uri_for_resource( 'mango/products', 'view',
+                                [ $_->sku ] )
+                              . '/',
                             author => $profile->full_name || $user->username,
                             title  => $_->sku,
                             link =>

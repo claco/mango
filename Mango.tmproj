@@ -19,6 +19,20 @@
 	<integer>379</integer>
 	<key>metaData</key>
 	<dict>
+		<key>lib/Mango/Catalyst/Controller/Admin/Roles.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>118</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>110</integer>
+		</dict>
 		<key>t/pod_syntax.t</key>
 		<dict>
 			<key>caret</key>
@@ -37,6 +51,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1082, 48}, {838, 1124}}</string>
+	<string>{{389, 27}, {1531, 1151}}</string>
 </dict>
 </plist>

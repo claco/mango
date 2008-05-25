@@ -191,7 +191,7 @@ sub test_wishlists_atom_feed : Test(28) {
     is($entry->summary->body, undef);
     is($entry->category, undef);
     is($entry->author, 'Admin User');
-    is($entry->id, 1);
+    is($entry->id, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');
 }
@@ -280,7 +280,7 @@ sub test_wishlist_atom_feed : Test(30) {
     is($entry->summary->body, undef);
     is($entry->category, undef);
     is($entry->author, 'Admin User');
-    is($entry->id, 1);
+    is($entry->id, 'http://localhost/products/ABC-123/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');
 }
