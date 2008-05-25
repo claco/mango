@@ -15,7 +15,7 @@ BEGIN {
     );
 }
 
-sub list : Chained('/') PathPrefix Args(0) Template('admin/roles/index') {
+sub list : Chained('/') PathPrefix Args(0) Template('admin/roles/list') {
     my ( $self, $c ) = @_;
     my $page = $c->request->param('page') || 1;
     my $roles = $c->model('Roles')->search(
