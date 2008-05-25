@@ -53,7 +53,7 @@ sub startup : Test(startup => +1) {
 
 sub path {'products'};
 
-sub test_atom_feed : Tests(42) {
+sub test_atom_feed : Tests(43) {
     my $self = shift;
     my $m = $self->client;
 
@@ -63,6 +63,8 @@ sub test_atom_feed : Tests(42) {
     $m->follow_link_ok({text => 'Atom'});
     
     my $content = $m->content;
+    $self->validate_feed($content);
+
     my $feed = XML::Feed->parse(\$content);
     isa_ok($feed, 'XML::Feed');
     is($feed->format, 'Atom');
@@ -70,7 +72,7 @@ sub test_atom_feed : Tests(42) {
     is($feed->link, 'http://localhost/' . $self->path . '/tags/tag1/');
     is($feed->tagline, undef);
     is($feed->description, undef);
-    is($feed->author, undef);
+    is($feed->author, 'webmaster@example.com (TestApp)');
     is($feed->language, 'en');
     is($feed->copyright, undef);
     isa_ok($feed->modified, 'DateTime');
@@ -87,64 +89,7 @@ sub test_atom_feed : Tests(42) {
     like($entry->content->body, qr/\$1\.23/);
     like($entry->content->body, qr/ABC Product Description/);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
-    is($entry->category, undef);
-    is($entry->author, undef);
-    is($entry->id, 1);
-    isa_ok($entry->issued, 'DateTime');
-    isa_ok($entry->modified, 'DateTime');
-
-    $entry = $entries[1];
-    isa_ok($entry, 'XML::Feed::Entry');
-    is($entry->title, 'GHI-666');
-    is($entry->link, 'http://localhost/' . $self->path . '/GHI-666/');
-    $m->get_ok($entry->link);
-    like($entry->content->body, qr/\$125\.32/);
-    like($entry->content->body, qr/GHI Product Description/);
-    is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
-    is($entry->category, undef);
-    is($entry->author, undef);
-    is($entry->id, 3);
-    isa_ok($entry->issued, 'DateTime');
-    isa_ok($entry->modified, 'DateTime');
-}
-
-sub test_rss_feed : Tests(42) {
-    my $self = shift;
-    my $m = $self->client;
-
-    $m->get_ok('http://localhost/');
-    $m->follow_link_ok({text => 'Products'});
-    $m->follow_link_ok({text => 'tag1'});
-    $m->follow_link_ok({text => 'RSS'});
-    
-    my $content = $m->content;
-    my $feed = XML::Feed->parse(\$content);
-    isa_ok($feed, 'XML::Feed');
-    is($feed->format, 'RSS 2.0');
-    is($feed->title, 'Products: tag1');
-    is($feed->link, 'http://localhost/' . $self->path . '/tags/tag1/');
-    is($feed->tagline, '');
-    is($feed->description, '');
-    is($feed->author, undef);
-    is($feed->language, 'en');
-    is($feed->copyright, undef);
-    is($feed->modified, undef);
-    is($feed->generator, undef);
-
-    my @entries = $feed->entries;
-    is(scalar @entries, 2);
-
-    my $entry = $entries[0];
-    isa_ok($entry, 'XML::Feed::Entry');
-    is($entry->title, 'ABC-123');
-    is($entry->link, 'http://localhost/' . $self->path . '/ABC-123/');
-    $m->get_ok($entry->link);
-    like($entry->content->body, qr/\$1\.23/);
-    like($entry->content->body, qr/ABC Product Description/);
-    is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/ABC Product Description/);
     is($entry->category, undef);
     is($entry->author, undef);
     is($entry->id, 'http://localhost/' . $self->path . '/ABC-123/');
@@ -159,7 +104,69 @@ sub test_rss_feed : Tests(42) {
     like($entry->content->body, qr/\$125\.32/);
     like($entry->content->body, qr/GHI Product Description/);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/GHI Product Description/);
+    is($entry->category, undef);
+    is($entry->author, undef);
+    is($entry->id, 'http://localhost/' . $self->path . '/GHI-666/');
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
+}
+
+sub test_rss_feed : Tests(43) {
+    my $self = shift;
+    my $m = $self->client;
+
+    $m->get_ok('http://localhost/');
+    $m->follow_link_ok({text => 'Products'});
+    $m->follow_link_ok({text => 'tag1'});
+    $m->follow_link_ok({text => 'RSS'});
+    
+    my $content = $m->content;
+    $self->validate_feed($content);
+
+    ## fix for now until XML::Feed groks newer dcterms we now emit
+    $content =~ s/http:\/\/purl.org\/dc\/terms\//http:\/\/purl.org\/rss\/1.0\/modules\/dcterms\//;
+
+    my $feed = XML::Feed->parse(\$content);
+    isa_ok($feed, 'XML::Feed');
+    is($feed->format, 'RSS 2.0');
+    is($feed->title, 'Products: tag1');
+    is($feed->link, 'http://localhost/' . $self->path . '/tags/tag1/');
+    is($feed->tagline, '');
+    is($feed->description, '');
+    is($feed->author, 'webmaster@example.com (TestApp)');
+    is($feed->language, 'en');
+    is($feed->copyright, undef);
+    isa_ok($feed->modified, 'DateTime');
+    is($feed->generator, undef);
+
+    my @entries = $feed->entries;
+    is(scalar @entries, 2);
+
+    my $entry = $entries[0];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'ABC-123');
+    is($entry->link, 'http://localhost/' . $self->path . '/ABC-123/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/\$1\.23/);
+    like($entry->content->body, qr/ABC Product Description/);
+    is($entry->content->type, 'text/html');
+    like($entry->summary->body, qr/ABC Product Description/);
+    is($entry->category, undef);
+    is($entry->author, undef);
+    is($entry->id, 'http://localhost/' . $self->path . '/ABC-123/');
+    isa_ok($entry->issued, 'DateTime');
+    isa_ok($entry->modified, 'DateTime');
+
+    $entry = $entries[1];
+    isa_ok($entry, 'XML::Feed::Entry');
+    is($entry->title, 'GHI-666');
+    is($entry->link, 'http://localhost/' . $self->path . '/GHI-666/');
+    $m->get_ok($entry->link);
+    like($entry->content->body, qr/\$125\.32/);
+    like($entry->content->body, qr/GHI Product Description/);
+    is($entry->content->type, 'text/html');
+    like($entry->summary->body, qr/GHI Product Description/);
     is($entry->category, undef);
     is($entry->author, undef);
     is($entry->id, 'http://localhost/' . $self->path . '/GHI-666/');

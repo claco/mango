@@ -222,8 +222,7 @@ sub tests : Test(66) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Users', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_id => 'admin_users_delete',
-        form_number => 3
+        form_id => 'admin_users_delete_3',
     });
     $m->follow_link_ok({text => 'Logout'});
 

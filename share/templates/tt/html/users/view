@@ -1,5 +1,6 @@
 [% USE HTML -%]
 
+[% page.id = 'page-users' -%]
 [% IF NOT user %]
 	[% page.title = c.localize('USER_NOT_FOUND') %]
 [% ELSE %]

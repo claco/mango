@@ -18,7 +18,9 @@
 		<td>
 			[% CALL delete_form.values(id => attribute.id) %]
 			[% CALL delete_form.action(c.uri_for(c.controller(c.config.mango.controllers.admin_products_attributes).action_for('delete'), [product.id, attribute.id]) _ '/') %]
-			[% delete_form.render %]
+			[% delete_form.render(
+				'id', 'admin_products_attributes_delete_' _ attribute.id
+			) %]
 		</td>
 		<td><a href="[% c.uri_for(c.controller(c.config.mango.controllers.admin_products_attributes).action_for('edit'), [product.id, attribute.id]) %]/">[% HTML.escape(attribute.name) %]</a></td>
 		<td>[% HTML.escape(attribute.value) %]</td>

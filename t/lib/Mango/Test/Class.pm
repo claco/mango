@@ -53,6 +53,8 @@ sub validate_markup {
 
     ## stop fighting Test::HTML::W3C plan issues for now
     SKIP: {
+        skip 'set TEST_AUTHOR to enable W3C validation tests', 1 unless $ENV{TEST_AUTHOR};
+
         eval 'require WebService::Validator::HTML::W3C';
         skip 'WebService::Validator::HTML::W3C not installed', 1 if $@;
 
@@ -65,13 +67,62 @@ sub validate_markup {
                 pass('content is valid');
             } else {
                 my ($package, $filename, $line) = caller;
-                my $message;
+                my $message = "\n";
                 foreach my $error ( @{$v->errors} ) {
                     $message .= sprintf("line: %s, column: %s error: %s\n", 
                             $error->line, $error->col, $error->msg);
 
                     my @lines = split(/\n/, $content);
-                    $message .= '  ' . $lines[$error->line - 1] . "\n";
+                    $message .= '  ' . $lines[$error->line - 1] . "\n\n";
+                }
+
+                fail "content is not valid at $package line $line" or diag $message;;
+            }
+        } else {
+            fail('Failed to validate the content: ' . $v->validator_error);
+        }
+    };
+}
+
+sub validate_feed {
+    my ($self, $content) = @_;
+
+    SKIP: {
+        skip 'set TEST_AUTHOR to enable W3C validation tests', 1 unless $ENV{TEST_AUTHOR};
+
+        eval 'require WebService::Validator::Feed::W3C';
+        skip 'WebService::Validator::Feed::W3C not installed', 1 if $@;
+
+        my $v = WebService::Validator::Feed::W3C->new;
+
+        if ( $v->validate( string => $content ) ) {
+            if ( $v->is_valid ) {
+                my ($package, $filename, $line) = caller;
+                my $message;
+                foreach my $warning ($v->warnings) {
+                    if ($warning->{'type'} =~ /(SelfDoesntMatchLocation|DuplicateUpdated)/i) {
+                        next;
+                    }
+                    $message .= sprintf("line: %s, column: %s error: %s\n", 
+                            $warning->{'line'}, $warning->{'column'}, $warning->{'text'});
+
+                    my @lines = split(/\n/, $content);
+                    $message .= '  ' . $lines[$warning->{'line'} - 1] . "\n\n";
+                }
+
+                if ($message) {
+                    diag "\n$message";
+                }
+                pass('content is valid');
+            } else {
+                my ($package, $filename, $line) = caller;
+                my $message = "\n";
+                foreach my $error ($v->errors) {
+                    $message .= sprintf("line: %s, column: %s error: %s\n", 
+                            $error->{'line'}, $error->{'column'}, $error->{'text'});
+
+                    my @lines = split(/\n/, $content);
+                    $message .= '  ' . $lines[$error->{'line'} - 1] . "\n\n";
                 }
 
                 fail "content is not valid at $package line $line" or diag $message;;

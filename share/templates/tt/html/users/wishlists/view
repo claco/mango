@@ -2,7 +2,7 @@
 
 <h2>[% HTML.escape(user.username) %]</h2>
 [% INCLUDE 'includes/users/menu/' %]
-
+[% page.id = 'page-users-wishlist' %]
 [% IF NOT wishlist %]
 	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
 [% ELSE %]

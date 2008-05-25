@@ -187,8 +187,7 @@ sub tests : Test(53) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Roles', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_id => 'admin_roles_delete',
-        form_number => 2
+        form_id => 'admin_roles_delete_2'
     });
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Roles', url_regex => qr/$path/i});

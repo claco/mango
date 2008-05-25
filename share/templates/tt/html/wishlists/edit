@@ -1,5 +1,6 @@
 [% USE HTML %]
 
+[% page.id = 'page-wishlist' %]
 [% IF NOT wishlist %]
 	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
 [% ELSE %]

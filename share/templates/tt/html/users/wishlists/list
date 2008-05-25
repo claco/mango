@@ -1,5 +1,5 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_USERS_WISHLISTS', profile.first_name OR user.username) %]
+[% page.title = c.localize('PAGE_TITLE_USERS_WISHLISTS', profile.first_name OR user.username), page.id = 'page-users-wishlists' %]
 
 <h2>[% HTML.escape(user.username) %]</h2>
 [% INCLUDE 'includes/users/menu/' %]

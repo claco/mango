@@ -32,6 +32,7 @@ my $ATOM = <<EOF;
    <updated>2003-07-19T12:13:14Z</updated>
    <generator>Mango Feed View</generator>
    <title>My Feed Title</title>
+   <link rel="self" href="http://localhost/" type="application/atom+xml"/>
    <entry>
      <link rel="alternate" href="http://localhost/entries/12345" type="text/html"/>
      <summary>Entry1 Summary</summary>
@@ -69,9 +70,10 @@ EOF
 my $RSS = <<EOF;
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
- xmlns:dcterms="http://purl.org/rss/1.0/modules/dcterms/"
  xmlns:blogChannel="http://backend.userland.com/blogChannelModule"
  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+ xmlns:atom="http://www.w3.org/2005/Atom"
+ xmlns:dcterms="http://purl.org/dc/terms/"
 >
   <channel>
     <title>My Feed Title</title>
@@ -82,6 +84,7 @@ my $RSS = <<EOF;
     <pubDate>Sat, 19 Jul 2003 12:13:14 -0000</pubDate>
     <webMaster>Christopher H. Laco</webMaster>
     <generator>Mango Feed View</generator>
+    <atom:link href="http://localhost/" rel="self" type="application/rss+xml"/>
     <item>
       <title>Entry1</title>
       <link>http://localhost/entries/12345</link>
@@ -90,8 +93,8 @@ my $RSS = <<EOF;
       <category>computers</category>
       <guid isPermaLink="true">http://localhost/entries/12345</guid>
       <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
-      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
       <content:encoded>Entry1 Content</content:encoded>
+      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
     </item>
     <item>
       <title>Entry2</title>
@@ -101,8 +104,8 @@ my $RSS = <<EOF;
       <category>tv</category>
       <guid isPermaLink="true">http://localhost/entries/6789</guid>
       <pubDate>Fri, 19 Jul 2002 12:13:14 -0000</pubDate>
-      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
       <content:encoded>Entry2 Content</content:encoded>
+      <dcterms:modified>2003-07-19T12:13:14Z</dcterms:modified>
     </item>
   </channel>
 </rss>

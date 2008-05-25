@@ -291,7 +291,7 @@ sub tests : Test(113) {
     is($m->uri->path, '/' . $self->path . '/1/edit/');
     $m->follow_link_ok({text_regex => qr/edit.*attributes/i, url_regex => qr/attributes/i});
     $m->submit_form_ok({
-        form_id => 'admin_products_attributes_delete',
+        form_id => 'admin_products_attributes_delete_1',
     });
 
 
@@ -299,8 +299,7 @@ sub tests : Test(113) {
     $m->follow_link_ok({text => 'Admin'});
     $m->follow_link_ok({text => 'Products', url_regex => qr/$path/i});
     $m->submit_form_ok({
-        form_id => 'admin_products_delete',
-        form_number => 2
+        form_id => 'admin_products_delete_2'
     });
 
 

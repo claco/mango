@@ -148,10 +148,10 @@ sub parse {
     delete $config->{'sticky'};
     delete $config->{'stylesheet'};
     delete $config->{'javascript'};
-    
-    if (exists $config->{'name'}) {
+
+    if ( exists $config->{'name'} ) {
         $config->{'attributes'}->{'name'} = delete $config->{'name'};
-    };
+    }
     $self->_form( HTML::FormFu->new($config) );
     $self->_parse_fields($fields);
 

@@ -239,6 +239,7 @@ sub mk_config {
     $config->{'authorization'}->{'mango'}->{'admin_role'} =
       $self->{'adminrole'};
     $config->{'cache'}->{'backend'}->{'store'} = 'Memory';
+    $config->{'email'} = 'webmaster@example.com';
 
     YAML::DumpFile( $file, $config );
 

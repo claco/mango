@@ -55,7 +55,7 @@ sub startup : Test(startup => +2) {
 
 sub path {'users'};
 
-sub tests : Test(7) {
+sub tests : Test(10) {
     my $self = shift;
     my $m = $self->client;
 
@@ -63,30 +63,36 @@ sub tests : Test(7) {
     $m->get('http://localhost/users' . $self->path . '/');
     is($m->status, 404);
     $m->content_like(qr/resource.*not found/i);
+    $self->validate_markup($m->content);
 
 
     ## invalid user not found
     $m->get('http://localhost/' . $self->path . '/claco/');
     is($m->status, 404);
     $m->content_like(qr/user.*not.*found/i);
+    $self->validate_markup($m->content);
 
 
     ## real user
     $m->get_ok('http://localhost/' . $self->path . '/admin/');
     $m->title_like(qr/admin\'s profile/i);
     $m->content_contains('Admin User');
+    $self->validate_markup($m->content);
 };
 
-sub tests_create : Test(14) {
-    my $m = shift->client;
+sub tests_create : Test(19) {
+    my $self = shift;
+    my $m = $self->client;
 
     ## not logged in
     $m->get_ok('http://localhost/');
+    $self->validate_markup($m->content);
     $m->follow_link_ok({text => 'Login'});
     $m->title_like(qr/login/i);
     $m->content_unlike(qr/already logged in/i);
     $m->content_unlike(qr/welcome anonymous/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## fail login
@@ -100,10 +106,12 @@ sub tests_create : Test(14) {
     $m->title_like(qr/login/i);
     $m->content_like(qr/username or password.*incorrect/i);
     ok(! $m->find_link(text => 'Logout'));
+    $self->validate_markup($m->content);
 
 
     ## Sign Up
     $m->follow_link_ok({text => 'Sign Up!'});
+    $self->validate_markup($m->content);
     $m->submit_form_ok({
         form_id => 'users_create',
         fields    => {
@@ -115,21 +123,25 @@ sub tests_create : Test(14) {
         }
     });
     $m->content_like(qr/welcome christopher/i);
-    $m->content_like(qr/profile/i);    
+    $m->content_like(qr/profile/i);
+    $self->validate_markup($m->content);
 }
 
-sub tests_wishlists : Test(12) {
+sub tests_wishlists : Test(16) {
     my $self = shift;
     my $m = $self->client;
 
     ## view wishlist(s)
     $m->get_ok('http://localhost/' . $self->path . '/admin/');
+    $self->validate_markup($m->content);
     $m->title_like(qr/admin\'s profile/i);
     $m->follow_link_ok({text => 'Admin\'s Wishlists'});
+    $self->validate_markup($m->content);
     $m->title_like(qr/admin\'s wishlists/i);
     $m->content_contains('My Wishlist');
     $m->content_contains('My Wishlist Description');
     $m->follow_link_ok({text => 'My Wishlist'});
+    $self->validate_markup($m->content);
     $m->title_like(qr/my wishlist/i);
     $m->content_contains('ABC-123');
     $m->content_contains('<td align="right">$1.23</td>');
@@ -139,9 +151,10 @@ sub tests_wishlists : Test(12) {
     $m->get('http://localhost/' . $self->path . '/admin/wishlists/999/');
     is($m->status, 404);
     $m->content_like(qr/wishlist.*not.*found/i);
+    $self->validate_markup($m->content);
 }
 
-sub test_wishlists_atom_feed : Test(27) {
+sub test_wishlists_atom_feed : Test(28) {
     my $self = shift;
     my $m = $self->client;
 
@@ -150,6 +163,8 @@ sub test_wishlists_atom_feed : Test(27) {
     $m->follow_link_ok({text => 'Atom'});
     
     my $content = $m->content;
+    $self->validate_feed($content);
+
     my $feed = XML::Feed->parse(\$content);
     isa_ok($feed, 'XML::Feed');
     is($feed->format, 'Atom');
@@ -181,7 +196,7 @@ sub test_wishlists_atom_feed : Test(27) {
     isa_ok($entry->modified, 'DateTime');
 }
 
-sub test_wishlists_rss_feed : Test(27) {
+sub test_wishlists_rss_feed : Test(28) {
     my $self = shift;
     my $m = $self->client;
 
@@ -190,6 +205,11 @@ sub test_wishlists_rss_feed : Test(27) {
     $m->follow_link_ok({text => 'RSS'});
     
     my $content = $m->content;
+    $self->validate_feed($content);
+
+    ## fix for now until XML::Feed groks newer dcterms we now emit
+    $content =~ s/http:\/\/purl.org\/dc\/terms\//http:\/\/purl.org\/rss\/1.0\/modules\/dcterms\//;
+
     my $feed = XML::Feed->parse(\$content);
     isa_ok($feed, 'XML::Feed');
     is($feed->format, 'RSS 2.0');
@@ -221,7 +241,7 @@ sub test_wishlists_rss_feed : Test(27) {
     isa_ok($entry->modified, 'DateTime');
 }
 
-sub test_wishlist_atom_feed : Test(29) {
+sub test_wishlist_atom_feed : Test(30) {
     my $self = shift;
     my $m = $self->client;
 
@@ -231,6 +251,8 @@ sub test_wishlist_atom_feed : Test(29) {
     $m->follow_link_ok({text => 'Atom'});
     
     my $content = $m->content;
+    $self->validate_feed($content);
+
     my $feed = XML::Feed->parse(\$content);
     isa_ok($feed, 'XML::Feed');
     is($feed->format, 'Atom');
@@ -263,7 +285,7 @@ sub test_wishlist_atom_feed : Test(29) {
     isa_ok($entry->modified, 'DateTime');
 }
 
-sub test_wishlist_rss_feed : Test(29) {
+sub test_wishlist_rss_feed : Test(30) {
     my $self = shift;
     my $m = $self->client;
 
@@ -273,6 +295,11 @@ sub test_wishlist_rss_feed : Test(29) {
     $m->follow_link_ok({text => 'RSS'});
     
     my $content = $m->content;
+    $self->validate_feed($content);
+
+    ## fix for now until XML::Feed groks newer dcterms we now emit
+    $content =~ s/http:\/\/purl.org\/dc\/terms\//http:\/\/purl.org\/rss\/1.0\/modules\/dcterms\//;
+
     my $feed = XML::Feed->parse(\$content);
     isa_ok($feed, 'XML::Feed');
     is($feed->format, 'RSS 2.0');
@@ -295,7 +322,7 @@ sub test_wishlist_rss_feed : Test(29) {
     is($entry->link, 'http://localhost/products/ABC-123/');
     $m->get_ok($entry->link);
     like($entry->content->body, qr/\$1\.23/);
-    like($entry->content->body, qr//);
+    like($entry->content->body, qr/ABC Product Description/);
     is($entry->content->type, 'text/html');
     is($entry->summary->body, undef);
     is($entry->category, undef);

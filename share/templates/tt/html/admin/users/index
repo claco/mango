@@ -17,7 +17,9 @@
 		<td>
 			[% CALL delete_form.values(id => user.id) %]
 			[% CALL delete_form.action(c.uri_for(user.id,  'delete/')) %]
-			[% delete_form.render %]
+			[% delete_form.render(
+				'id', 'admin_users_delete_' _ user.id
+			) %]
 		</td>
 		<td><a href="[% c.uri_for(user.id,  'edit/') %]">[% HTML.escape(user.username) %]</a></td>
 		<td>[% user.created %]</td>

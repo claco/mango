@@ -1,6 +1,7 @@
 [% USE HTML %]
 [% INCLUDE includes/errors %]
 
+[% page.id = 'page-wishlist' %]
 [% IF NOT wishlist %]
 	[% page.title = c.localize('WISHLIST_NOT_FOUND') %]
 [% ELSE %]
@@ -51,7 +52,7 @@
             </tr>
 	   [% END %]
             <tr>
-                <td colspan="7" height="20"></td>
+                <td colspan="7"></td>
             </tr>
             <tr>
                 <th colspan="4" align="right">[% c.localize('LABEL_SUBTOTAL') %]:</th>

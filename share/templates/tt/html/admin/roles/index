@@ -18,7 +18,9 @@
 		<td>
 			[% CALL delete_form.values(id => role.id) %]
 			[% CALL delete_form.action(c.uri_for(role.id,  'delete/')) %]
-			[% delete_form.render %]
+			[% delete_form.render(
+				'id', 'admin_roles_delete_' _ role.id
+			) %]
 		</td>
 		<td><a href="[% c.uri_for(role.id,  'edit/') %]">[% HTML.escape(role.name) %]</a></td>
 		<td>[% HTML.escape(role.description) %]</td>

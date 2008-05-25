@@ -25,6 +25,40 @@ sub process {
         Mango::Exception->throw('NOT_A_FEED');
     }
 
+    ## fixup until XML::Feed is fixed
+    if ( $feed->format eq 'RSS 2.0' ) {
+        if (
+            delete $feed->{'rss'}->{'modules'}
+            ->{'http://purl.org/rss/1.0/modules/dcterms/'} )
+        {
+            $feed->{'rss'}->add_module(
+                prefix => 'dcterms',
+                uri    => 'http://purl.org/dc/terms/'
+            );
+        }
+        $feed->{'rss'}->add_module(
+            prefix => 'atom',
+            uri    => 'http://www.w3.org/2005/Atom'
+        );
+        $feed->{'rss'}->channel(
+            atom => {
+                link => {
+                    href => $feed->link,
+                    rel  => 'self',
+                    type => 'application/rss+xml'
+                }
+            }
+        );
+    } elsif ( $feed->format eq 'Atom' ) {
+        $feed->{'atom'}->add_link(
+            {
+                href => $feed->link,
+                rel  => 'self',
+                type => 'application/atom+xml'
+            }
+        );
+    }
+
     foreach my $entry ( $self->feed_entries( $c, $type ) ) {
         $feed->add_entry($entry);
     }
@@ -64,6 +98,13 @@ sub feed {
     foreach my $key ( keys %{$data} ) {
         if ( $feed->can($key) ) {
             $feed->$key( $data->{$key} );
+        } else {
+            ## another hack until XML::Feed is fixed
+            if ( $feed->format eq 'Atom' ) {
+                if ( $feed->{'atom'}->can($key) ) {
+                    $feed->{'atom'}->$key( $data->{$key} );
+                }
+            }
         }
     }
 

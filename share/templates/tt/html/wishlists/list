@@ -1,5 +1,5 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_WISHLISTS') %]
+[% page.title = c.localize('PAGE_TITLE_WISHLISTS'), page.id = 'page-wishlist' %]
 
 [% IF wishlists.count %]
 	[% WHILE (wishlist = wishlists.next) %]

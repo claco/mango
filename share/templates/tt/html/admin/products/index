@@ -18,7 +18,9 @@
 		<td>
 			[% CALL delete_form.values(id => product.id) %]
 			[% CALL delete_form.action(c.uri_for(product.id,  'delete/')) %]
-			[% delete_form.render %]
+			[% delete_form.render(
+				'id', 'admin_products_delete_' _ product.id,
+			) %]
 		</td>
 		<td><a href="[% c.uri_for(product.id,  'edit/') %]">[% HTML.escape(product.name) %] ([% HTML.escape(product.sku) %])</a></td>
 		<td>[% HTML.escape(product.description) %]</td>

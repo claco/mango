@@ -1,5 +1,5 @@
 [% USE HTML %]
-[% page.title = c.localize('PAGE_TITLE_USERS_CREATE') %]
+[% page.title = c.localize('PAGE_TITLE_USERS_CREATE'), page.id = 'page-users-create' %]
 [% INCLUDE includes/errors %]
 
 [% form.render %]
