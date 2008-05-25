@@ -11,18 +11,18 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td colspan="4"><a href="[% c.uri_for('create/') %]">[% c.loc('LABEL_NEW_ROLE') %]</a></td>
+		<td colspan="4"><a href="[% c.uri_for_resource('mango/admin/roles', 'create') %]/">[% c.loc('LABEL_NEW_ROLE') %]</a></td>
 	</tr>
 [% WHILE (role = roles.next) %]
 	<tr>
 		<td>
 			[% CALL delete_form.values(id => role.id) %]
-			[% CALL delete_form.action(c.uri_for(role.id,  'delete/')) %]
 			[% delete_form.render(
+				'action', c.uri_for_resource('mango/admin/roles', 'delete', [role.id]) _ '/', 
 				'id', 'admin_roles_delete_' _ role.id
 			) %]
 		</td>
-		<td><a href="[% c.uri_for(role.id,  'edit/') %]">[% HTML.escape(role.name) %]</a></td>
+		<td><a href="[% c.uri_for_resource('mango/admin/roles', 'edit', [role.id]) %]/">[% HTML.escape(role.name) %]</a></td>
 		<td>[% HTML.escape(role.description) %]</td>
 		<td>[% role.created %]</td>
 		<td>[% role.updated %]</td>

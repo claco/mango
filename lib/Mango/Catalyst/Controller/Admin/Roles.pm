@@ -15,7 +15,7 @@ BEGIN {
     );
 }
 
-sub index : Template('admin/roles/index') {
+sub list : Chained('/') PathPrefix Args(0) Template('admin/roles/index') {
     my ( $self, $c ) = @_;
     my $page = $c->request->param('page') || 1;
     my $roles = $c->model('Roles')->search(
@@ -33,7 +33,7 @@ sub index : Template('admin/roles/index') {
     return;
 }
 
-sub load : Chained('/') PathPrefix CaptureArgs(1) {
+sub instance : Chained('/') PathPrefix CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
     my $role = $c->model('Roles')->get_by_id($id);
 
@@ -74,7 +74,7 @@ sub create : Local Template('admin/roles/create') {
     return;
 }
 
-sub edit : Chained('load') PathPart Args(0) Template('admin/roles/edit') {
+sub edit : Chained('instance') PathPart Args(0) Template('admin/roles/edit') {
     my ( $self, $c ) = @_;
     my $role = $c->stash->{'role'};
     my $form = $self->form;
@@ -99,7 +99,7 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/roles/edit') {
     return;
 }
 
-sub delete : Chained('load') PathPart Args(0) Template('admin/roles/delete') {
+sub delete : Chained('instance') PathPart Args(0) Template('admin/roles/delete') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $role = $c->stash->{'role'};
@@ -110,7 +110,7 @@ sub delete : Chained('load') PathPart Args(0) Template('admin/roles/delete') {
             $role->destroy;
 
             $c->response->redirect(
-                $c->uri_for( $self->action_for('index') ) . '/' );
+                $c->uri_for( $self->action_for('list') ) . '/' );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];
         }
