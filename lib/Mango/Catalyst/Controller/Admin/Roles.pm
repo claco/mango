@@ -99,7 +99,8 @@ sub edit : Chained('instance') PathPart Args(0) Template('admin/roles/edit') {
     return;
 }
 
-sub delete : Chained('instance') PathPart Args(0) Template('admin/roles/delete') {
+sub delete : Chained('instance') PathPart Args(0)
+  Template('admin/roles/delete') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $role = $c->stash->{'role'};
@@ -138,7 +139,7 @@ used to edit user roles.
 
 =head1 ACTIONS
 
-=head2 index : /admin/roles/
+=head2 list : /admin/roles/
 
 Displays the list of roles.
 
@@ -154,7 +155,7 @@ Deletes the specified role.
 
 Updates the specified role.
 
-=head2 load : /admin/role/<id>/
+=head2 instance : /admin/role/<id>/
 
 Loads a specific role.
 

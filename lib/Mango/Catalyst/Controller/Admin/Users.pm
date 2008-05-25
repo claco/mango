@@ -160,7 +160,8 @@ sub edit : Chained('instance') PathPart Args(0) Template('admin/users/edit') {
     return;
 }
 
-sub delete : Chained('instance') PathPart Args(0) Template('admin/users/delete') {
+sub delete : Chained('instance') PathPart Args(0)
+  Template('admin/users/delete') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $user = $c->stash->{'user'};
@@ -216,7 +217,7 @@ used to edit user accounts.
 
 =head1 ACTIONS
 
-=head2 index : /admin/users/
+=head2 list : /admin/users/
 
 Displays the list of users.
 
@@ -232,7 +233,7 @@ Deletes the specified user.
 
 Updates the specified user.
 
-=head2 load : /admin/users/<id>/
+=head2 instance : /admin/users/<id>/
 
 Loads a specific user.
 
