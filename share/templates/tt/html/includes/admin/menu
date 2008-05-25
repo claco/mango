@@ -1,5 +1,5 @@
 <ul>
-	<li><a href="[% c.uri_for_resource('mango/admin/users') %]/">Users</a></li>
+	<li><a href="[% c.uri_for_resource('mango/admin/users', 'list') %]/">Users</a></li>
 	<li><a href="[% c.uri_for_resource('mango/admin/roles') %]/">Roles</a></li>
 	<li><a href="[% c.uri_for_resource('mango/admin/products') %]/">Products</a></li>
 </ul>

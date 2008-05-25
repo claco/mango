@@ -1,5 +1,4 @@
 $Id$
-- Add ability to have feed item content run through TT view
 - Added method to set config->mango->conrollers-name
 - Added rating/s() and comments() to Object using Ratings/Comments models
 - Cleanup blessed

@@ -16,7 +16,7 @@ BEGIN {
     );
 }
 
-sub index : Template('admin/users/index') {
+sub list : Chained('/') PathPrefix Args(0) Template('admin/users/index') {
     my ( $self, $c ) = @_;
     my $page = $c->request->param('page') || 1;
     my $users = $c->model('Users')->search(
@@ -34,7 +34,7 @@ sub index : Template('admin/users/index') {
     return;
 }
 
-sub load : Chained('/') PathPrefix CaptureArgs(1) {
+sub instance : Chained('/') PathPrefix CaptureArgs(1) {
     my ( $self, $c, $id ) = @_;
     my $user = $c->model('Users')->get_by_id($id);
 
@@ -95,7 +95,7 @@ sub create : Local Template('admin/users/create') {
     return;
 }
 
-sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
+sub edit : Chained('instance') PathPart Args(0) Template('admin/users/edit') {
     my ( $self, $c ) = @_;
     my $user       = $c->stash->{'user'};
     my $profile    = $c->stash->{'profile'};
@@ -160,7 +160,7 @@ sub edit : Chained('load') PathPart Args(0) Template('admin/users/edit') {
     return;
 }
 
-sub delete : Chained('load') PathPart Args(0) Template('admin/users/delete') {
+sub delete : Chained('instance') PathPart Args(0) Template('admin/users/delete') {
     my ( $self, $c ) = @_;
     my $form = $self->form;
     my $user = $c->stash->{'user'};
@@ -188,7 +188,7 @@ sub delete : Chained('load') PathPart Args(0) Template('admin/users/delete') {
             $user->destroy;
 
             $c->res->redirect(
-                $c->uri_for( $self->action_for('index') ) . '/' );
+                $c->uri_for( $self->action_for('list') ) . '/' );
         } else {
             $c->stash->{'errors'} = ['ID_MISTMATCH'];
         }
