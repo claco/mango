@@ -57,7 +57,7 @@ sub tests_unauthorized: Test(2) {
     $self->validate_markup($m->content);
 }
 
-sub tests : Test(103) {
+sub tests : Test(104) {
     my $self = shift;
     my $m = $self->client;
 
@@ -91,6 +91,7 @@ sub tests : Test(103) {
     my $path = $self->path;
     $m->follow_link_ok({text => 'Users', url_regex => qr/$path/i});
     $self->validate_markup($m->content);
+    is($m->uri->path, '/' . $self->path . '/');
 
     my $create = "$path\/create";
     $m->follow_link_ok({url_regex => qr/$create/i});
