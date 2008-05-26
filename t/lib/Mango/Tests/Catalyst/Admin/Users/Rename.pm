@@ -1,4 +1,4 @@
-# $Id: /local/CPAN/Mango/t/lib/Mango/Tests/Catalyst/Login/Rename.pm 1612 2008-05-22T02:02:53.243250Z claco  $
+# $Id$
 package Mango::Tests::Catalyst::Admin::Users::Rename;
 use strict;
 use warnings;

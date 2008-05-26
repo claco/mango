@@ -16,7 +16,7 @@
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
-	<integer>379</integer>
+	<integer>311</integer>
 	<key>metaData</key>
 	<dict>
 		<key>lib/Mango/Catalyst/Controller/Admin/Roles.pm</key>
@@ -51,6 +51,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{389, 27}, {1531, 1151}}</string>
+	<string>{{1086, 27}, {834, 1143}}</string>
 </dict>
 </plist>

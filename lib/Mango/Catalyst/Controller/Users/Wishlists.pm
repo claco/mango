@@ -51,7 +51,7 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
                 entries => [
                     map {
                         {
-                            id   => $c->uri_for_resource(
+                            id => $c->uri_for_resource(
                                 'mango/users/wishlists', 'view',
                                 [ $user->username, $_->id ]
                               )
@@ -140,7 +140,7 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
                                 [ $_->sku ] )
                               . '/',
                             author => $profile->full_name || $user->username,
-                            title  => $_->sku,
+                            title => $_->sku,
                             link =>
                               $c->uri_for_resource( 'mango/products', 'view',
                                 [ $_->sku ] )
