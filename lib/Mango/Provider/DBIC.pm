@@ -71,6 +71,14 @@ sub schema {
     my ( $self, $schema ) = @_;
 
     if ($schema) {
+        $schema->exception_action(
+            sub {
+                Mango::Exception->throw(@_);
+
+                return;
+            }
+        );
+
         $self->_schema($schema);
     } elsif ( !$self->_schema ) {
         if ( !$self->schema_class ) {
@@ -78,6 +86,14 @@ sub schema {
         }
         $self->_schema(
             $self->schema_class->connect( @{ $self->connection_info || [] } )
+        );
+
+        $self->_schema->exception_action(
+            sub {
+                Mango::Exception->throw(@_);
+
+                return;
+            }
         );
     }
 

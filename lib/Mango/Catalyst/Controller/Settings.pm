@@ -33,19 +33,36 @@ sub profile : Local Template('settings/profile') {
     my $user    = $c->user;
     my $profile = $user->profile;
 
+    $form->unique(
+        'email',
+        sub {
+            my $existing =
+              $c->model('Profiles')
+              ->search( { email => $form->field('email') } )->first;
+
+            if ( $existing && $existing->id != $profile->id ) {
+                return;
+            } else {
+                return 1;
+            }
+        }
+    );
+
     $form->values(
         {
             username         => $user->username,
             password         => $user->password,
             confirm_password => $user->password,
             first_name       => $profile->first_name,
-            last_name        => $profile->last_name
+            last_name        => $profile->last_name,
+            email            => $profile->email
         }
     );
 
     if ( $self->submitted && $self->validate->success ) {
         $profile->first_name( $form->field('first_name') );
         $profile->last_name( $form->field('last_name') );
+        $profile->email( $form->field('email') );
         $profile->update;
 
         $c->user->refresh;

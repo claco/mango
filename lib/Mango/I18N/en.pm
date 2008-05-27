@@ -62,7 +62,6 @@ BEGIN {
     NO_DESCRIPTION_AVAILABLE => 'No description available.',
     USER_NOT_FOUND           => 'The user requested could not be found.',
     WISHLIST_NOT_FOUND       => 'The wishlist requested could not be found.',
-    USERNAME_EXISTS          => 'The username requested already exists.',
     PRODUCT_NOT_FOUND        => 'The product requested could not be found.',
 
     ## page titles
@@ -88,9 +87,9 @@ BEGIN {
     LINK_TEXT_WISHLISTS        => 'Wishlists',
     LINK_TEXT_SETTINGS_PROFILE => 'Profile',
     LINK_TEXT_EDIT             => 'Edit',
-    LINK_TEXT_USERS_VIEW => '[_1]\'s Profile' => LINK_TEXT_USERS_WISHLISTS =>
-      '[_1]\'s Wishlists',
-    LINK_TEXT_USERS_CREATE => 'Sign Up!',
+    LINK_TEXT_USERS_VIEW       => '[_1]\'s Profile',
+    LINK_TEXT_USERS_WISHLISTS  => '[_1]\'s Wishlists',
+    LINK_TEXT_USERS_CREATE     => 'Sign Up!',
 
     ## field label text
     FIELD_LABEL_USERNAME => 'Username',
@@ -103,6 +102,7 @@ BEGIN {
     BUTTON_LABEL_CHECHKOUT   => 'Checkout',
 
     ## form constraint messages
+    CONSTRAINT_USERNAME_UNIQUE    => 'The username requested already exists.',
     CONSTRAINT_USERNAME_NOT_BLANK => 'The username field is required.',
     CONSTRAINT_PASSWORD_NOT_BLANK => 'The password field is required.',
     CONSTRAINT_NAME_NOT_BLANK     => 'The name field is required.',

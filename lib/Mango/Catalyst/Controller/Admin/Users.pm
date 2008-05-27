@@ -67,6 +67,13 @@ sub create : Local Template('admin/users/create') {
               ->search( { username => $form->field('username') } )->count;
         }
     );
+    $form->unique(
+        'email',
+        sub {
+            return !$c->model('Profiles')
+              ->search( { email => $form->field('email') } )->count;
+        }
+    );
 
     if ( $self->submitted && $self->validate->success ) {
         my $user = $c->model('Users')->create(
@@ -80,7 +87,8 @@ sub create : Local Template('admin/users/create') {
             {
                 user_id    => $user->id,
                 first_name => $form->field('first_name'),
-                last_name  => $form->field('last_name')
+                last_name  => $form->field('last_name'),
+                email      => $form->field('email')
             }
         );
 
@@ -106,6 +114,21 @@ sub edit : Chained('instance') PathPart Args(0) Template('admin/users/edit') {
     $form->field( 'roles',
         options => [ map { [ $_->id, $_->description ] } @roles ] );
 
+    $form->unique(
+        'email',
+        sub {
+            my $existing =
+              $c->model('Profiles')
+              ->search( { email => $form->field('email') } )->first;
+
+            if ( $existing && $existing->id != $profile->id ) {
+                return;
+            } else {
+                return 1;
+            }
+        }
+    );
+
     $form->values(
         {
             id               => $user->id,
@@ -116,6 +139,7 @@ sub edit : Chained('instance') PathPart Args(0) Template('admin/users/edit') {
             updated          => $user->updated . '',
             first_name       => $profile->first_name,
             last_name        => $profile->last_name,
+            email            => $profile->email,
 
             ## for some reason FB is wonky about no selected multiples compared to values
             ## yet it get's empty fields correct against non multiple values
@@ -142,6 +166,7 @@ sub edit : Chained('instance') PathPart Args(0) Template('admin/users/edit') {
 
         $profile->first_name( $form->field('first_name') );
         $profile->last_name( $form->field('last_name') );
+        $profile->email( $form->field('email') );
         $profile->update;
 
         if ( $deleted_roles->size ) {

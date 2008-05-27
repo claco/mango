@@ -45,6 +45,8 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
                 link => $c->uri_for_resource( 'mango/users/wishlists', 'list',
                     [ $user->username ] )
                   . '/',
+                author => $profile->email . ' ('
+                  . ( $profile->full_name || $user->username ) . ')',
                 modified => $wishlists->first
                 ? $wishlists->first->updated
                 : DateTime->now,
@@ -56,14 +58,16 @@ sub list : Chained('../instance') PathPart('wishlists') Args(0) Feed('Atom')
                                 [ $user->username, $_->id ]
                               )
                               . '/',
-                            author => $profile->full_name || $user->username,
-                            title  => $_->name,
-                            link   => $c->uri_for_resource(
+                            author => $profile->email . ' ('
+                              . ( $profile->full_name || $user->username )
+                              . ')',
+                            title => $_->name,
+                            link  => $c->uri_for_resource(
                                 'mango/users/wishlists', 'view',
                                 [ $user->username, $_->id ]
                               )
                               . '/',
-                            content => $_->description
+                            summary => $_->description
                               || 'No description available.',
                             content => $c->view('HTML')->render(
                                 $c,
@@ -131,6 +135,8 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
                     [ $user->username, $wishlist->id ]
                   )
                   . '/',
+                author => $profile->email . ' ('
+                  . ( $profile->full_name || $user->username ) . ')',
                 modified => $wishlist->updated,
                 entries  => [
                     map {
@@ -139,12 +145,16 @@ sub view : Chained('instance') PathPart('') Args(0) Feed('Atom') Feed('RSS')
                               $c->uri_for_resource( 'mango/products', 'view',
                                 [ $_->sku ] )
                               . '/',
-                            author => $profile->full_name || $user->username,
+                            author => $profile->email . ' ('
+                              . ( $profile->full_name || $user->username )
+                              . ')',
                             title => $_->sku,
                             link =>
                               $c->uri_for_resource( 'mango/products', 'view',
                                 [ $_->sku ] )
                               . '/',
+                            summary => $_->description
+                              || 'No description available.',
                             content => $c->view('HTML')->render(
                                 $c,
                                 'users/wishlists/feed',

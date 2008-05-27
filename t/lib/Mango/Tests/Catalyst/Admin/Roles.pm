@@ -184,6 +184,7 @@ sub tests : Test(88) {
         fields => {
             first_name => 'Christopher',
             last_name  => 'Laco',
+            email => 'claco@example.com',
             roles => 1
         }
     });

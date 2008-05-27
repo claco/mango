@@ -41,7 +41,8 @@ sub startup : Test(startup => +2) {
     );
     $provider->create(
         {
-            user => $user
+            user => $user,
+            email => 'claco@example.com'
         }
     );
 }
@@ -57,7 +58,7 @@ sub tests_unauthorized: Test(2) {
     $self->validate_markup($m->content);
 }
 
-sub tests : Test(104) {
+sub tests : Test(107) {
     my $self = shift;
     my $m = $self->client;
 
@@ -118,7 +119,8 @@ sub tests : Test(104) {
         fields    => {
             username => 'admin',
             password => 'a',
-            confirm_password => 'b'
+            confirm_password => 'b',
+            email => 'webmaster@example.com',
         }
     });
     $self->validate_markup($m->content);
@@ -126,6 +128,7 @@ sub tests : Test(104) {
     $m->content_contains('<li>The username requested already exists.</li>');
     $m->content_contains('<li>CONSTRAINT_FIRST_NAME_NOT_BLANK</li>');
     $m->content_contains('<li>CONSTRAINT_LAST_NAME_NOT_BLANK</li>');
+    $m->content_contains('<li>CONSTRAINT_EMAIL_UNIQUE</li>');
 
 
     ## add new user
@@ -136,7 +139,8 @@ sub tests : Test(104) {
             password => 'foo',
             confirm_password => 'foo',
             first_name => 'Christopher',
-            last_name => 'Laco'
+            last_name => 'Laco',
+            email => 'claco3@example.com'
         }
     });
     $self->validate_markup($m->content);
@@ -164,13 +168,15 @@ sub tests : Test(104) {
         form_id => 'admin_users_edit',
         fields    => {
             password => 'a',
-            confirm_password => 'b'
+            confirm_password => 'b',
+            email => 'webmaster@example.com'
         }
     });
     $self->validate_markup($m->content);
     $m->content_contains('<li>CONSTRAINT_CONFIRM_PASSWORD_SAME_AS_PASSWORD</li>');
     $m->content_contains('<li>CONSTRAINT_FIRST_NAME_NOT_BLANK</li>');
     $m->content_contains('<li>CONSTRAINT_LAST_NAME_NOT_BLANK</li>');
+    $m->content_contains('<li>CONSTRAINT_EMAIL_UNIQUE</li>');
 
 
     ## continue edit
@@ -181,7 +187,8 @@ sub tests : Test(104) {
             password => 'foo',
             confirm_password => 'foo',
             first_name => 'Foo',
-            last_name => 'Bar'
+            last_name => 'Bar',
+            email => 'foo@example.com'
         }
     });
     $self->validate_markup($m->content);
@@ -189,6 +196,7 @@ sub tests : Test(104) {
     $m->content_lacks('<li>The username field is required.</li>');
     $m->content_lacks('<li>CONSTRAINT_FIRST_NAME_NOT_BLANK</li>');
     $m->content_lacks('<li>CONSTRAINT_LAST_NAME_NOT_BLANK</li>');
+    $m->content_lacks('<li>CONSTRAINT_EMAIL_UNIQUE</li>');
     $m->follow_link_ok({text => 'Logout'});
     $self->validate_markup($m->content);
 

@@ -7,7 +7,7 @@ BEGIN {
     use base qw/Mango::Object/;
 
     __PACKAGE__->mk_group_accessors( 'column',
-        qw/user_id first_name last_name/ );
+        qw/user_id first_name last_name email/ );
 }
 
 sub full_name {
@@ -82,6 +82,18 @@ Returns the id of the current profile.
 Gets/sets the last name of the current profile.
 
     print $profile->last_name;
+
+=head2 email
+
+=over
+
+=item Arguments: $email
+
+=back
+
+Gets/sets the email of the current profile.
+
+    print $profile->email;
 
 =head2 update
 

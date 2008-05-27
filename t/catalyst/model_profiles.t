@@ -35,7 +35,9 @@ BEGIN {
     ## create
     my $profile = $model->create({
         user => 22,
-        first_name => 'newprofile'
+        first_name => 'newprofile',
+        last_name => 'newlastname',
+        email => 'new@example.com'
     });
     isa_ok($profile, 'Mango::Profile');
     is($model->search->count, 3);

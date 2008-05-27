@@ -80,7 +80,7 @@ sub tests : Test(10) {
     $self->validate_markup($m->content);
 };
 
-sub tests_create : Test(19) {
+sub tests_create : Test(25) {
     my $self = shift;
     my $m = $self->client;
 
@@ -112,6 +112,9 @@ sub tests_create : Test(19) {
     ## Sign Up
     $m->follow_link_ok({text => 'Sign Up!'});
     $self->validate_markup($m->content);
+
+
+## fail signup existing email
     $m->submit_form_ok({
         form_id => 'users_create',
         fields    => {
@@ -119,7 +122,40 @@ sub tests_create : Test(19) {
             password => 'foo',
             confirm_password => 'foo',
             first_name => 'Christopher',
-            last_name => 'Laco'
+            last_name => 'Laco',
+            email => 'webmaster@example.com'
+        }
+    });
+    $m->content_contains('<li>CONSTRAINT_EMAIL_UNIQUE</li>');
+    $self->validate_markup($m->content);
+
+
+    ## fail signup existing username
+    $m->submit_form_ok({
+        form_id => 'users_create',
+        fields    => {
+            username => 'admin',
+            password => 'foo',
+            confirm_password => 'foo',
+            first_name => 'Christopher',
+            last_name => 'Laco',
+            email => 'claco@example.com'
+        }
+    });
+    $m->content_contains('<li>The username requested already exists.</li>');
+    $self->validate_markup($m->content);
+
+
+    ## sign up
+    $m->submit_form_ok({
+        form_id => 'users_create',
+        fields    => {
+            username => 'claco',
+            password => 'foo',
+            confirm_password => 'foo',
+            first_name => 'Christopher',
+            last_name => 'Laco',
+            email => 'claco@example.com'
         }
     });
     $m->content_like(qr/welcome christopher/i);
@@ -172,7 +208,7 @@ sub test_wishlists_atom_feed : Test(28) {
     is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/');
     is($feed->tagline, undef);
     is($feed->description, undef);
-    is($feed->author, undef);
+    is($feed->author, 'webmaster@example.com (Admin User)');
     is($feed->language, 'en');
     is($feed->copyright, undef);
     isa_ok($feed->modified, 'DateTime');
@@ -188,9 +224,9 @@ sub test_wishlists_atom_feed : Test(28) {
     $m->get_ok($entry->link);
     like($entry->content->body, qr/My Wishlist Description/);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/My Wishlist Description/);
     is($entry->category, undef);
-    is($entry->author, 'Admin User');
+    is($entry->author, 'webmaster@example.com (Admin User)');
     is($entry->id, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');
@@ -217,7 +253,7 @@ sub test_wishlists_rss_feed : Test(28) {
     is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/');
     is($feed->tagline, '');
     is($feed->description, '');
-    is($feed->author, undef);
+    is($feed->author, 'webmaster@example.com (Admin User)');
     is($feed->language, 'en');
     is($feed->copyright, undef);
     isa_ok($feed->modified, 'DateTime');
@@ -233,9 +269,9 @@ sub test_wishlists_rss_feed : Test(28) {
     $m->get_ok($entry->link);
     like($entry->content->body, qr/My Wishlist Description/);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/My Wishlist Description/);
     is($entry->category, undef);
-    is($entry->author, 'Admin User');
+    is($entry->author, 'webmaster@example.com (Admin User)');
     is($entry->id, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');
@@ -260,7 +296,7 @@ sub test_wishlist_atom_feed : Test(30) {
     is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
     is($feed->tagline, undef);
     is($feed->description, undef);
-    is($feed->author, undef);
+    is($feed->author, 'webmaster@example.com (Admin User)');
     is($feed->language, 'en');
     is($feed->copyright, undef);
     isa_ok($feed->modified, 'DateTime');
@@ -277,9 +313,9 @@ sub test_wishlist_atom_feed : Test(30) {
     like($entry->content->body, qr/\$1\.23/);
     like($entry->content->body, qr//);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/ABC Product Description/);
     is($entry->category, undef);
-    is($entry->author, 'Admin User');
+    is($entry->author, 'webmaster@example.com (Admin User)');
     is($entry->id, 'http://localhost/products/ABC-123/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');
@@ -307,7 +343,7 @@ sub test_wishlist_rss_feed : Test(30) {
     is($feed->link, 'http://localhost/' . $self->path . '/admin/wishlists/1/');
     is($feed->tagline, '');
     is($feed->description, '');
-    is($feed->author, undef);
+    is($feed->author, 'webmaster@example.com (Admin User)');
     is($feed->language, 'en');
     is($feed->copyright, undef);
     isa_ok($feed->modified, 'DateTime');
@@ -324,9 +360,9 @@ sub test_wishlist_rss_feed : Test(30) {
     like($entry->content->body, qr/\$1\.23/);
     like($entry->content->body, qr/ABC Product Description/);
     is($entry->content->type, 'text/html');
-    is($entry->summary->body, undef);
+    like($entry->summary->body, qr/ABC Product Description/);
     is($entry->category, undef);
-    is($entry->author, 'Admin User');
+    is($entry->author, 'webmaster@example.com (Admin User)');
     is($entry->id, 'http://localhost/products/ABC-123/');
     isa_ok($entry->issued, 'DateTime');
     isa_ok($entry->modified, 'DateTime');

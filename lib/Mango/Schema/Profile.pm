@@ -42,6 +42,11 @@ __PACKAGE__->add_columns(
         size        => 25,
         is_nullable => 1
     },
+    email => {
+        data_type   => 'VARCHAR',
+        size        => 150,
+        is_nullable => 1
+    },
     created => {
         data_type   => 'DATETIME',
         is_nullable => 0,
@@ -55,6 +60,7 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key('id');
 __PACKAGE__->add_unique_constraint( user_id => [qw/user_id/] );
+__PACKAGE__->add_unique_constraint( email   => [qw/email/] );
 __PACKAGE__->belongs_to(
     user => 'Mango::Schema::User',
     { 'foreign.id' => 'self.user_id' }

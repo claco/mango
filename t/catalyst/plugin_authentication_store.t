@@ -281,6 +281,7 @@ is($store->config->{'cart_model'}, 'Carts');
             user_id => 1,
             first_name => 'First1',
             last_name => 'Last1',
+            email => 'email1@example.com',
             created => '2004-07-04T12:00:00',
             updated => '2004-07-04T12:00:00'
         }

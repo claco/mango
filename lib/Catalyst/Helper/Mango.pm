@@ -155,6 +155,7 @@ sub mk_database {
                 user_id    => 1,
                 first_name => 'Admin',
                 last_name  => 'User',
+                email      => 'webmaster@example.com',
                 created    => DateTime->now,
                 updated    => DateTime->now
             }

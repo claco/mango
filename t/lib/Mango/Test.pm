@@ -116,9 +116,9 @@ sub populate_schema {
     ]);
 
     $schema->populate('Profiles', [
-        [ qw/id user_id first_name last_name created updated/ ],
-        [1,1,'First1', 'Last1',$date,$date],
-        [2,2,'First2', 'Last2',$date,$date],
+        [ qw/id user_id first_name last_name email created updated/ ],
+        [1,1,'First1', 'Last1', 'email1@example.com', $date,$date],
+        [2,2,'First2', 'Last2', 'email2@example.com', $date,$date],
     ]);
 
     $schema->populate('Carts', [

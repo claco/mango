@@ -16,8 +16,6 @@ fields:
         - NOT_BLANK
         - LENGTH, 1, 25
         - UNIQUE
-      messages:
-        UNIQUE: USERNAME_EXISTS
   - password:
       type: password
       size: 20
@@ -47,6 +45,15 @@ fields:
       constraints:
         - NOT_BLANK
         - LENGTH, 1, 25
+  - email:
+      type: text
+      size: 30
+      maxlength: 150
+      constraints:
+        - NOT_BLANK
+        - LENGTH, 1, 150
+        - EMAIL
+        - UNIQUE
   - roles:
       type: checkbox
       multiple: 1

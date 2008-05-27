@@ -16,8 +16,11 @@ BEGIN {
 
 sub translate {
     my $handle = __PACKAGE__->get_handle;
+    my $text;
 
-    return $handle->maketext(@_);
+    eval { $text = $handle->maketext(@_); };
+
+    return defined $text ? $text : shift;
 }
 
 1;

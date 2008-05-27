@@ -51,6 +51,13 @@ sub create : Local Template('users/create') {
               ->search( { username => $form->field('username') } )->count;
         }
     );
+    $form->unique(
+        'email',
+        sub {
+            return !$c->model('Profiles')
+              ->search( { email => $form->field('email') } )->count;
+        }
+    );
 
     if ( $self->submitted && $self->validate->success ) {
         my $user = $c->model('Users')->create(
@@ -64,7 +71,8 @@ sub create : Local Template('users/create') {
             {
                 user_id    => $user->id,
                 first_name => $form->field('first_name'),
-                last_name  => $form->field('last_name')
+                last_name  => $form->field('last_name'),
+                email      => $form->field('email')
             }
         );
 
