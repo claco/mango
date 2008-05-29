@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 BEGIN {
-    use base qw/Catalyst::Controller/;
+    use base qw/Mango::Catalyst::Controller/;
 
     __PACKAGE__->config->{'namespace'} = '';
 }
@@ -15,10 +15,10 @@ sub index : Template('index') {
     return;
 }
 
-sub default : Template('errors/404') {
+sub default : Private {
     my ( $self, $c ) = @_;
 
-    $c->response->status(404);
+    $self->not_found;
 
     return;
 }

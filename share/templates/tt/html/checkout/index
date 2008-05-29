@@ -1,10 +1,12 @@
 
 [% order.billtofirstname %]<br />
 [% order.billtolastname %]<br />
+[% order.billtoemail %]<br />
 <hr />
 [% order.shiptosameasbillto %]<br />
 [% order.shiptofirstname %]<br />
 [% order.shiptolastname %]<br />
+[% order.shiptoemail %]<br />
 <hr />
 [% FOREACH item = order.items %]
 	[% item.sku %]<br />

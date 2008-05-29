@@ -22,12 +22,15 @@ sub initialize {
     my $c       = $ctx->stash->{'c'};
     my $profile = $c->user->profile;
 
+    ## this sohuld really be in core
     $order->billtofirstname( $profile->first_name );
     $order->billtolastname( $profile->last_name );
+    $order->billtoemail( $profile->email );
 
     $order->shiptosameasbillto(1);
     $order->shiptofirstname( $profile->first_name );
     $order->shiptolastname( $profile->last_name );
+    $order->shiptoemail( $profile->email );
 
     return CHECKOUT_HANDLER_OK;
 }

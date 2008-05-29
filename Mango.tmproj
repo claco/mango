@@ -21,33 +21,19 @@
 	<integer>311</integer>
 	<key>metaData</key>
 	<dict>
-		<key>lib/Mango/Catalyst/Controller/Admin/Roles.pm</key>
+		<key>lib/Mango/Catalyst/Controller/Checkout.pm</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>118</integer>
+				<integer>83</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>110</integer>
-		</dict>
-		<key>lib/Mango/Catalyst/Controller/Checkout.pm</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>68</integer>
-				<key>line</key>
-				<integer>18</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>82</integer>
+			<integer>16</integer>
 		</dict>
 		<key>t/pod_syntax.t</key>
 		<dict>
@@ -71,6 +57,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1086, 27}, {834, 1143}}</string>
+	<string>{{1010, 31}, {979, 1143}}</string>
 </dict>
 </plist>

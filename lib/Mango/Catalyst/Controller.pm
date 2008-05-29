@@ -123,6 +123,17 @@ sub enable_rss_feed {
     return;
 }
 
+sub not_found {
+    my $self = shift;
+    my $c = $self->context;
+
+    $c->response->status(404);
+    $c->stash->{'template'} = 'errors/404';
+    $c->detach;
+
+    return;
+}
+
 1;
 __END__
 

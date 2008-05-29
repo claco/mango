@@ -6,9 +6,11 @@ use warnings;
 BEGIN {
     use base qw/Mango::Catalyst::Controller/;
 
-    use Mango::Checkout   ();
-    use Handel::Constants ();
-    use Scalar::Util      ();
+    use Mango::Checkout       ();
+    use Handel::Constants     ();
+    use Scalar::Util          ();
+    use Class::Workflow       ();
+    use Class::Workflow::YAML ();
 
     $ENV{'HandelPluginPaths'} =
 'Mango::Checkout::Plugins, Mango::Catalyst::Checkout::Plugins, MyApp::Checkout::Plugins';
@@ -16,7 +18,22 @@ BEGIN {
     __PACKAGE__->config(
         resource_name => 'mango/checkout',
         form_directory =>
-          Path::Class::Dir->new( Mango->share, 'forms', 'checkout' )
+          Path::Class::Dir->new( Mango->share, 'forms', 'checkout' ),
+        workflow => {
+            initial_state => 'preview',
+            states        => [
+                {
+                    name        => 'preview',
+                    transitions => [
+                        {
+                            name     => 'edit',
+                            to_state => 'edit'
+                        }
+                    ]
+                },
+                { name => 'edit' }
+            ]
+        }
     );
 }
 
@@ -49,17 +66,40 @@ sub index : Template('checkout/index') {
     my ( $self, $c ) = @_;
 
     $c->response->redirect(
-        $c->uri_for_resource( 'mango/checkout', 'instance', 'preview' )
-          . '/' );
+        $c->uri_for_resource(
+            'mango/checkout', 'instance',
+            $self->workflow->new_instance->state
+          )
+          . '/'
+    );
 
     return;
 }
 
 sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
-    my ( $self, $c, $state ) = @_;
+    my ( $self, $c, $state ) = ( shift, shift, shift );
+    my $w = $self->workflow;
+    $w->initial_state($state);
+    my $wi = $self->workflow->new_instance;
 
-    use Carp ();
-    Carp::croak "STATE: $state";
+    if ( $self->workflow->get_state($state) ) {
+        if ( $self->can($state) ) {
+            $self->$state(@_);
+        } else {
+            $wi = [$wi->state->transitions]->[0]->apply($wi);
+            warn $wi->state;
+
+            $c->response->redirect(
+                $c->uri_for_resource(
+                    'mango/checkout', 'instance',
+                    $wi->state
+                  )
+                  . '/'
+            );
+        }
+    } else {
+        $self->not_found;
+    }
 
     return;
 }
@@ -124,6 +164,26 @@ sub order {
     }
 
     return $order;
+}
+
+sub workflow {
+    my $self = shift;
+    my $c    = $self->context;
+
+    if ( !$self->{'workflow_instance'} ) {
+        my $y        = Class::Workflow::YAML->new;
+        my $workflow = Class::Workflow->new;
+
+        $y->workflow_key('checkout');
+        $y->inflate_hash( $workflow,
+            defined $c->config->{'checkout'}
+            ? $c->config
+            : { checkout => $self->{'workflow'} } );
+
+        $self->{'workflow_instance'} = $workflow;
+    }
+
+    return $self->{'workflow_instance'};
 }
 
 1;
