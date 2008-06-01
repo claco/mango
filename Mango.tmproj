@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
+	<string>lib/Mango/Checkout/Workflow/State.pm</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,14 +26,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>83</integer>
+				<integer>30</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>16</integer>
+			<integer>12</integer>
+		</dict>
+		<key>lib/Mango/Checkout/Workflow.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>29</integer>
+				<key>line</key>
+				<integer>18</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>lib/Mango/Checkout/Workflow/State.pm</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>2</integer>
+				<key>line</key>
+				<integer>18</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>t/pod_syntax.t</key>
 		<dict>
@@ -52,11 +80,13 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
+		<string>lib/Mango/Checkout/Workflow.pm</string>
 		<string>lib/Mango/Catalyst/Controller/Checkout.pm</string>
+		<string>lib/Mango/Checkout/Workflow/State.pm</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1010, 31}, {979, 1143}}</string>
+	<string>{{933, 30}, {979, 1143}}</string>
 </dict>
 </plist>

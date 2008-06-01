@@ -17,3 +17,8 @@
 <hr />
 [% order.subtotal %]<br />
 [% order.total %]<br />
+
+
+<form method="post">
+<input type="submit" value="POST" />
+</form>
