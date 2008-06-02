@@ -1,6 +1,7 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+0.01000_13 Sun June 1 21:29:24 2008
     - Added redirect_to_login/redirect_from_login
     - Added start of Checkout including plugin loading from core, catalyst and
        then MyApp
@@ -8,6 +9,7 @@ This file documents the revision history for Perl extension Mango.
     - Now requires Handel 1.00011 for stash->clear fix
     - Start migration from CGI::FormBuilder to HTML::FormFu
     - Added W3C HTML/Atom/RSS validation checks to all live cat tests
+    - Started checkout workflow using Class::Workflow
 
 0.01000_12 Mon May 12 21:18:25 2008
     - Fixed various controllers to use Chained instead of index : Private

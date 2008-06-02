@@ -125,7 +125,7 @@ sub enable_rss_feed {
 
 sub not_found {
     my $self = shift;
-    my $c = $self->context;
+    my $c    = $self->context;
 
     $c->response->status(404);
     $c->stash->{'template'} = 'errors/404';
@@ -210,6 +210,10 @@ or 10 if no param is specified.
 
 Registers the current class name as a resource associated with the
 specified name.
+
+=head2 not_found
+
+Returns a 404 not found page for the current request.
 
 =head1 SEE ALSO
 

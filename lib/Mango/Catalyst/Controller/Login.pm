@@ -77,4 +77,3 @@ L<Mango::Catalyst::Plugin::Authentication>
     CPAN ID: CLACO
     claco@chrislaco.com
     http://today.icantfocus.com/blog/
-

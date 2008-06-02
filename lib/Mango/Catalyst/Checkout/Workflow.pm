@@ -18,7 +18,7 @@ sub BUILD {
             foreach my $item ( @{ $hash->{$key} } ) {
                 $self->$type(
                     ref $item
-                    ? ( ( ref $item eq "ARRAY" ) ? @{$item} : %{$item} )
+                    ? ( ( ref $item eq 'ARRAY' ) ? @{$item} : %{$item} )
                     : $item
                 );
             }
@@ -36,3 +36,40 @@ has '+state_class' =>
 __PACKAGE__->meta->make_immutable;
 
 1;
+__END__
+
+=head1 NAME
+
+Mango::Catalyst::Checkout::Workflow - Workflow class for the checkout process
+
+=head1 SYNOPSIS
+
+    sub foo : Local {
+        my ($self, $c) = @_;
+        my $wi = $self->workflow->new_instance;
+        my $t = $wi->get_transition('bar');
+        $wi = $t->apply($wi);
+        ...
+    }
+
+=head1 DESCRIPTION
+
+Mango::Catalyst::Checkout::Workflow provides the workflow for the checkout
+process; determining which steps or pages happen in what order.
+
+=head1 METHODS
+
+=head2 BUILD
+
+Parses the workflow config and creates new workflow/state objects.
+
+=head1 SEE ALSO
+
+L<Class::Workflow>
+
+=head1 AUTHOR
+
+    Christopher H. Laco
+    CPAN ID: CLACO
+    claco@chrislaco.com
+    http://today.icantfocus.com/blog/

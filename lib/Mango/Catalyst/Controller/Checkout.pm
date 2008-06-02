@@ -18,7 +18,8 @@ BEGIN {
         resource_name => 'mango/checkout',
         form_directory =>
           Path::Class::Dir->new( Mango->share, 'forms', 'checkout' ),
-        workflow => {
+        workflow_class => 'Mango::Catalyst::Checkout::Workflow',
+        workflow       => {
             initial_state => 'preview_GET',
             states        => [
                 {
@@ -81,7 +82,8 @@ sub auto : Private {
 
 sub index : Template('checkout/index') {
     my ( $self, $c ) = @_;
-    my $state = $self->workflow->new_instance->state->name;
+    my $wi    = $self->workflow->new_instance;
+    my $state = $wi->state->name;
     my ($name) = ( $state =~ /^(.*)_/ );
 
     $c->response->redirect(
@@ -100,8 +102,10 @@ sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
         if ( $self->can($state) ) {
             $self->$state(@_);
         } else {
-            my $checkout = $state->checkout;
+            $c->stash->{'template'} = $state->template
+              || 'checkout/' . $state->short_name;
 
+            my $checkout = $state->checkout;
             $checkout->order( $self->order );
             $checkout->stash( $c->stash );
 
@@ -113,15 +117,11 @@ sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
             }
 
             if ( my $transition = [ $state->transitions ]->[0] ) {
-                warn 'TRANSITION: ', $transition;
-                warn 'STATE: ', $state;
                 $wi = $transition->apply($wi);
-                warn 'WI: ', $wi;
-                my ($name) = ($wi->state->name =~ /^(.*)_/);
 
                 $c->response->redirect(
                     $c->uri_for_resource( 'mango/checkout', 'instance',
-                        $name )
+                        $state->short_name )
                       . '/'
                 );
             }
@@ -196,15 +196,18 @@ sub order {
 }
 
 sub workflow {
-    my $self = shift;
-    my $c    = $self->context;
+    my ( $self, $workflow ) = @_;
+    my $c = $self->context;
+    $self->{'workflow_class'} ||= 'Mango::Catalyst::Checkout::Workflow';
 
     if ( !$self->{'workflow_instance'} ) {
-        my $workflow = Mango::Catalyst::Checkout::Workflow->new(
-            defined $c->config->{'checkout'}
-            ? %{ $c->config->{'checkout'} }
-            : %{ $self->{'workflow'} }
-        );
+        if ( !$workflow ) {
+            $workflow = $self->{'workflow_class'}->new(
+                defined $c->config->{'checkout'}
+                ? %{ $c->config->{'checkout'} }
+                : %{ $self->{'workflow'} }
+            );
+        }
 
         $self->{'workflow_instance'} = $workflow;
     }
@@ -249,6 +252,16 @@ pipeline.
 =head2 order
 
 Returns the order for the users current checkout process.
+
+=head2 workflow
+
+=over
+
+=item Arguments: $workflow
+
+=back
+
+Gets/sets the Class::Workflow instance used for the checkout controller.
 
 =head1 SEE ALSO
 

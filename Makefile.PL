@@ -27,6 +27,7 @@ requires 'Catalyst::View::TT';
 requires 'CGI::FormBuilder';
 requires 'Class::Accessor::Grouped' => '0.06000';
 requires 'Class::Inspector';
+requires 'Class::Workflow';
 requires 'Clone' => '0.27';
 requires 'DateTime';
 requires 'DBIx::Class' => '0.08008';
