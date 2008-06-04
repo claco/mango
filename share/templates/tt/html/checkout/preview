@@ -1,0 +1,23 @@
+[% order.billtofirstname %]<br />
+[% order.billtolastname %]<br />
+[% order.billtoemail %]<br />
+<hr />
+[% order.shiptosameasbillto %]<br />
+[% order.shiptofirstname %]<br />
+[% order.shiptolastname %]<br />
+[% order.shiptoemail %]<br />
+<hr />
+[% FOREACH item = order.items %]
+	[% item.sku %]<br />
+	[% item.quantity %]<br />
+	[% item.price %]<br />
+	[% item.total %]<br />
+[% END %]
+<hr />
+[% order.subtotal %]<br />
+[% order.total %]<br />
+
+
+<form method="post">
+<input type="submit" value="POST" />
+</form>

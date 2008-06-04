@@ -93,14 +93,16 @@ sub index : Template('checkout/index') {
 }
 
 sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
-    my ( $self, $c, $state ) = ( shift, shift, shift );
+    my ( $self, $c, $name ) = ( shift, shift, shift );
     my $w = $self->workflow;
 
-    if ( $state = $w->get_state( $state . '_' . $c->request->method ) ) {
-        my $wi = $w->new_instance( state => $state );
+    if ( my $state = $w->get_state( $name . '_' . $c->request->method ) ) {
+        $self->workflow_instance( $w->new_instance( state => $state ) );
 
         if ( $self->can($state) ) {
-            $self->$state(@_);
+            if ( !$self->$state(@_) ) {
+                return;
+            }
         } else {
             $c->stash->{'template'} = $state->template
               || 'checkout/' . $state->short_name;
@@ -117,14 +119,18 @@ sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
             }
 
             if ( my $transition = [ $state->transitions ]->[0] ) {
-                $wi = $transition->apply($wi);
-
-                $c->response->redirect(
-                    $c->uri_for_resource( 'mango/checkout', 'instance',
-                        $state->short_name )
-                      . '/'
-                );
+                $self->workflow_instance(
+                    $transition->apply( $self->workflow_instance ) );
             }
+        }
+
+        my $wi = $self->workflow_instance;
+        if ( $name ne $wi->state->short_name ) {
+            $c->response->redirect(
+                $c->uri_for_resource( 'mango/checkout', 'instance',
+                    $wi->state->short_name )
+                  . '/'
+            );
         }
     } else {
         $self->not_found;
@@ -213,6 +219,19 @@ sub workflow {
     }
 
     return $self->{'workflow_instance'};
+}
+
+sub workflow_instance {
+    my ( $self, $instance ) = @_;
+    my $c = $self->context;
+
+    if ($instance) {
+        $c->stash->{'__workflow_instance'} = $instance;
+    } elsif ( !$c->stash->{'__workflow_instance'} ) {
+        $c->stash->{'__workflow_instance'} = $self->workflow->new_instance;
+    }
+
+    return $c->stash->{'__workflow_instance'};
 }
 
 1;
