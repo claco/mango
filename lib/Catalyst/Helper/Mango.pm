@@ -9,7 +9,7 @@ BEGIN {
     use Catalyst::Utils;
     use DateTime;
     use Path::Class qw/file dir/;
-    use YAML;
+    use Config::General;
     use Mango::Schema;
 }
 
@@ -215,9 +215,9 @@ Adds the necessary config changes to myapp.yml.
 =cut
 
 sub mk_config {
-    my $self   = shift;
-    my $file   = file( $self->{'dir'}, $self->{'appprefix'} . '.yml' );
-    my $config = YAML::LoadFile($file);
+    my $self = shift;
+    my $file = file( $self->{'dir'}, $self->{'appprefix'} . '.conf' );
+    my $config = { Config::General::ParseConfig($file) };
 
     $config->{'authentication'} = {
         default_realm => 'mango',
@@ -235,14 +235,14 @@ sub mk_config {
             }
         }
     };
-    $config->{'connection_info'} = ['dbi:SQLite:data/mango.db'];
+    $config->{'connection_info'} = ['dbi:SQLite:data/mango.db', '', ''];
     $config->{'default_view'}    = 'XHTML';
     $config->{'authorization'}->{'mango'}->{'admin_role'} =
       $self->{'adminrole'};
     $config->{'cache'}->{'backend'}->{'store'} = 'Memory';
     $config->{'email'} = 'webmaster@example.com';
 
-    YAML::DumpFile( $file, $config );
+    Config::General::SaveConfig( $file, $config );
 
     return;
 }

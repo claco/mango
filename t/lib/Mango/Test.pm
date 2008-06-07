@@ -11,7 +11,7 @@ BEGIN {
     use DateTime ();
     use File::Temp ();
     use Path::Class ();
-    use YAML ();
+    use Config::General ();
 };
 
 ## cribbed and modified from DBICTest in DBIx::Class tests
@@ -215,12 +215,12 @@ sub mk_app {
     chdir $temp;
     $helper->mk_app($app);
 
-    my $config_file = YAML::LoadFile(
-        Path::Class::file($app, "$prefix.yml")
-    );
+    my $config_file = {Config::General::ParseConfig(
+        Path::Class::file($app, "$prefix.conf")
+    )};
     $config_file->{'connection_info'}->[0] = 'dbi:SQLite:' . Path::Class::file($temp, @dir, 'data', 'mango.db');
     my $merged = Catalyst::Utils::merge_hashes($config_file, $config);
-    YAML::DumpFile(Path::Class::file($app, "$prefix.yml"), $merged);
+    Config::General::SaveConfig(Path::Class::file($app, "$prefix.conf"), $merged);
 
     chdir($cwd);
 

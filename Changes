@@ -1,6 +1,9 @@
 # $Id$
 This file documents the revision history for Perl extension Mango.
 
+    - Require Catalyst::Devel 1.07 that now uses .conf instead of .yml
+    - Converted helper/tests to use .conf instead of .yml :-)
+
 0.01000_13 Sun June 1 21:29:24 2008
     - Added redirect_to_login/redirect_from_login
     - Added start of Checkout including plugin loading from core, catalyst and

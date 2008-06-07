@@ -282,6 +282,16 @@ Returns the order for the users current checkout process.
 
 Gets/sets the Class::Workflow instance used for the checkout controller.
 
+=head2 workflow_instance
+
+=over
+
+=item Arguments: $workflow_instance
+
+=back
+
+Gets/sets the Class::Workflow instance used for the current request.
+
 =head1 SEE ALSO
 
 L<Mango::Checkout>, L<Handel::Checkout>
