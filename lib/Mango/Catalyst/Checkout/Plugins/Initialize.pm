@@ -11,7 +11,7 @@ BEGIN {
 sub register {
     my ( $self, $ctx ) = @_;
 
-    $ctx->add_handler( CHECKOUT_PHASE_INITIALIZE, \&initialize, 100 );
+    $ctx->add_handler( 'INITIALIZE', \&initialize, 100 );
 
     return;
 }
@@ -21,6 +21,9 @@ sub initialize {
     my $order   = $ctx->order;
     my $c       = $ctx->stash->{'c'};
     my $profile = $c->user->profile;
+
+    use Carp ();
+    Carp::carp 'INIT FROM MANGO CAT PLUGIN';
 
     ## this sohuld really be in core
     $order->billtofirstname( $profile->first_name );

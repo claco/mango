@@ -24,13 +24,17 @@ BEGIN {
             states        => [
                 {
                     name        => 'preview_GET',
-                    phases      => [qw/CHECKOUT_PHASE_PREVIEW/],
-                    loadplugins => [qw/Plugin::GetShippingOptions/],
+                    checkout    => {
+                        phases      => [qw/PREVIEW/],
+                        loadplugins => [qw/Plugin::GetShippingOptions/]
+                    }
                 },
                 {
                     name        => 'preview_POST',
-                    phases      => [qw/CHECKOUT_PHASE_PREVIEW/],
-                    loadplugins => [qw/Plugin::ApplyShipping/],
+                    checkout    => {
+                        phases      => [qw/PREVIEW/],
+                        loadplugins => [qw/Plugin::ApplyShipping/]
+                    },
                     transitions => [
                         {
                             name     => 'edit',
@@ -38,11 +42,19 @@ BEGIN {
                         }
                     ],
                 },
-                { name => 'edit_GET' },
+                {
+                    name => 'edit_GET',
+                    checkout => {
+                        phases => ['EDIT'],
+                        loadplugins => [qw/Mango::Catalyst::Checkout::Plugins::Edit/]
+                    }
+                },
                 {
                     name        => 'edit_POST',
-                    phases      => [qw/CHECKOUT_PHASE_EDIT/],
-                    loadplugins => [qw/Plugin::ScrubAddress/],
+                    checkout    => {
+                        phases      => [qw/EDIT/],
+                        loadplugins => [qw/Plugin::ScrubAddress/]
+                    },
                     transitions => [
                         {
                             name     => 'preview',
@@ -107,14 +119,19 @@ sub instance : Chained('/') PathPrefix Args(1) Template('checkout/index') {
             $c->stash->{'template'} = $state->template
               || 'checkout/' . $state->short_name;
 
+            $c->stash->{'form'} = $self->form($state->short_name);
+
             my $checkout = $state->checkout;
             $checkout->order( $self->order );
             $checkout->stash( $c->stash );
-
+warn $checkout->phases;
+warn $checkout->plugins;
             if ( $checkout->process != Handel::Constants::CHECKOUT_STATUS_OK )
             {
+                warn "ERRORS";
                 $c->stash->{'errors'} = $checkout->messages;
             } else {
+                warn "OK";
                 $checkout->order->update;
             }
 
@@ -149,7 +166,7 @@ sub initialize {
     my $checkout = Mango::Checkout->new(
         {
             order  => $order,
-            phases => 'CHECKOUT_PHASE_INITIALIZE',
+            phases => ['INITIALIZE'],
             stash  => $c->stash
         }
     );

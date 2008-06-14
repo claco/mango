@@ -68,7 +68,7 @@ __END__
 
 =head1 NAME
 
-Mango::Catalyst::Controller::Carts::Items - Catalyst controller for cart item information
+Mango::Catalyst::Controller::Cart::Items - Catalyst controller for cart item information
 
 =head1 SYNOPSIS
 

@@ -11,14 +11,6 @@ BEGIN {
     extends 'Class::Workflow::State::Simple';
 }
 
-sub BUILD {
-    my ( $self, $hash ) = @_;
-
-    $self->checkout($hash);
-
-    return;
-}
-
 subtype 'Checkout' => as 'Object' => where { $_->isa('Mango::Checkout') };
 
 coerce 'Checkout' => from 'HashRef' => via { Mango::Checkout->new($_) };

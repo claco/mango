@@ -179,6 +179,7 @@ sub _parse_fields {
         $type =~ s/password/Password/i;
         $type =~ s/select/Select/i;
         $type =~ s/checkbox/Checkbox/i;
+        $type =~ s/fieldset/Fieldset/i;
 
         if (   $type eq 'Checkbox'
             && exists $field->{'multiple'}
@@ -186,7 +187,7 @@ sub _parse_fields {
         {
             $type = 'Checkboxgroup';
         }
-        if ( $type ne 'Submit' ) {
+        if ( $type !~ /Submit|Fieldset/i ) {
             if (   !exists $field->{'label'}
                 && !exists $field->{'label_loc'}
                 && !exists $field->{'label_xml'} )
@@ -196,8 +197,12 @@ sub _parse_fields {
         }
 
         ## migrate disabled
-        $field->{'force_default'}  = delete $field->{'force'};
-        $field->{'retain_default'} = $field->{'force_default'};
+        if (exists $field->{'force'}) {
+            $field->{'force_default'}  = delete $field->{'force'};
+        }
+        if (exists $field->{'force_default'}) {
+            $field->{'retain_default'} = $field->{'force_default'};
+        }
         if ( exists $field->{'disabled'} ) {
             $field->{'attributes'}->{'disabled'} =
               delete $field->{'disabled'};

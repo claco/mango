@@ -317,6 +317,9 @@ sub mk_controllers {
         file( $c, 'Admin', 'Products', 'Attributes.pm' )
     );
 
+    ## checkout
+    $self->render_file( 'controller_checkout',  file( $c, 'Checkout.pm' ) );
+
     ## current user
     $self->mk_dir( dir( $c, 'Cart' ) );
     $self->mk_dir( dir( $c, 'Wishlists' ) );
@@ -502,6 +505,16 @@ use warnings;
 
 BEGIN {
     use base qw/Mango::Catalyst::Controller::Root/;
+};
+
+1;
+__controller_checkout__
+package [% name %]::Controller::Checkout;
+use strict;
+use warnings;
+
+BEGIN {
+    use base qw/Mango::Catalyst::Controller::Checkout/;
 };
 
 1;

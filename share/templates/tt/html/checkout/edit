@@ -1,6 +1,1 @@
 [% form.render %]
-
-
-<form method="post">
-<input type="submit" value="POST" />
-</form>

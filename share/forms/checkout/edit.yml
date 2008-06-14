@@ -1,0 +1,29 @@
+# $Id$
+---
+id: checkout_edit
+method: post
+submit: BUTTON_LABEL_CONTINUE
+auto_fieldset:
+  attributes:
+    class: billing_fieldset
+fields:
+  - billtofirstname:
+      type: text
+      constraints:
+        - NOT_BLANK
+  - billtofirstname:
+      type: text
+      constraints:
+        - NOT_BLANK
+  - fieldset:
+      type: fieldset
+      attributes:
+        class: shipping_fieldset
+  - shiptofirstname:
+      type: text
+      constraints:
+        - NOT_BLANK
+  - fieldset:
+      type: fieldset
+      attributes:
+        class: shipping_fieldset
