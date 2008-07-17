@@ -197,7 +197,7 @@ sub mk_plugins {
 
     if ( $contents !~ /\+Mango::Catalyst::Plugin/i ) {
         $contents =~
-s/-Debug ConfigLoader/\n    -Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    Cache\n    Cache::Store::Memory\n    +Mango::Catalyst::Plugin::Application\n   /;
+s/use Catalyst qw\/-Debug\s+ConfigLoader/use Catalyst qw\/-Debug\n    ConfigLoader\n    Session\n    Session::Store::File\n    Session::State::Cookie\n    Cache\n    Cache::Store::Memory\n    +Mango::Catalyst::Plugin::Application/;
 
         my $io = $file->open('>');
         $io->print($contents);

@@ -5,6 +5,7 @@
 ,B$
 ,D$
 \B\.svn\b
+\B\.git\b
 aegis.log$
 \bconfig$
 \bbuild$
