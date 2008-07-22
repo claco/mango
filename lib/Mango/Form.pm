@@ -197,10 +197,10 @@ sub _parse_fields {
         }
 
         ## migrate disabled
-        if (exists $field->{'force'}) {
-            $field->{'force_default'}  = delete $field->{'force'};
+        if ( exists $field->{'force'} ) {
+            $field->{'force_default'} = delete $field->{'force'};
         }
-        if (exists $field->{'force_default'}) {
+        if ( exists $field->{'force_default'} ) {
             $field->{'retain_default'} = $field->{'force_default'};
         }
         if ( exists $field->{'disabled'} ) {

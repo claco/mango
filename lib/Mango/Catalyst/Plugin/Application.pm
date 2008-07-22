@@ -11,6 +11,7 @@ BEGIN {
       Mango::Catalyst::Plugin::Forms
       /;
 
+    use Catalyst::Utils ();
     use URI ();
 }
 
@@ -30,12 +31,15 @@ sub register_resource {
 sub uri_for_resource {
     my ( $self, $name, $action, @args ) = @_;
     my $class = $self->config->{'mango'}->{'controllers'}->{$name};
+    my $prefix = Catalyst::Utils::class2classprefix($class);
+    
+    $class =~ s/$prefix\:\://;
 
     if ( !$class ) {
         return;
     }
 
-    my $controller = $self->controller( $class . '$' );
+    my $controller = [$self->controller(qr/^$class$/)]->[0];
     $action = $controller->action_for( $action || 'index' );
 
     return $self->uri_for( $action, @args );

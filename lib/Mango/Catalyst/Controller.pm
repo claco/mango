@@ -21,12 +21,6 @@ sub COMPONENT {
     return $self;
 }
 
-sub _parse_PathPrefix_attr {
-    my ( $self, $c, $name, $value ) = @_;
-
-    return PathPart => $self->path_prefix;
-}
-
 sub _parse_Chained_attr {
     my ( $self, $c, $name, $value ) = @_;
 
