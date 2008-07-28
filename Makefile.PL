@@ -22,7 +22,7 @@ requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::State::Cookie';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Runtime' => '5.7012';
+requires 'Catalyst::Runtime' => '5.7100';
 requires 'Catalyst::View::TT';
 requires 'Class::Accessor::Grouped' => '0.06000';
 requires 'Class::Inspector';
