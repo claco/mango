@@ -18,16 +18,26 @@ sub share {
         $self->set_inherited( 'share', $share );
     }
 
+    #if ($INC{'Mango.pm'} =~ /blib/) {
+    #    return dir( $INC{'Mango.pm'} )->parent->parent->parent->subdir('share');
+    #}
+
     return
-         $ENV{'MANGO_SHARE'}
-      || $self->get_inherited('share')
-      ||
+        $ENV{'MANGO_SHARE'} ||
+        $self->get_inherited('share') ||
 
-      ## use share, unless errors on local -I no share
-      eval { File::ShareDir::module_dir('Mango') } ||
+        ## blib?
+        (
+            $INC{'Mango.pm'} =~ /blib/ ?
+            dir( $INC{'Mango.pm'} )->parent->parent->parent->subdir('share') :
+            undef
+        ) || 
 
-      ## try for -Ilib/Mango.pm../../share
-      dir( $INC{'Mango.pm'} )->parent->parent->subdir('share');
+        ## use share, unless errors on local -I no share
+        eval { File::ShareDir::module_dir('Mango') } ||
+
+        ## try for -Ilib/Mango.pm../../share
+        dir( $INC{'Mango.pm'} )->parent->parent->subdir('share');
 }
 
 1;
