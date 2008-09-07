@@ -128,7 +128,7 @@ sub validate_feed {
                 fail "content is not valid at $package line $line" or diag $message;;
             }
         } else {
-            fail('Failed to validate the content: ' . $v->validator_error);
+            fail('Failed to validate the content: ' . $v->errors);
         }
     };
 }
