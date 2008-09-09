@@ -1,18 +1,39 @@
 # $Id$
 package Mango::Object;
-use strict;
-use warnings;
+use Moose;
 
 BEGIN {
-    use base qw/Class::Accessor::Grouped/;
+    use Class::Accessor::Grouped;
     use English '-no_match_vars';
     use Mango::Object::Meta;
-
-    __PACKAGE__->mk_group_accessors( 'simple', qw/_meta_data _meta_object/ );
-    __PACKAGE__->mk_group_accessors( 'column', qw/id created updated/ );
-    __PACKAGE__->mk_group_accessors( 'component_class', qw/meta_class/ );
 }
-__PACKAGE__->meta_class('Mango::Object::Meta');
+
+sub mk_group_accessors {
+    my ($class, $group, @accessors) = @_;
+
+    foreach my $accessor (@accessors) {
+        my $getter = "get_$group";
+        my $setter = "set_$group";
+        my $field = $accessor;
+
+        ($accessor, $field) = @$accessor if ref $accessor;
+
+        has $field => (
+            accessor => $accessor,
+            is => 'rw'
+        );
+        before $accessor => sub {
+            scalar @_ > 1 ?
+                return shift->$setter($field, @_) :
+                return shift->$getter($field);
+        } if $group ne 'simple';
+    }
+}
+
+__PACKAGE__->mk_group_accessors('column', qw/id created updated/ );
+__PACKAGE__->mk_group_accessors('simple', qw/_meta_data _meta_object/ );
+__PACKAGE__->mk_group_accessors( 'component_class', [meta_class => '_meta_class'] );
+#__PACKAGE__->meta_class('Mango::Object::Meta');
 
 sub new {
     my $class = shift;
@@ -24,22 +45,28 @@ sub new {
 
     if ( my $meta_class = delete $self->{'meta_class'} ) {
         $self->meta_class($meta_class);
+    } else {
+        $self->meta_class('Mango::Object::Meta');
     }
 
     return $self;
 }
 
-sub meta {
-    my $self = shift;
+{
+    no warnings 'redefine';
 
-    if ( !$self->_meta_object ) {
-        if ( !$self->_meta_data ) {
-            $self->_meta_data( {} );
+    sub meta {
+        my $self = shift;
+
+        if ( !$self->_meta_object ) {
+            if ( !$self->_meta_data ) {
+                $self->_meta_data( {} );
+            }
+            $self->_meta_object( ($self->meta_class)->new( $self->_meta_data ) );
         }
-        $self->_meta_object( $self->meta_class->new( $self->_meta_data ) );
-    }
 
-    return $self->_meta_object;
+        return $self->_meta_object;
+    }
 }
 
 sub get_column {
@@ -84,7 +111,7 @@ sub update {
 sub get_component_class {
     my ( $self, $field ) = @_;
 
-    return $self->get_inherited($field);
+    return Class::Accessor::Grouped::get_inherited($self, $field);
 }
 
 sub set_component_class {
@@ -101,7 +128,7 @@ sub set_component_class {
             }
         }
 
-        $self->set_inherited( $field, $value );
+        Class::Accessor::Grouped::set_inherited( $self, $field, $value );
     } else {
         Mango::Exception->throw( 'COMPCLASS_NOT_SPECIFIED', $field );
     }

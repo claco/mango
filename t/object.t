@@ -5,7 +5,7 @@ use warnings;
 
 BEGIN {
     use lib 't/lib';
-    use Test::More tests => 31;
+    use Test::More tests => 42;
 
     use_ok('Mango::Object');
     use_ok('Mango::Object::Meta');
@@ -61,11 +61,12 @@ BEGIN {
 
 ## create a new object
 {
+    my $provider = Mango::Provider->new;
     my $object = Mango::Object->new({
         col1 => 'Foo',
         col2 => 'Bar',
         meta => {
-            provider => 'Baz'
+            provider => $provider
         }
     });
 
@@ -74,7 +75,7 @@ BEGIN {
     is($object->get_column('col2'), 'Bar');
 
     isa_ok($object->meta, 'Mango::Object::Meta');
-    is($object->meta->provider, 'Baz');
+    is($object->meta->provider, $provider);
 
     my %columns = $object->get_columns;
     is(scalar keys %columns, 2);
@@ -89,20 +90,55 @@ BEGIN {
 };
 
 
-## use another meta class
+## check id/created/updates
 {
+    my $provider = Mango::Provider->new;
     my $object = Mango::Object->new({
-        meta_class => 'Mango::Test::Meta',
+        id => 'Foo',
+        created => 'Bar',
+        updated => 'Baz',
         meta => {
-            provider => 'Foo'
+            provider => $provider
         }
     });
 
     isa_ok($object, 'Mango::Object');
-    is(Mango::Object->meta_class, 'Mango::Object::Meta');
+    is($object->id, 'Foo');
+    is($object->created, 'Bar');
+    is($object->updated, 'Baz');
+
+    isa_ok($object->meta, 'Mango::Object::Meta');
+    is($object->meta->provider, $provider);
+
+    my %columns = $object->get_columns;
+    is(scalar keys %columns, 3);
+    is($columns{'id'}, $object->id);
+    is($columns{'created'}, $object->created);
+    is($columns{'updated'}, $object->updated);
+
+    $object->id('Quix');
+    is($object->id, 'Quix');
+
+    my %columns2 = $object->get_columns;
+    is(scalar keys %columns2, 3);
+};
+
+
+## use another meta class
+{
+    my $provider = Mango::Provider->new;
+    my $object = Mango::Object->new({
+        meta_class => 'Mango::Test::Meta',
+        meta => {
+            provider => $provider
+        }
+    });
+
+    isa_ok($object, 'Mango::Object');
+    #is(Mango::Object->meta_class, 'Mango::Object::Meta');
     is($object->meta_class, 'Mango::Test::Meta');
     isa_ok($object->meta, 'Mango::Test::Meta');
-    is($object->meta->provider, 'Foo');
+    is($object->meta->provider, $provider);
 };
 
 

@@ -1,19 +1,18 @@
 # $Id$
 package Mango::Object::Meta;
-use strict;
-use warnings;
+use Moose;
 
-BEGIN {
-    use base qw/Class::Accessor::Grouped/;
+# TODO: Fix this to use Object instead of Any
+has 'parent' => (
+    is => 'rw',
+    isa => 'Any',
+    weak_ref => 1
+);
 
-    __PACKAGE__->mk_group_accessors( 'simple', qw/provider parent/ );
-}
-
-sub new {
-    my ( $class, $args ) = @_;
-
-    return bless $args, $class;
-}
+has 'provider' => (
+    is => 'rw',
+    isa => 'Mango::Provider'
+);
 
 1;
 __END__
