@@ -9,6 +9,7 @@ license 'perl';
 perl_version '5.008001';
 all_from 'lib/Mango.pm';
 
+requires 'Moose';
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Action::REST' => '0.60';
 requires 'Catalyst::Component::ACCEPT_CONTEXT' => '0.05';
