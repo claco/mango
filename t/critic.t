@@ -8,6 +8,7 @@ BEGIN {
     use Test::More;
 
     plan skip_all => 'set TEST_AUTHOR to enable this test' unless $ENV{TEST_AUTHOR};
+    plan skip_all => 'Disabled during conversion';
 
     eval 'use Test::Perl::Critic 1.01';
     plan skip_all => 'Test::Perl::Critic 1.01 not installed' if $@;

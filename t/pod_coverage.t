@@ -18,7 +18,7 @@ BEGIN {
 
 my $trustme = {
     trustme =>
-    [qr/^(ACCEPT_CONTEXT|COMPONENT|destroy|setup|create_result|type|save|begin|end|auto)$/]
+    [qr/^(ACCEPT_CONTEXT|COMPONENT|destroy|setup|create_result|type|save|begin|end|auto|mk_group_accessors)$/]
 };
 
 all_pod_coverage_ok($trustme);

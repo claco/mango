@@ -8,24 +8,24 @@ BEGIN {
     use Handel::Constants qw(:checkout);
 }
 
-sub register {
-    my ( $self, $ctx ) = @_;
-warn "REG";
+#sub register {
+#    my ( $self, $ctx ) = @_;
+#warn "REG";
+#
+#    $ctx->add_handler( 'EDIT', \&edit);
+#
+#    return;
+#}
 
-    $ctx->add_handler( 'EDIT', \&edit);
-
-    return;
-}
-
-sub edit {
-    warn "EDIT";
-    my ( $self, $ctx ) = @_;
-    my $order   = $ctx->order;
-    my $c       = $ctx->stash->{'c'};
-    my $profile = $c->user->profile;
-
-    return CHECKOUT_HANDLER_OK;
-}
+#sub edit {
+#    warn "EDIT";
+#    my ( $self, $ctx ) = @_;
+#    my $order   = $ctx->order;
+#    my $c       = $ctx->stash->{'c'};
+#    my $profile = $c->user->profile;
+#
+#    return CHECKOUT_HANDLER_OK;
+#}
 
 1;
 __END__

@@ -1,39 +1,17 @@
 # $Id$
 package Mango::Object;
-use Moose;
+use strict;
+use warnings;
 
 BEGIN {
-    use Class::Accessor::Grouped;
+    use base 'Class::Accessor::Grouped';
     use English '-no_match_vars';
-    use Mango::Object::Meta;
-}
-
-sub mk_group_accessors {
-    my ($class, $group, @accessors) = @_;
-
-    foreach my $accessor (@accessors) {
-        my $getter = "get_$group";
-        my $setter = "set_$group";
-        my $field = $accessor;
-
-        ($accessor, $field) = @$accessor if ref $accessor;
-
-        has $field => (
-            accessor => $accessor,
-            is => 'rw'
-        );
-        before $accessor => sub {
-            scalar @_ > 1 ?
-                return shift->$setter($field, @_) :
-                return shift->$getter($field);
-        } if $group ne 'simple';
-    }
 }
 
 __PACKAGE__->mk_group_accessors('column', qw/id created updated/ );
 __PACKAGE__->mk_group_accessors('simple', qw/_meta_data _meta_object/ );
 __PACKAGE__->mk_group_accessors( 'component_class', [meta_class => '_meta_class'] );
-#__PACKAGE__->meta_class('Mango::Object::Meta');
+__PACKAGE__->meta_class('Mango::Object::Meta');
 
 sub new {
     my $class = shift;

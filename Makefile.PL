@@ -54,6 +54,7 @@ requires 'XML::Feed' => '0.12';
 requires 'XML::RSS' => '1.31';
 requires 'YAML';
 
+
 build_requires 'Directory::Scratch';
 
 test_requires 'Test::Class';
@@ -75,3 +76,10 @@ eval {
 
 auto_install;
 WriteAll;
+
+if (eval 'require DBD::SQLite') {
+    if (DBD::SQLite->VERSION =~ /1.1(3|4)/) {
+        print "\n\nWARNING: DBD::SQLite 1.13/1.14 may cause segfaults.\n";
+        print "Please downgrade to 1.12 if possible.\n\n";
+    }
+}
