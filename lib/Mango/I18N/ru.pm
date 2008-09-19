@@ -10,7 +10,11 @@ BEGIN {
     use base qw/Mango::I18N/;
 }
 
-%Lexicon = ( Language => 'русском' );
+%Lexicon = (
+    Language => 'русском',
+
+    RESOURCE_NOT_FOUND => 'Resource Not Found Ru',
+);
 
 1;
 __END__

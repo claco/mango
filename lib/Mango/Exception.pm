@@ -1,16 +1,13 @@
 # $Id$
 package Mango::Exception;
-use strict;
-use warnings;
 
 BEGIN {
-    use base qw/Error/;
-
     use List::MoreUtils ();
-    use Mango::I18N qw/translate/;
-}
+    use Mango::I18N ();
+    use Moose 'extends';
 
-my $lh = Mango::I18N->get_handle;
+    extends 'Error';
+}
 
 sub new {
     my $class = shift;
@@ -19,7 +16,7 @@ sub new {
     if ( List::MoreUtils::any( sub { $_ =~ /^-/ }, @_ ) ) {
         my %args = @_;
         my $message =
-          translate( delete $args{'-text'} || 'UNHANDLED_EXCEPTION' );
+          Mango::I18N::translate( delete $args{'-text'} || 'UNHANDLED_EXCEPTION' );
 
         return $class->SUPER::new(
             -text => $message,
@@ -28,7 +25,7 @@ sub new {
         ## just a message/params
     } else {
         return $class->SUPER::new(
-            -text => translate( shift || 'UNHANDLED_EXCEPTION', @_ ) );
+            -text => Mango::I18N::translate( shift || 'UNHANDLED_EXCEPTION', @_ ) );
     }
 }
 
