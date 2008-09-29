@@ -1,44 +1,52 @@
 # $Id$
 package Mango;
-use strict;
-use warnings;
+use Moose;
+use MooseX::ClassAttribute;
+use MooseX::Types::Path::Class 'Dir';
 
-our $VERSION = '0.01000_13';
+our $VERSION = '0.01000_14';
 
 BEGIN {
-    use base qw/Class::Accessor::Grouped/;
     use File::ShareDir ();
-    use Path::Class qw/dir/;
+    use Path::Class    ();
 }
 
-sub share {
-    my ( $self, $share ) = @_;
+class_has 'share' => (
+    is     => 'rw',
+    isa    => Dir,
+    coerce => 1
+);
+
+around 'share' => sub {
+    my ( $next, $self, $share ) = @_;
+    my $dir = Path::Class::dir( $INC{'Mango.pm'} );
 
     if ($share) {
-        $self->set_inherited( 'share', $share );
+        $next->( $self, $share );
     }
 
-    #if ($INC{'Mango.pm'} =~ /blib/) {
-    #    return dir( $INC{'Mango.pm'} )->parent->parent->parent->subdir('share');
-    #}
+    return Path::Class::Dir->new(
+             $ENV{'MANGO_SHARE'}
+          || $self->meta->get_class_attribute_value('share')
+          ||
 
-    return
-        $ENV{'MANGO_SHARE'} ||
-        $self->get_inherited('share') ||
+          ## blib?
+          (
+              $INC{'Mango.pm'} =~ /blib/
+            ? $dir->parent->parent->parent->subdir('share')
+            : undef
+          )
+          ||
 
-        ## blib?
-        (
-            $INC{'Mango.pm'} =~ /blib/ ?
-            dir( $INC{'Mango.pm'} )->parent->parent->parent->subdir('share') :
-            undef
-        ) || 
+          ## use share, unless errors on local -I no share
+          eval { File::ShareDir::module_dir('Mango') } ||
 
-        ## use share, unless errors on local -I no share
-        eval { File::ShareDir::module_dir('Mango') } ||
+          ## try for -Ilib/Mango.pm../../share
+          $dir->parent->parent->subdir('share')
+    );
+};
 
-        ## try for -Ilib/Mango.pm../../share
-        dir( $INC{'Mango.pm'} )->parent->parent->subdir('share');
-}
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
