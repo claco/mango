@@ -1,17 +1,44 @@
-# $Id$
 package Mango::Object;
-use strict;
-use warnings;
+use Moose;
+use MooseX::Types::DateTime;
+use English '-no_match_vars';
 
-BEGIN {
-    use base 'Class::Accessor::Grouped';
-    use English '-no_match_vars';
-}
+extends 'Class::Accessor::Grouped';
 
-__PACKAGE__->mk_group_accessors('column', qw/id created updated/ );
-__PACKAGE__->mk_group_accessors('simple', qw/_meta_data _meta_object/ );
-__PACKAGE__->mk_group_accessors( 'component_class', [meta_class => '_meta_class'] );
+__PACKAGE__->mk_group_accessors( 'column', qw/id created updated/ );
+__PACKAGE__->mk_group_accessors( 'simple', qw/_meta_data _meta_object/ );
+__PACKAGE__->mk_group_accessors( 'component_class',
+    [ meta_class => '_meta_class' ] );
 __PACKAGE__->meta_class('Mango::Object::Meta');
+
+sub mk_group_accessors {
+    my ( $class, $group, @accessors ) = @_;
+
+    if ($group =~ /component_class/) {
+        Class::Accessor::Grouped::mk_group_accessors($class, $group, @accessors);
+        return;
+    }
+
+    foreach my $accessor (@accessors) {
+        my $getter = "get_$group";
+        my $setter = "set_$group";
+
+        has $accessor => (
+            is  => 'rw',
+            isa => 'Any'
+        );
+        around $accessor => sub {
+            my $next = shift;
+            my $self = shift;
+
+            if ( scalar @_ >= 1 ) {
+                return $self->$setter( $accessor, @_ );
+            } else {
+                return $self->$getter($accessor);
+            }
+        };
+    }
+}
 
 sub new {
     my $class = shift;
@@ -40,7 +67,8 @@ sub new {
             if ( !$self->_meta_data ) {
                 $self->_meta_data( {} );
             }
-            $self->_meta_object( ($self->meta_class)->new( $self->_meta_data ) );
+            $self->_meta_object(
+                ( $self->meta_class )->new( $self->_meta_data ) );
         }
 
         return $self->_meta_object;
@@ -89,7 +117,7 @@ sub update {
 sub get_component_class {
     my ( $self, $field ) = @_;
 
-    return Class::Accessor::Grouped::get_inherited($self, $field);
+    return Class::Accessor::Grouped::get_inherited( $self, $field );
 }
 
 sub set_component_class {

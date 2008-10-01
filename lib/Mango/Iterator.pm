@@ -1,14 +1,9 @@
 ## no critic (ProhibitMultiplePackages)
-# $Id$
 package Mango::Iterator;
-use strict;
-use warnings;
 
 BEGIN {
-    use base qw/Class::Accessor::Grouped/;
-    use Scalar::Util qw/blessed/;
-
-    __PACKAGE__->mk_group_accessors( 'simple', qw/provider data pager/ );
+    use Moose;
+    use Scalar::Util ();
 }
 
 sub new {
@@ -18,12 +13,28 @@ sub new {
 
     if ( ref $data eq 'ARRAY' ) {
         $class = 'Mango::Iterator::List';
-    } elsif ( blessed $data && $data->isa('Handel::Iterator') ) {
+    } elsif ( Scalar::Util::blessed $data && $data->isa('Handel::Iterator') )
+    {
         $class = 'Mango::Iterator::HandelResults';
     }
 
     return bless $args, $class;
 }
+
+has 'data' => (
+    is  => 'rw',
+    isa => Str
+);
+
+has 'pager' => (
+    is  => 'rw',
+    isa => Str
+);
+
+has 'provider' => (
+    is  => 'rw',
+    isa => Str
+);
 
 sub create_result {
     my ( $self, $result ) = @_;
@@ -32,19 +43,19 @@ sub create_result {
 }
 
 package Mango::Iterator::List;
-use strict;
-use warnings;
 
 BEGIN {
-    use base qw/Mango::Iterator Handel::Iterator::List/;
+    use Moose;
+
+    extends qw/Mango::Iterator Handel::Iterator::List/;
 }
 
 package Mango::Iterator::HandelResults;
-use strict;
-use warnings;
 
 BEGIN {
-    use base qw/Handel::Iterator::Results Mango::Iterator/;
+    use Moose;
+
+    extends qw/Handel::Iterator::Results Mango::Iterator/;
 }
 
 1;

@@ -1,11 +1,7 @@
-# $Id$
 package Mango::Currency;
+use Moose;
 
-BEGIN {
-    use Moose 'extends';
-
-    extends 'Handel::Currency';    
-};
+extends 'Handel::Currency';
 
 1;
 __END__

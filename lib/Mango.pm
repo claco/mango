@@ -1,19 +1,15 @@
-# $Id$
 package Mango;
 use Moose;
 use MooseX::ClassAttribute;
-use MooseX::Types::Path::Class 'Dir';
+use MooseX::Types::Path::Class;
+use File::ShareDir ();
+use Path::Class    ();
 
 our $VERSION = '0.01000_14';
 
-BEGIN {
-    use File::ShareDir ();
-    use Path::Class    ();
-}
-
 class_has 'share' => (
     is     => 'rw',
-    isa    => Dir,
+    isa    => 'Dir',
     coerce => 1
 );
 

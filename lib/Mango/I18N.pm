@@ -1,14 +1,10 @@
 ## no critic (ProhibitPackageVars)
-# $Id$
 package Mango::I18N;
-use strict;
-use warnings;
+use Moose;
 use utf8;
 use vars qw/@EXPORT_OK %Lexicon $handle/;
 
-BEGIN {
-    use base qw/Locale::Maketext Exporter/;
-}
+extends qw/Locale::Maketext Exporter/;
 
 @EXPORT_OK = qw(translate);
 

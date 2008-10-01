@@ -1,14 +1,10 @@
 ## no critic (ProhibitPackageVars)
-# $Id$
 package Mango::I18N::en;
-use strict;
-use warnings;
-use utf8;
+use Moose;
 use vars qw/%Lexicon/;
+use utf8;
 
-BEGIN {
-    use base qw/Mango::I18N/;
-}
+extends 'Mango::I18N';
 
 %Lexicon = (
     Language => 'English',

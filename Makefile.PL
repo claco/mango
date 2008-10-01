@@ -11,6 +11,7 @@ all_from 'lib/Mango.pm';
 
 requires 'Moose';
 requires 'MooseX::ClassAttribute';
+requires 'MooseX::Types::DateTime';
 requires 'MooseX::Types::Path::Class';
 
 requires 'Catalyst::Action::RenderView';
