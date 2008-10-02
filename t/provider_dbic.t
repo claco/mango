@@ -109,7 +109,7 @@ is($provider->result_class, 'Mango::Object');
     });
 
     ok($provider->update($object));
-    
+
     my $user = $provider->resultset->find(1);
     is($user->id, 1);
     is($user->username, 'updateduser1');

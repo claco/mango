@@ -1,5 +1,6 @@
 package Mango::Object;
 use Moose;
+use MooseX::ClassAttribute;
 use MooseX::Types::DateTime;
 use English '-no_match_vars';
 
@@ -8,33 +9,40 @@ extends 'Class::Accessor::Grouped';
 __PACKAGE__->mk_group_accessors( 'column', qw/id created updated/ );
 __PACKAGE__->mk_group_accessors( 'simple', qw/_meta_data _meta_object/ );
 __PACKAGE__->mk_group_accessors( 'component_class',
-    [ meta_class => '_meta_class' ] );
+    [ 'meta_class' => '_meta_class' ] );
 __PACKAGE__->meta_class('Mango::Object::Meta');
 
 sub mk_group_accessors {
     my ( $class, $group, @accessors ) = @_;
 
-    if ($group =~ /component_class/) {
-        Class::Accessor::Grouped::mk_group_accessors($class, $group, @accessors);
-        return;
-    }
-
     foreach my $accessor (@accessors) {
         my $getter = "get_$group";
         my $setter = "set_$group";
+        my $field;
 
-        has $accessor => (
-            is  => 'rw',
-            isa => 'Any'
+        if ( ref $accessor eq 'ARRAY' ) {
+            ( $accessor, $field ) = @{$accessor};
+        } else {
+            $field = $accessor;
+        }
+
+        has $field => (
+            is       => 'rw',
+            isa      => 'Any',
+            accessor => $accessor
         );
         around $accessor => sub {
             my $next = shift;
             my $self = shift;
 
-            if ( scalar @_ >= 1 ) {
-                return $self->$setter( $accessor, @_ );
+            if ( $group =~ /simple/i ) {
+                $next->( $self, @_ );
             } else {
-                return $self->$getter($accessor);
+                if ( scalar @_ >= 1 ) {
+                    return $self->$setter( $field, @_ );
+                } else {
+                    return $self->$getter($field);
+                }
             }
         };
     }
