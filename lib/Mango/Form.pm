@@ -107,7 +107,16 @@ sub render {
     }
 
     $form->process;
-    return $form->render;
+
+    ## this is a quick hack until I can get FormFu to take a coderef for localization
+    my $copy = Clone::clone($form);
+    foreach my $field (@{$copy->get_fields}) {
+        if (my $label = $field->label) {
+            $field->label($self->localizer->($field->label));
+        };
+    }
+
+    return $copy->render;
 }
 
 sub values {
