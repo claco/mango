@@ -54,12 +54,12 @@ __PACKAGE__->add_columns(
     created => {
         data_type   => 'DATETIME',
         is_nullable => 0,
-        extra       => { timezone => 'UTC' }
+        timezone => 'UTC'
     },
     updated => {
         data_type   => 'DATETIME',
         is_nullable => 0,
-        extra       => { timezone => 'UTC' }
+        timezone => 'UTC'
     }
 );
 __PACKAGE__->set_primary_key('id');

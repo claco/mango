@@ -253,13 +253,13 @@ __PACKAGE__->add_columns(
         data_type     => 'DATETIME',
         is_nullable   => 1,
         default_value => undef,
-        extra         => { timezone => 'UTC' }
+        timezone => 'UTC'
     },
     updated => {
         data_type     => 'DATETIME',
         is_nullable   => 1,
         default_value => undef,
-        extra         => { timezone => 'UTC' }
+        timezone => 'UTC'
     },
 );
 __PACKAGE__->set_primary_key('id');
